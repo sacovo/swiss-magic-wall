@@ -21,9 +21,6 @@ cache:
 
 # This is a basic example for a gem or script which doesn't use
 # services such as redis or postgres
-before_script:
-  - python -V  # Print out python version for debugging
-  - pip install -r requirements.txt
 
 bandit:
   stage: check
@@ -42,6 +39,8 @@ django_test:
     - postgres:latest
   stage: test
   script:
+    - python -V  # Print out python version for debugging
+    - pip install -r requirements.txt
     - python manage.py test
 
 docker-build-master:
