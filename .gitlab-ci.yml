@@ -1,6 +1,7 @@
 image: python:latest
 
 stages:
+  - check
   - test
   - build
 
@@ -23,6 +24,18 @@ cache:
 before_script:
   - python -V  # Print out python version for debugging
   - pip install -r requirements.txt
+
+bandit:
+  stage: check
+  image: pypi/bandit
+  script:
+    - bandit -r .
+
+yapf:
+  stage: check
+  image: pypi/yapf
+  script:
+    - yapf --quiet --recursive .
 
 django_test:
   services:
