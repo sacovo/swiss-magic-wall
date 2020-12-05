@@ -24,14 +24,14 @@ cache:
 
 bandit:
   stage: check
-  image: pypi/bandit
   script:
+    - pip install bandit
     - bandit -r .
 
 yapf:
   stage: check
-  image: pypi/yapf
   script:
+    - pip install yapf
     - yapf --quiet --recursive .
 
 django_test:
