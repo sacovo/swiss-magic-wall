@@ -10,6 +10,8 @@ services:
       - 8000:8000
     env_file:
       - ./.env.dev
+    environment:
+      - APPLY_MIGRATIONS="yes"
 
   cache:
     image: memcached:alpine

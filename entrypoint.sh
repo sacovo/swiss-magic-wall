@@ -8,6 +8,7 @@ then
     done
 
     echo "PostgreSQL started"
+    [ "$APPLY_MIGRATIONS" ] && python manage.py migrate
 fi
 
 exec "$@"
