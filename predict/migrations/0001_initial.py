@@ -28,9 +28,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "projection",
-                    models.FileField(blank=True,
-                                     null=True,
-                                     upload_to="projections/"),
+                    models.FileField(blank=True, null=True, upload_to="projections/"),
                 ),
                 (
                     "model_votations",
@@ -58,15 +56,13 @@ class Migration(migrations.Migration):
                 ("timestamp", models.DateTimeField(auto_now_add=True)),
                 (
                     "gemeinde",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE,
-                        to="geo.gemeinde"),
+                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                      to="geo.gemeinde"),
                 ),
                 (
                     "votation",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE,
-                        to="votes.votation"),
+                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                      to="votes.votation"),
                 ),
             ],
         ),

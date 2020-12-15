@@ -1,8 +1,11 @@
+from unittest import skip
+
 from django.test import TestCase
 from django.utils.timezone import now
 from votes.models import VotationDate, Votation
 from votes import tasks
 from geo.models import Kanton, Gemeinde
+from predict.models import LatestResult, Result
 
 # Create your tests here.
 
@@ -52,3 +55,28 @@ class VotationDateInitTest(TestCase):
         self.assertEqual(len(Kanton.objects.all()),
                          26,
                          msg="There should be exactly 26 kantons")
+        self.assertTrue(Result.objects.all().exists())
+        self.assertTrue(LatestResult.objects.all().exists())
+        self.assertEqual(len(Result.objects.all()), len(LatestResult.objects.all()))
+
+
+class TestGemeindenVotation(TestCase):
+
+    def test_ensure_gemeinden(self):
+        """Ensure the right amount of votes for all votations"""
+        kanton = Kanton.objects.create(name="Test", geo_id=1)
+
+        Gemeinde.objects.create(name="Test", geo_id=10, kanton=kanton, voters=12)
+        Gemeinde.objects.create(name="Test", geo_id=11, kanton=kanton, voters=12)
+        Gemeinde.objects.create(name="Test", geo_id=12, kanton=kanton, voters=12)
+        Gemeinde.objects.create(name="Test", geo_id=13, kanton=kanton, voters=12)
+        Gemeinde.objects.create(name="Test", geo_id=14, kanton=kanton, voters=12)
+
+        date = VotationDate.objects.create(json_url="https://no-url.com",
+                                           start_date=now())
+
+        votation = Votation.objects.create(date=date, needs_staende=True, id=1)
+
+        votation.ensure_results_for(Gemeinde.objects.all())
+
+        self.assertEqual(len(votation.latestresult_set.all()), 5)

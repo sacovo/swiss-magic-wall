@@ -1,5 +1,12 @@
+import numpy as np
 from django.db import models
-from django.utils.translation import get_language
+from django.db.models import Sum
+from django.db.models.functions import Coalesce
+from django.utils.translation import get_language, gettext_lazy as _
+
+from taggit.managers import TaggableManager
+
+from predict.models import LatestResult
 
 # Create your models here.
 
@@ -18,12 +25,17 @@ class VotationDate(models.Model):
         url of the json that provides the current results
     """
 
-    start_date = models.DateTimeField()
+    start_date = models.DateTimeField(verbose_name=_("start date"))
 
-    json_url = models.URLField(max_length=500)
+    json_url = models.URLField(max_length=500, verbose_name=_("json url"))
+    is_finished = models.BooleanField(default=False, verbose_name=_("is finished"))
 
     def __str__(self):
         return self.start_date.strftime("%Y-%m-%d")
+
+    class Meta:
+        verbose_name = _("votating day")
+        verbose_name_plural = _("voting days")
 
 
 class Votation(models.Model):
@@ -47,26 +59,120 @@ class Votation(models.Model):
     """
 
     id = models.IntegerField(primary_key=True)
-    date = models.ForeignKey(VotationDate, models.CASCADE)
+    date = models.ForeignKey(VotationDate, models.CASCADE, verbose_name=_("date"))
 
-    is_finished = models.BooleanField(default=False)
-    needs_staende = models.BooleanField()
+    is_finished = models.BooleanField(default=False, verbose_name=_("is finished"))
+    needs_staende = models.BooleanField(verbose_name=_("needs staende"))
 
-    is_accepted = models.BooleanField(default=False)
+    is_accepted = models.BooleanField(default=False, verbose_name=_("is accepted"))
+
+    tags = TaggableManager()
+
+    def result_dict(self) -> dict:
+        """Returns a dict with results for the votation"""
+        final_results = self.latestresult_set.filter(is_final=True).aggregate(
+            yes=Coalesce(Sum('yes_absolute'), 0), no=Coalesce(Sum('no_absolute'), 0))
+
+        predicted_results = self.latestresult_set.filter(is_final=False).aggregate(
+            yes=Coalesce(Sum('yes_absolute'), 0), no=Coalesce(Sum('no_absolute'), 0))
+
+        total_counted = final_results['yes'] + final_results['no']
+        total_predicted = predicted_results['yes'] + predicted_results['no']
+
+        return {
+            'yes_counted':
+                final_results['yes'],
+            'no_counted':
+                final_results['no'],
+            'total_counted':
+                total_counted,
+            'yes_predicted':
+                predicted_results['yes'],
+            'no_predicted':
+                predicted_results['no'],
+            'total_predicted':
+                total_predicted + total_counted,
+            'yes_percent_predicted':
+                ((final_results['yes'] + predicted_results['yes']) /
+                 (total_predicted+total_counted)) if
+                (final_results['yes'] or predicted_results['yes']) else 0,
+            'yes_percent_counted':
+                final_results['yes'] / total_counted,
+            'percent_counted':
+                total_counted / (total_counted+total_predicted) if total_counted else 0
+        }
+
+    def result_cantons(self) -> dict:
+        return self.latestresult_set.values('gemeinde__kanton').annotate(
+            yes=Coalesce(Sum('yes_absolute'), 0)).order_by()
 
     def __str__(self):
         language_code: str = get_language()
-        translation = self.translation_title_set.filter(
-            language_code=language_code)
+        translation = self.votationtitle_set.filter(language_code=language_code)
 
         if bool(translation):
             return translation[0].title
-        translations = self.translation_title_set.all()
+        translations = self.votationtitle_set.all()
 
         if bool(translations):
             return translations[0].title
 
         return f"#{self.id}"
+
+    def ensure_results_for(self, gemeinden: models.QuerySet):
+        """
+        Ensures that a result for every gemeinde in gemeinden exists in the
+        resultset. If a result is missing, a result with NaN values is created.
+        """
+        missing_gemeinden = gemeinden.exclude(
+            pk__in=self.latestresult_set.values('gemeinde'))
+
+        for missing in list(missing_gemeinden):
+            LatestResult.objects.create(
+                gemeinde=missing,
+                votation=self,
+            )
+
+    def get_result_vector(self, gemeinden=None) -> np.ndarray:
+        """
+        Return a list of the latest results for this
+        votation. This list contains final and projected results,
+        to know which ones are final and which are projected use
+        `get_index_vector`.
+        """
+        if gemeinden is None:
+            return np.array(self.latestresult_set.all().values_list('yes_percent',
+                                                                    flat=True))
+        return np.array(
+            self.latestresult_set.filter(gemeinde__in=gemeinden).values_list(
+                'yes_percent', flat=True))
+
+    def get_participation_vector(self, gemeinden=None) -> np.ndarray:
+        """
+        Return a list of the latest participation results
+        """
+        if gemeinden is None:
+            return np.array(self.latestresult_set.all().values_list('participation',
+                                                                    flat=True))
+        return np.array(
+            self.latestresult_set.filter(gemeinde__in=gemeinden).values_list(
+                'participation', flat=True))
+
+    def get_index_vector(self, gemeinden=None) -> np.ndarray:
+        """
+        Returns a boolean vector with True for the final results and
+        false for the projected results.
+        """
+        if gemeinden is None:
+            return np.array(self.latestresult_set.all().values_list('is_final',
+                                                                    flat=True))
+        return np.array(
+            self.latestresult_set.filter(gemeinde__in=gemeinden).values_list('is_final',
+                                                                             flat=True))
+
+    class Meta:
+        verbose_name = _("votation")
+        verbose_name_plural = _("votations")
 
 
 class VotationTitle(models.Model):
@@ -83,9 +189,9 @@ class VotationTitle(models.Model):
         votation that this title belongs to.
     """
 
-    language_code = models.CharField(max_length=2)
-    title = models.CharField(max_length=280)
-    votation = models.ForeignKey(Votation, models.CASCADE)
+    language_code = models.CharField(max_length=2, verbose_name=_("language code",))
+    title = models.CharField(max_length=280, verbose_name=_("title"))
+    votation = models.ForeignKey(Votation, models.CASCADE, verbose_name=_("votation"))
 
     class Meta:
         constraints = [
@@ -94,6 +200,8 @@ class VotationTitle(models.Model):
                 name="unique_language_per_vocation",
             )
         ]
+        verbose_name = _("votation title")
+        verbose_name_plural = _("votation titles")
 
     def __str__(self):
         return self.title

@@ -15,8 +15,7 @@ class Migration(migrations.Migration):
             name="Kanton",
             fields=[
                 ("name", models.CharField(max_length=100)),
-                ("geo_id", models.IntegerField(primary_key=True,
-                                               serialize=False)),
+                ("geo_id", models.IntegerField(primary_key=True, serialize=False)),
                 ("standesstimme", models.FloatField(default=1.0)),
             ],
             options={
@@ -28,14 +27,12 @@ class Migration(migrations.Migration):
             name="Gemeinde",
             fields=[
                 ("name", models.CharField(max_length=100)),
-                ("geo_id", models.IntegerField(primary_key=True,
-                                               serialize=False)),
+                ("geo_id", models.IntegerField(primary_key=True, serialize=False)),
                 ("voters", models.IntegerField()),
                 (
                     "kanton",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE,
-                        to="geo.kanton"),
+                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                      to="geo.kanton"),
                 ),
             ],
             options={

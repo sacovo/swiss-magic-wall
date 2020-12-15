@@ -2,6 +2,7 @@
 Docstring
 """
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class GeoObject(models.Model):
@@ -44,7 +45,11 @@ class Kanton(GeoObject):
        have a half standesstimme.
     """
 
-    standesstimme = models.FloatField(default=1.0)
+    standesstimme = models.FloatField(default=1.0, verbose_name=_("standesstimme"))
+
+    class Meta:
+        verbose_name = _("canton")
+        verbose_name_plural = _("cantons")
 
 
 class Gemeinde(GeoObject):
@@ -62,5 +67,9 @@ class Gemeinde(GeoObject):
         commune.
     """
 
-    kanton = models.ForeignKey(Kanton, models.CASCADE)
-    voters = models.IntegerField()
+    kanton = models.ForeignKey(Kanton, models.CASCADE, verbose_name=_("canton"))
+    voters = models.IntegerField(verbose_name=_("eligible voters"))
+
+    class Meta:
+        verbose_name = _("commune")
+        verbose_name_plural = _("communes")

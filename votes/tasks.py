@@ -8,6 +8,7 @@ import requests
 
 from geo.models import Gemeinde, Kanton
 from votes.models import Votation, VotationTitle, VotationDate
+from predict.models import input_json_result
 
 
 def fetch_json_from(url) -> dict:
@@ -61,37 +62,36 @@ def init_kanton(kanton_data: dict) -> Kanton:
     return kanton
 
 
-def init_kantone(kanton_iterator: Iterable[dict]):
+def init_kantone(kanton_iterator: Iterable[dict], votation: Votation):
     """Iterates over the kantone that and creates them and their gemeinden"""
 
     for kanton_data in kanton_iterator:
         kanton: Kanton = init_kanton(kanton_data)
 
-        init_gemeinden(iterate_gemeinden(kanton_data), kanton)
+        init_gemeinden(iterate_gemeinden(kanton_data), kanton, votation)
 
 
-def init_gemeinde(gemeinde_data: dict, kanton: Kanton) -> Gemeinde:
+def init_gemeinde(gemeinde_data: dict, kanton: Kanton, votation: Votation) -> Gemeinde:
     """Create a single gemeinde if not already present"""
 
     gemeinde, _ = Gemeinde.objects.get_or_create(
         geo_id=gemeinde_data["geoLevelnummer"],
         defaults={
-            "name":
-                gemeinde_data["geoLevelname"],
-            "kanton":
-                kanton,
-            "voters":
-                gemeinde_data["resultat"].get("anzahlStimmberechtigte", 0),
+            "name": gemeinde_data["geoLevelname"],
+            "kanton": kanton,
+            "voters": gemeinde_data["resultat"].get("anzahlStimmberechtigte", 0),
         },
     )
+
+    input_json_result(gemeinde, votation, gemeinde_data['resultat'])
 
     return gemeinde
 
 
-def init_gemeinden(gemeinde_iterator: Iterable[dict], kanton: Kanton):
+def init_gemeinden(gemeinde_iterator: Iterable[dict], kanton: Kanton, votation: Votation):
     """For every gemeinde in the iterator call the gemeinde init"""
     for gemeinde_data in gemeinde_iterator:
-        init_gemeinde(gemeinde_data, kanton)
+        init_gemeinde(gemeinde_data, kanton, votation)
 
 
 @shared_task
@@ -108,7 +108,5 @@ def init_votations(votation_date_pk: int):
     votation_list = iterate_votations(data)
 
     for votation_data in votation_list:
-        init_votation(votation_data, votation_date)
-
-    if len(votation_list) > 0:
-        init_kantone(iterate_kantone(votation_list[-1]))
+        votation = init_votation(votation_data, votation_date)
+        init_kantone(iterate_kantone(votation_data), votation)

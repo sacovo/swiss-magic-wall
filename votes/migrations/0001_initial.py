@@ -52,9 +52,8 @@ class Migration(migrations.Migration):
                 ("title", models.CharField(max_length=280)),
                 (
                     "votation",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE,
-                        to="votes.votation"),
+                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                      to="votes.votation"),
                 ),
             ],
         ),
