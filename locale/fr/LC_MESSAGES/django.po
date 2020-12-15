@@ -16,169 +16,169 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: geo/models.py:48
 msgid "standesstimme"
-msgstr "Standesstimme"
+msgstr ""
 
 #: geo/models.py:51 geo/models.py:70
 msgid "canton"
-msgstr "Kanton"
+msgstr ""
 
 #: geo/models.py:52
 msgid "cantons"
-msgstr "Kantone"
+msgstr ""
 
 #: geo/models.py:71
 msgid "eligible voters"
-msgstr "Stimmberechtigte"
+msgstr ""
 
 #: geo/models.py:74 predict/models.py:121
 msgid "commune"
-msgstr "Gemeinde"
+msgstr ""
 
 #: geo/models.py:75
 msgid "communes"
-msgstr "Gemeinden"
+msgstr ""
 
 #: predict/admin.py:26
 msgid "built matrices for {len(queryset)} models"
-msgstr "Matrizen für {len(queryset)} Modelle berechnet."
+msgstr ""
 
 #: predict/admin.py:28
 msgid "build the projection matrices"
-msgstr "Projektionen berechnen"
+msgstr ""
 
 #: predict/models.py:30 predict/models.py:122 votes/models.py:170
 #: votes/models.py:190
 msgid "votation"
-msgstr "Abstimmung"
+msgstr ""
 
 #: predict/models.py:33
 msgid "model votations"
-msgstr "Modellabstimmungen"
+msgstr ""
 
 #: predict/models.py:38
 msgid "yes projection"
-msgstr "Ja-Projektion"
+msgstr ""
 
 #: predict/models.py:42
 msgid "participation projection"
-msgstr "Beteiligungs-Projektion"
+msgstr ""
 
 #: predict/models.py:82
 msgid "voting model"
-msgstr "Abstimmungsmodell"
+msgstr ""
 
 #: predict/models.py:83
 msgid "voting models"
-msgstr "Abstimmungsmodelle"
+msgstr ""
 
 #: predict/models.py:112
 msgid "id"
-msgstr "id"
+msgstr ""
 
 #: predict/models.py:113
 msgid "yes percent"
-msgstr "Ja in Prozent"
+msgstr ""
 
 #: predict/models.py:114
 msgid "participation"
-msgstr "Stimmbeteiligung"
+msgstr ""
 
 #: predict/models.py:116
 msgid "yes absolute"
-msgstr "Ja absolut"
+msgstr ""
 
 #: predict/models.py:117
 msgid "no absolute"
-msgstr "Nein absolut"
+msgstr ""
 
 #: predict/models.py:119
 msgid "is final"
-msgstr "ausgezählt"
+msgstr ""
 
 #: predict/models.py:146
 msgid "latest result"
-msgstr "Letztes Resultat"
+msgstr ""
 
 #: predict/models.py:147
 msgid "latest results"
-msgstr "Letzte Resultate"
+msgstr ""
 
 #: predict/models.py:158
 msgid "result"
-msgstr "Resultat"
+msgstr ""
 
 #: predict/models.py:159
 msgid "results"
-msgstr "Resultate"
+msgstr ""
 
 #: votes/admin.py:26
 msgid "started fetching for {len(queryset)} votation dates"
-msgstr "{len(queryset)} Abstimmungstage werden heruntergeladen."
+msgstr ""
 
 #: votes/admin.py:30
 msgid "init votations"
-msgstr "Abstimmungstage initialisieren"
+msgstr ""
 
 #: votes/models.py:26
 msgid "start date"
-msgstr "Startdatum"
+msgstr ""
 
 #: votes/models.py:28
 msgid "json url"
-msgstr "JSON Url"
+msgstr ""
 
 #: votes/models.py:29 votes/models.py:62
 msgid "is finished"
-msgstr "abgeschlossen"
+msgstr ""
 
 #: votes/models.py:35
 msgid "votating day"
-msgstr "Abstimmungstag"
+msgstr ""
 
 #: votes/models.py:36
 msgid "voting days"
-msgstr "Abstimmungstage"
+msgstr ""
 
 #: votes/models.py:60
 msgid "date"
-msgstr "Datum"
+msgstr ""
 
 #: votes/models.py:63
 msgid "needs staende"
-msgstr "Ständemehr benötigt"
+msgstr ""
 
 #: votes/models.py:65
 msgid "is accepted"
-msgstr "angenommen"
+msgstr ""
 
 #: votes/models.py:171
 msgid "votations"
-msgstr "Abstimmungen"
+msgstr ""
 
 #: votes/models.py:188
 msgid "language code"
-msgstr "Sprachcode"
+msgstr ""
 
 #: votes/models.py:189
 msgid "title"
-msgstr "Titel"
+msgstr ""
 
 #: votes/models.py:199
 msgid "votation title"
-msgstr "Titel der Abstimmungsvorlage"
+msgstr ""
 
 #: votes/models.py:200
 msgid "votation titles"
-msgstr "Titel der Abstimmungsvorlage"
+msgstr ""
 
 #: wall/settings.py:160 wall/settings.py:163
 msgid "Magic Wall Admin"
-msgstr "Magic Wall Admin"
+msgstr ""
 
 #: wall/settings.py:161
 msgid "Magic Wall"
-msgstr "Magic Wall"
+msgstr ""
