@@ -2,14 +2,23 @@
 Hallo
 """
 from django.shortcuts import render
+from django.http.request import HttpRequest
+from django.http.response import HttpResponse, JsonResponse
 
-from geo.models import Gemeinde, Kantone
+from geo.models import Gemeinde, Kanton
 
 
-def index(request):
-    """
-    Hallo
-    """
-    gemeinde: Gemeinde = Gemeinde.objects.get(pk=1)
+def canton_detail(request: HttpRequest, canton_id: int) -> HttpResponse:
+    pass
 
-    return render(request, "templates/index.html", {"gemeinde": gemeinde})
+
+def commune_detail(request: HttpRequest, commune_id: int) -> HttpResponse:
+    pass
+
+
+def canton_json(request: HttpRequest, canton_id: int) -> JsonResponse:
+    pass
+
+
+def commune_json(request: HttpRequest, commune_id: int) -> JsonResponse:
+    pass

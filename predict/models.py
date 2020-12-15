@@ -11,6 +11,10 @@ from geo.models import Gemeinde
 from predict import utils
 
 
+def nan():
+    return float('nan')
+
+
 class VotingModel(models.Model):
     """
     A selection of votations are used to calculate a model to make projections.
@@ -110,8 +114,8 @@ class AbstractResult(models.Model):
     """
 
     id = models.BigAutoField(primary_key=True, verbose_name=_("id"))
-    yes_percent = models.FloatField(default=float('nan'), verbose_name=_("yes percent"))
-    participation = models.FloatField(default=float('nan'), verbose_name=_("participation"))
+    yes_percent = models.FloatField(default=nan, verbose_name=_("yes percent"))
+    participation = models.FloatField(default=nan, verbose_name=_("participation"))
 
     yes_absolute = models.IntegerField(default=-1, verbose_name=_("yes absolute"))
     no_absolute = models.IntegerField(default=-1, verbose_name=_("no absolute"))
