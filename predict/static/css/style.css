@@ -1,0 +1,44 @@
+
+.content {
+  display: flex;
+  flex-direction: row;
+}
+
+.info-bar {
+  flex: 1 1 30%;
+}
+
+#map {
+  flex: 1 1 70%;
+}
+
+.progress {
+  display: flex;
+  flex-direction: flow;
+  height: 1em;
+  background-color: grey;
+}
+
+.progress > div {
+  height: 100%;
+}
+
+.bar {
+  background-color: green;
+}
+
+.yes {
+  background-color: blue;
+}
+
+.yes-p {
+  background-color: lightblue;
+}
+
+.no {
+  background-color: red;
+}
+
+.no-p {
+  background-color: orange;
+}

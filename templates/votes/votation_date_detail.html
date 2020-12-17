@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+
+{% block title %}{{votation_date.start_date|date}}{% endblock %}
+
+{% block content %}
+<h1>{{votation_date.start_date|date}}</h1>
+
+{% for votation in votation_date.votation_set.all %}
+<h2><a href="{% url 'votes:votation_detail' votation.pk %}">{{votation}}</a></h2>
+{% endfor %}
+
+
+{% endblock %}

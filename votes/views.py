@@ -1,7 +1,7 @@
 """
 Views for showing details of a votation
 """
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse, JsonResponse
@@ -31,14 +31,14 @@ def votation_date_list(request: HttpRequest) -> HttpResponse:
 
 
 def votation_date_detail(request: HttpRequest, votation_date_id: int) -> HttpResponse:
-    votation_date = VotationDate.objects.get(pk=votation_date_id)
+    votation_date = get_object_or_404(VotationDate, pk=votation_date_id)
 
     return render(request, "votes/votation_date_detail.html",
                   {'votation_date': votation_date})
 
 
 def votation_detail(request: HttpRequest, votation_id: int) -> HttpResponse:
-    votation = Votation.objects.get(id=votation_id)
+    votation = get_object_or_404(Votation, id=votation_id)
 
     return render(request, "votes/votation_detail.html", {
         'votation': votation,
@@ -47,7 +47,7 @@ def votation_detail(request: HttpRequest, votation_id: int) -> HttpResponse:
 
 
 def votation_stats(request: HttpRequest, votation_id: int) -> HttpResponse:
-    votation = Votation.objects.get(id=votation_id)
+    votation = get_object_or_404(Votation, id=votation_id)
 
     return render(request, "votes/votation_stats.html", {
         'votation': votation,
@@ -56,7 +56,7 @@ def votation_stats(request: HttpRequest, votation_id: int) -> HttpResponse:
 
 
 def votation_communes(request: HttpRequest, votation_id: int) -> HttpResponse:
-    votation = Votation.objects.get(id=votation_id)
+    votation = get_object_or_404(Votation, id=votation_id)
 
     return render(request, "votes/votation_communes.html", {
         'votation': votation,
@@ -66,8 +66,8 @@ def votation_communes(request: HttpRequest, votation_id: int) -> HttpResponse:
 
 def votation_canton_detail(request: HttpRequest, votation_id: int,
                            canton_id: int) -> HttpResponse:
-    votation = Votation.objects.get(id=votation_id)
-    canton = Kanton.objects.get(id=canton_id)
+    votation = get_object_or_404(Votation, id=votation_id)
+    canton = get_object_or_404(Kanton, id=canton_id)
 
     return render(request, "votes/votation_communes.html", {
         'votation': votation,

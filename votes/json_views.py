@@ -36,18 +36,18 @@ def votation_canton_json(request: HttpRequest, votation_id: int) -> JsonResponse
         - canton_id
         - ...
     """
-    votation: Votation = Votation.objects.get(votation_id)
+    votation: Votation = Votation.objects.get(id=votation_id)
 
-    return JsonResponse(votation.result_cantons())
+    return JsonResponse(votation.result_cantons(), safe=False)
 
 
 def votation_commune_json(request: HttpRequest, votation_id: int) -> JsonResponse:
     """
     Returns a list of dicts for each commune to the requested votation.
     """
-    votation: Votation = Votation.objects.get(votation_id)
+    votation: Votation = Votation.objects.get(id=votation_id)
 
-    return JsonResponse(votation.result_communes())
+    return JsonResponse({x['geo_id']: x for x in votation.result_communes()}, safe=False)
 
 
 def votation_canton_commune_json(request: HttpRequest, votation_id: int,
@@ -56,6 +56,7 @@ def votation_canton_commune_json(request: HttpRequest, votation_id: int,
     Returns a list of dicts for each commune to the requested votation and
     canton.
     """
-    votation: Votation = Votation.objects.get(votation_id)
+    votation: Votation = Votation.objects.get(id=votation_id)
 
-    return JsonResponse(votation.result_communes(canton_id))
+    return JsonResponse({x['geo_id']: x for x in votation.result_communes(canton_id)},
+                        safe=False)

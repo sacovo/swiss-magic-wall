@@ -1,7 +1,11 @@
+from operator import ge
+from django.db.models.aggregates import Count
+from django.db.models.fields import FloatField
+from django.db.models.query import QuerySet
 import numpy as np
 from django.db import models
-from django.db.models import Sum
-from django.db.models.functions import Coalesce
+from django.db.models import Sum, F
+from django.db.models.functions import Coalesce, Cast
 from django.utils.translation import get_language, gettext_lazy as _
 
 from taggit.managers import TaggableManager
@@ -103,8 +107,54 @@ class Votation(models.Model):
         }
 
     def result_cantons(self) -> dict:
-        return self.latestresult_set.values('gemeinde__kanton').annotate(
-            yes=Coalesce(Sum('yes_absolute'), 0)).order_by()
+        """
+
+        """
+        queryset = self.latestresult_set.values('gemeinde__kanton_id').order_by()
+
+        total = annotate_cantons(queryset).annotate(name=F("gemeinde__kanton__name"),
+                                                    total=Count("gemeinde__geo_id"),
+                                                    total_votes=F("yes") + F("no"))
+        total = {x['geo_id']: x for x in total}
+
+        counted = annotate_cantons(
+            queryset.filter(is_final=True)).annotate(total=Count("gemeinde__geo_id"))
+
+        counted = {x['geo_id']: x for x in counted}
+
+        predicted = annotate_cantons(
+            queryset.filter(is_final=False)).annotate(total=Count("gemeinde__geo_id"))
+
+        predicted = {x['geo_id']: x for x in predicted}
+
+        for geo_id in total:
+            total[geo_id]['yes_counted'] = counted[geo_id]['yes']
+            total[geo_id]['no_counted'] = counted[geo_id]['no']
+            total[geo_id]['yes_percent_counted'] = counted[geo_id]['yes_percent']
+
+            total[geo_id]['counted'] = counted[geo_id]['total']
+
+            if geo_id in predicted.keys():
+                total[geo_id]['yes_predicted'] = predicted[geo_id]['yes']
+                total[geo_id]['no_predicted'] = predicted[geo_id]['no']
+                total[geo_id]['predicted'] = predicted[geo_id]['total']
+                total[geo_id]['is_final'] = False
+            else:
+                total[geo_id]['yes_predicted'] = 0
+                total[geo_id]['no_predicted'] = 0
+                total[geo_id]['predicted'] = 0
+                total[geo_id]['is_final'] = True
+
+        return total
+
+    def result_communes(self, canton_id=0) -> dict:
+        if canton_id == 0:
+            queryset = self.latestresult_set.order_by()
+        else:
+            queryset = self.latestresult_set.filter(
+                gemeinde__kanton_id=canton_id).order_by()
+
+        return annotate_communes(queryset)
 
     def __str__(self):
         language_code: str = get_language()
@@ -180,14 +230,14 @@ class VotationTitle(models.Model):
     Title of the votation in one of the languages of Switzerland.
 
     Attributes:
-    ----------
-    language_code: str
+        ----------
+        language_code: str
         two letter code to indicate the language
-    title: str
+        title: str
         title of the votation
-    votation: Votation
+        votation: Votation
         votation that this title belongs to.
-    """
+        """
 
     language_code = models.CharField(max_length=2, verbose_name=_("language code",))
     title = models.CharField(max_length=280, verbose_name=_("title"))
@@ -205,3 +255,22 @@ class VotationTitle(models.Model):
 
     def __str__(self):
         return self.title
+
+
+def annotate_cantons(queryset: QuerySet) -> QuerySet:
+    """
+    Cacluates the total yes and no votes and the yes percentage
+    """
+    return queryset.annotate(
+        geo_id=F('gemeinde__kanton_id'),
+        yes=Cast(Coalesce(Sum('yes_absolute'), 0), models.FloatField()),
+        no=Cast(Coalesce(Sum('no_absolute'), 0),
+                models.FloatField())).annotate(yes_percent=F('yes') /
+                                               (F('no') + F('yes')) * 100)
+
+
+def annotate_communes(queryset: QuerySet) -> QuerySet:
+    return queryset.annotate(geo_id=F('gemeinde_id'),
+                             name=F("gemeinde__name")).values('yes_percent', 'geo_id',
+                                                              'name', 'yes_absolute',
+                                                              'no_absolute')

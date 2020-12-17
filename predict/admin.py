@@ -36,5 +36,7 @@ class ResultAdmin(admin.ModelAdmin):
     Admin for a result
     """
 
+    search_fields = ["gemeinde__name"]
+
     list_filter = ['gemeinde__kanton', 'votation']
     list_display = ["gemeinde", "timestamp", "votation", "yes_percent", "is_final"]

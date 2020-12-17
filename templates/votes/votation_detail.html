@@ -1,0 +1,75 @@
+{% extends 'map_base.html' %}
+{% load static %}
+
+{% block scripts %}
+{{block.super}}
+<script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
+<script src="https://unpkg.com/vue@next"></script>
+<script src="{% static 'js/votation_app.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="content">
+  <div class="info-bar">
+
+    <h1>{{votation}}</h1>
+    <button id="toggleCanton">Toggle</button>
+
+    {% verbatim %}
+    <div id="cantonInfo">
+      <section v-if="active" v-bind:id="canton_id">
+        <img v-bind:src="canton_image" class="icon"/>
+        <h2>
+          {{canton.name}}
+        </h2>
+        <span>
+
+          <div v-if="open">
+            Fortschritt ({{canton.counted}} von {{canton.total}}):
+            <div class="progress">
+              <div class="bar" v-bind:style="styleWidth(progress)"></div>
+            </div>
+          </div>
+          Resultat:
+          <div class="progress">
+            <div class="yes" v-bind:style="styleWidth(canton_yes_c)">
+              {{stylePercent(canton_yes_c)}} %
+            </div>
+            <div class="yes-p" v-if="open" v-bind:style="styleWidth(canton_yes_p)">
+              {{stylePercent(canton_yes_p)}}
+            </div>
+            <div class="no-p" v-if="open" v-bind:style="styleWidth(canton_no_p)">
+              {{stylePercent(canton_no_p)}}
+            </div>
+            <div class="no" v-bind:style="styleWidth(canton_no_c)">
+              {{stylePercent(canton_no_c)}}%
+            </div>
+          </div>
+        </span>
+
+        <section v-if="commune_active" v-bind:id="commune_id">
+          <h3>
+            {{commune.name}}
+          </h3>
+          <span>
+            Ja: {{stylePercent(commune.yes_percent)}}%, Nein: {{stylePercent(100 - commune.yes_percent)}}%
+            <div class="progress">
+              <div class="yes" v-bind:style="styleWidth(commune.yes_percent)">
+                {{commune.yes_absolute}}
+              </div>
+              <div class="no" v-bind:style="styleWidth(100 - commune.yes_percent)">
+                {{commune.no_absolute}}
+              </div>
+            </div>
+          </span>
+        </section>
+      </section>
+    </div>
+    {% endverbatim %}
+  </div>
+  <div id="map"
+       class="VotationMap"
+       data-votation-id="{{votation.id}}"
+       ></div>
+</div>
+{% endblock %}

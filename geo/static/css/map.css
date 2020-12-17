@@ -1,0 +1,23 @@
+.see {
+  fill: lightblue;
+}
+
+#map.noCantons .kanton {
+  fill: transparent;
+  stroke-width: 3px;
+}
+
+.kanton {
+  stroke: #000000;
+  stroke-width: 1px;
+}
+
+.kanton[data-active="true"] {
+  fill: none !important;
+}
+
+.commune {
+  stroke: #000000;
+  stroke-width: 0.5px;
+}
+
