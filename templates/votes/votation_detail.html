@@ -18,10 +18,12 @@
     {% verbatim %}
     <div id="cantonInfo">
       <section v-if="active" v-bind:id="canton_id">
-        <img v-bind:src="canton_image" class="icon"/>
-        <h2>
-          {{canton.name}}
-        </h2>
+        <header class="kantonHeader">
+          <h2>
+            {{canton.name}}
+          </h2>
+          <img v-bind:src="canton_image" class="icon"/>
+        </header>
         <span>
 
           <div v-if="open">
@@ -33,16 +35,24 @@
           Resultat:
           <div class="progress">
             <div class="yes" v-bind:style="styleWidth(canton_yes_c)">
+              <span>
               {{stylePercent(canton_yes_c)}} %
+              </span>
             </div>
             <div class="yes-p" v-if="open" v-bind:style="styleWidth(canton_yes_p)">
+              <span>
               {{stylePercent(canton_yes_p)}}
+              </span>
             </div>
             <div class="no-p" v-if="open" v-bind:style="styleWidth(canton_no_p)">
+              <span>
               {{stylePercent(canton_no_p)}}
+              </span>
             </div>
             <div class="no" v-bind:style="styleWidth(canton_no_c)">
+              <span>
               {{stylePercent(canton_no_c)}}%
+              </span>
             </div>
           </div>
         </span>

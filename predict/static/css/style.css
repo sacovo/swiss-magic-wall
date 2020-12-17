@@ -15,11 +15,16 @@
 .progress {
   display: flex;
   flex-direction: flow;
-  height: 1em;
+  height: 3em;
   background-color: grey;
+  color: white;
+  vertical-align: middle;
 }
 
 .progress > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 100%;
 }
 
@@ -41,4 +46,9 @@
 
 .no-p {
   background-color: orange;
+}
+
+.kantonHeader {
+  display: flex;
+  justify-content: space-evenly;
 }

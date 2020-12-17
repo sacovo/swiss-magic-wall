@@ -47,7 +47,7 @@ const Info = {
       return this.getCanton();
     },
     canton_image() {
-      return `/static/images/${this.canton_id}.png`;
+      return `/static/icons/kantone/${this.canton_id}.svg`;
     },
     open() {
       let canton = this.getCanton();
