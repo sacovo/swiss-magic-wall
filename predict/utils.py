@@ -27,7 +27,7 @@ def save_projection_to_file(projection: np.ndarray, field, pk: int, key: str):
     with tempfile.TemporaryFile() as output_file:
         np.save(output_file, projection)
         output_file.seek(0)
-        field.save(f'{pk}-{key}.projection.npy', File(output_file))
+        field.save(f"{pk}-{key}.projection.npy", File(output_file))
 
 
 def prediction(projection, values, indexes):

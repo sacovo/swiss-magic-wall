@@ -7,36 +7,38 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('votes', '0002_votationdate_is_finished'),
-        ('predict', '0004_auto_20201212_2011'),
+        ("votes", "0002_votationdate_is_finished"),
+        ("predict", "0004_auto_20201212_2011"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='latestresult',
-            name='participation',
+            model_name="latestresult",
+            name="participation",
             field=models.FloatField(default=float("nan")),
         ),
         migrations.AlterField(
-            model_name='latestresult',
-            name='yes_percent',
+            model_name="latestresult",
+            name="yes_percent",
             field=models.FloatField(default=float("nan")),
         ),
         migrations.AlterField(
-            model_name='result',
-            name='participation',
+            model_name="result",
+            name="participation",
             field=models.FloatField(default=float("nan")),
         ),
         migrations.AlterField(
-            model_name='result',
-            name='yes_percent',
+            model_name="result",
+            name="yes_percent",
             field=models.FloatField(default=float("nan")),
         ),
         migrations.AlterField(
-            model_name='votingmodel',
-            name='votation',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE,
-                                       related_name='projection',
-                                       to='votes.votation'),
+            model_name="votingmodel",
+            name="votation",
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="projection",
+                to="votes.votation",
+            ),
         ),
     ]

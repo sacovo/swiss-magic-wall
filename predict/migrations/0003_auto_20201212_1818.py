@@ -5,63 +5,59 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('predict', '0002_auto_20201206_1430'),
-    ]
+    dependencies = [("predict", "0002_auto_20201206_1430")]
 
     operations = [
-        migrations.AlterModelOptions(
-            name='result',
-            options={'ordering': ['votation', 'gemeinde']},
-        ),
+        migrations.AlterModelOptions(name="result",
+                                     options={"ordering": ["votation", "gemeinde"]}),
         migrations.AlterField(
-            model_name='latestresult',
-            name='is_final',
+            model_name="latestresult",
+            name="is_final",
             field=models.BooleanField(default=False),
         ),
         migrations.AlterField(
-            model_name='latestresult',
-            name='no_absolute',
+            model_name="latestresult",
+            name="no_absolute",
             field=models.IntegerField(default=-1),
         ),
         migrations.AlterField(
-            model_name='latestresult',
-            name='participation',
+            model_name="latestresult",
+            name="participation",
             field=models.FloatField(default=float("nan")),
         ),
         migrations.AlterField(
-            model_name='latestresult',
-            name='yes_absolute',
+            model_name="latestresult",
+            name="yes_absolute",
             field=models.IntegerField(default=-1),
         ),
         migrations.AlterField(
-            model_name='latestresult',
-            name='yes_percent',
+            model_name="latestresult",
+            name="yes_percent",
             field=models.FloatField(default=float("nan")),
         ),
         migrations.AlterField(
-            model_name='result',
-            name='is_final',
+            model_name="result",
+            name="is_final",
             field=models.BooleanField(default=False),
         ),
         migrations.AlterField(
-            model_name='result',
-            name='no_absolute',
+            model_name="result",
+            name="no_absolute",
             field=models.IntegerField(default=-1),
         ),
         migrations.AlterField(
-            model_name='result',
-            name='participation',
+            model_name="result",
+            name="participation",
             field=models.FloatField(default=float("nan")),
         ),
         migrations.AlterField(
-            model_name='result',
-            name='yes_absolute',
+            model_name="result",
+            name="yes_absolute",
             field=models.IntegerField(default=-1),
         ),
         migrations.AlterField(
-            model_name='result',
-            name='yes_percent',
+            model_name="result",
+            name="yes_percent",
             field=models.FloatField(default=float("nan")),
         ),
     ]

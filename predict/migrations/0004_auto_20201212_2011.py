@@ -5,29 +5,27 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('predict', '0003_auto_20201212_1818'),
-    ]
+    dependencies = [("predict", "0003_auto_20201212_1818")]
 
     operations = [
         migrations.AlterField(
-            model_name='latestresult',
-            name='participation',
+            model_name="latestresult",
+            name="participation",
             field=models.FloatField(default=float("nan")),
         ),
         migrations.AlterField(
-            model_name='latestresult',
-            name='yes_percent',
+            model_name="latestresult",
+            name="yes_percent",
             field=models.FloatField(default=float("nan")),
         ),
         migrations.AlterField(
-            model_name='result',
-            name='participation',
+            model_name="result",
+            name="participation",
             field=models.FloatField(default=float("nan")),
         ),
         migrations.AlterField(
-            model_name='result',
-            name='yes_percent',
+            model_name="result",
+            name="yes_percent",
             field=models.FloatField(default=float("nan")),
         ),
     ]

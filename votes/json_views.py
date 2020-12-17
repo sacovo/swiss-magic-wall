@@ -47,7 +47,7 @@ def votation_commune_json(request: HttpRequest, votation_id: int) -> JsonRespons
     """
     votation: Votation = Votation.objects.get(id=votation_id)
 
-    return JsonResponse({x['geo_id']: x for x in votation.result_communes()}, safe=False)
+    return JsonResponse({x["geo_id"]: x for x in votation.result_communes()}, safe=False)
 
 
 def votation_canton_commune_json(request: HttpRequest, votation_id: int,
@@ -58,5 +58,5 @@ def votation_canton_commune_json(request: HttpRequest, votation_id: int,
     """
     votation: Votation = Votation.objects.get(id=votation_id)
 
-    return JsonResponse({x['geo_id']: x for x in votation.result_communes(canton_id)},
+    return JsonResponse({x["geo_id"]: x for x in votation.result_communes(canton_id)},
                         safe=False)

@@ -13,7 +13,7 @@ class BuildVotationMatrixTest(TestCase):
     Download past votation results and build a matrix from it.
     """
 
-    fixtures = ['test_data.json']
+    fixtures = ["test_data.json"]
 
     def test_building_matrix(self):
         """
@@ -25,7 +25,7 @@ class BuildVotationMatrixTest(TestCase):
 
         other_votations = votations[1:]
 
-        voting_model = VotingModel.objects.create(votation=first_votation,)
+        voting_model = VotingModel.objects.create(votation=first_votation)
         voting_model.model_votations.set(other_votations)
 
         voting_model.build_projection_matrix()

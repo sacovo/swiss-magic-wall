@@ -58,22 +58,20 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "wall.urls"
 
-TEMPLATES = [
-    {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": ["templates/"],
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.debug",
-                'django.template.context_processors.i18n',
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
-            ],
-        },
+TEMPLATES = [{
+    "BACKEND": "django.template.backends.django.DjangoTemplates",
+    "DIRS": ["templates/"],
+    "APP_DIRS": True,
+    "OPTIONS": {
+        "context_processors": [
+            "django.template.context_processors.debug",
+            "django.template.context_processors.i18n",
+            "django.template.context_processors.request",
+            "django.contrib.auth.context_processors.auth",
+            "django.contrib.messages.context_processors.messages",
+        ]
     },
-]
+}]
 
 WSGI_APPLICATION = "wall.wsgi.application"
 
@@ -96,17 +94,16 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME":
-            "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
     },
     {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"
     },
     {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"
     },
     {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"
     },
 ]
 
@@ -116,10 +113,10 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = "de"
 
 LANGUAGES = [
-    ('de', _('German')),
-    ('fr', _('French')),
-    ('it', _("Italian")),
-    ('en', _("English")),
+    ("de", _("German")),
+    ("fr", _("French")),
+    ("it", _("Italian")),
+    ("en", _("English")),
 ]
 
 TIME_ZONE = "Europe/Zurich"
@@ -173,7 +170,7 @@ JAZZMIN_SETTINGS = {
     "copyright": "",
     "user_avatar": None,
     "topmenu_links": [
-        {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]}
     ],
     "usermenu_links": [],
     "show_sidebar": True,
@@ -181,8 +178,7 @@ JAZZMIN_SETTINGS = {
     "hide_apps": [],
     "hide_models": [],
     "order_with_respect_to": [],
-    "custom_links": {
-    },
+    "custom_links": {},
     "icons": {
         "auth": "fas fa-users-cog",
         "auth.user": "fas fa-user",
@@ -207,9 +203,7 @@ JAZZMIN_SETTINGS = {
     "related_modal_active": False,
     "custom_js": None,
     "show_ui_builder": False,
-    "changeform_format_overrides": {
-        "auth.group": "vertical_tabs",
-    },
+    "changeform_format_overrides": {"auth.group": "vertical_tabs"},
     "language_chooser": True,
 }
 

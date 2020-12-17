@@ -9,7 +9,12 @@ from votes.models import Votation, VotationDate
 
 from predict.models import input_json_result, VotingModel, Result, LatestResult
 from predict.utils import prediction
-from votes.tasks import fetch_json_from, iterate_kantone, iterate_gemeinden, iterate_votations
+from votes.tasks import (
+    fetch_json_from,
+    iterate_kantone,
+    iterate_gemeinden,
+    iterate_votations,
+)
 
 
 def update_results(data: dict) -> bool:
@@ -66,13 +71,15 @@ def calculate_projection(votation_pk: int):
         latest_results.append(latest_result)
 
         results.append(
-            Result(yes_percent=latest_result.yes_percent,
-                   participation=latest_result.participation,
-                   yes_absolute=latest_result.yes_absolute,
-                   no_absolute=latest_result.no_absolute,
-                   votation=votation,
-                   gemeinde=latest_result.gemeinde,
-                   is_final=False))
+            Result(
+                yes_percent=latest_result.yes_percent,
+                participation=latest_result.participation,
+                yes_absolute=latest_result.yes_absolute,
+                no_absolute=latest_result.no_absolute,
+                votation=votation,
+                gemeinde=latest_result.gemeinde,
+                is_final=False,
+            ))
 
     LatestResult.objects.bulk_update(latest_results)
     Result.objects.bulk_create(results)
@@ -83,7 +90,7 @@ def update_votation(data: dict) -> Votation:
     Update is finished and is_accepted from the dict and
     return the votation that is described through this votation.
     """
-    votation: Votation = Votation.objects.get(id=data['vorlagenId'])
+    votation: Votation = Votation.objects.get(id=data["vorlagenId"])
 
     votation.is_finished = data["vorlageBeendet"]
     votation.is_accepted = data["vorlageAngenommen"]
@@ -105,10 +112,8 @@ def check_running_counts():
     """
     Selects the votations that are currently running and fetches them.
     """
-    active_votation_dates = VotationDate.objects.filter(
-        start_date__lte=timezone.now(),
-        is_finished=False,
-    )
+    active_votation_dates = VotationDate.objects.filter(start_date__lte=timezone.now(),
+                                                        is_finished=False)
 
     for active_votation_date in active_votation_dates:
         active_votation_date.is_finished = update_results(

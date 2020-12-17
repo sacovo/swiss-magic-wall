@@ -12,7 +12,7 @@ from predict import utils
 
 
 def nan():
-    return float('nan')
+    return float("nan")
 
 
 class VotingModel(models.Model):
@@ -29,21 +29,30 @@ class VotingModel(models.Model):
         saved projection that should be used to calculate the model
     """
 
-    votation = models.OneToOneField("votes.Votation",
-                                    models.CASCADE,
-                                    related_name="projection", verbose_name=_("votation"))
-    model_votations = models.ManyToManyField("votes.Votation",
-                                             blank=True,
-                                             related_name="+", verbose_name=_("model votations"))
+    votation = models.OneToOneField(
+        "votes.Votation",
+        models.CASCADE,
+        related_name="projection",
+        verbose_name=_("votation"),
+    )
+    model_votations = models.ManyToManyField(
+        "votes.Votation",
+        blank=True,
+        related_name="+",
+        verbose_name=_("model votations"),
+    )
     yes_projection = models.FileField(
         upload_to="projections/",
         null=True,
         blank=True,
-        verbose_name=_("yes projection")
+        verbose_name=_("yes projection"),
     )
 
     participation_projection = models.FileField(
-        upload_to="projections/", null=True, blank=True, verbose_name=_("participation projection")
+        upload_to="projections/",
+        null=True,
+        blank=True,
+        verbose_name=_("participation projection"),
     )
 
     def __str__(self):
@@ -68,9 +77,9 @@ class VotingModel(models.Model):
         participation_projection = utils.calculate_projection(particpation_matrix)
 
         # Save them to the filesystem
-        utils.save_projection_to_file(yes_projection, self.yes_projection, self.pk, 'yes')
+        utils.save_projection_to_file(yes_projection, self.yes_projection, self.pk, "yes")
         utils.save_projection_to_file(participation_projection,
-                                      self.participation_projection, self.pk, 'part')
+                                      self.participation_projection, self.pk, "part")
 
         self.save()
 
@@ -123,14 +132,16 @@ class AbstractResult(models.Model):
     is_final = models.BooleanField(default=False, verbose_name=_("is final"))
 
     gemeinde = models.ForeignKey(Gemeinde, models.CASCADE, verbose_name=_("commune"))
-    votation = models.ForeignKey("votes.Votation", models.CASCADE, verbose_name=_("votation"))
+    votation = models.ForeignKey(
+        "votes.Votation", models.CASCADE, verbose_name=_("votation")
+    )
 
     def __str__(self):
         return f"Result for {self.gemeinde.name} for #{self.votation.id} at {self.timestamp}"
 
     class Meta:
         abstract = True
-        ordering = ['votation', 'gemeinde']
+        ordering = ["votation", "gemeinde"]
 
 
 class LatestResult(AbstractResult):
@@ -138,37 +149,37 @@ class LatestResult(AbstractResult):
     Unique for every combination of votation and gemeinde, stores
     the latest result for every votation
     """
+
     timestamp = models.DateTimeField(auto_now=True)
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(
-                fields=["gemeinde", "votation"],
-                name="unique_gemeinde_votation",
-            )
+            models.UniqueConstraint(fields=["gemeinde", "votation"],
+                                    name="unique_gemeinde_votation")
         ]
         verbose_name = _("latest result")
         verbose_name_plural = _("latest results")
-        ordering = ['votation', 'gemeinde']
+        ordering = ["votation", "gemeinde"]
 
 
 class Result(AbstractResult):
     """
     Not unique for every combination, used to store the timeseries
     """
+
     timestamp = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = _("result")
         verbose_name_plural = _("results")
-        ordering = ['votation', 'gemeinde']
+        ordering = ["votation", "gemeinde"]
 
 
 def input_json_result(gemeinde: Gemeinde, votation: "Votation", result_data: dict):
     """
     Creates a new Result and updates or creates the latest result for this votation.
     """
-    is_final = result_data['gebietAusgezaehlt']
+    is_final = result_data["gebietAusgezaehlt"]
 
     if not is_final:
         LatestResult.objects.update_or_create.create(gemeinde=gemeinde,
@@ -178,19 +189,17 @@ def input_json_result(gemeinde: Gemeinde, votation: "Votation", result_data: dic
 
     info_dict = dict(
         is_final=is_final,
-        yes_percent=result_data['jaStimmenInProzent'],
-        participation=result_data['stimmbeteiligungInProzent'],
-        yes_absolute=result_data['jaStimmenAbsolut'],
-        no_absolute=result_data['neinStimmenAbsolut'],
+        yes_percent=result_data["jaStimmenInProzent"],
+        participation=result_data["stimmbeteiligungInProzent"],
+        yes_absolute=result_data["jaStimmenAbsolut"],
+        no_absolute=result_data["neinStimmenAbsolut"],
     )
 
-    LatestResult.objects.update_or_create(
-        gemeinde=gemeinde,
-        votation=votation,
-        defaults=info_dict,
-    )
+    LatestResult.objects.update_or_create(gemeinde=gemeinde,
+                                          votation=votation,
+                                          defaults=info_dict)
 
-    gemeinde.voters = result_data['anzahlStimmberechtigte']
+    gemeinde.voters = result_data["anzahlStimmberechtigte"]
     gemeinde.save()
 
     Result.objects.create(gemeinde=gemeinde, votation=votation, **info_dict)

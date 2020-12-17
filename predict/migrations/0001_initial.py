@@ -8,10 +8,7 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        ("votes", "0001_initial"),
-        ("geo", "0001_initial"),
-    ]
+    dependencies = [("votes", "0001_initial"), ("geo", "0001_initial")]
 
     operations = [
         migrations.CreateModel(

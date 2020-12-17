@@ -17,7 +17,7 @@ class VotingModelAdmin(admin.ModelAdmin):
 
     actions = ["build_projection_matrix"]
 
-    filter_horizontal = ['model_votations']
+    filter_horizontal = ["model_votations"]
 
     def build_projection_matrix(self, request, queryset):
         """
@@ -25,7 +25,9 @@ class VotingModelAdmin(admin.ModelAdmin):
         """
         for model in queryset:
             model.build_projection_matrix()
-        self.message_user(request, _(f"built matrices for {len(queryset)} models"), messages.SUCCESS)
+        self.message_user(
+            request, _(f"built matrices for {len(queryset)} models"), messages.SUCCESS
+        )
 
     build_projection_matrix.short_description = _("build the projection matrices")
 
@@ -38,5 +40,5 @@ class ResultAdmin(admin.ModelAdmin):
 
     search_fields = ["gemeinde__name"]
 
-    list_filter = ['gemeinde__kanton', 'votation']
+    list_filter = ["gemeinde__kanton", "votation"]
     list_display = ["gemeinde", "timestamp", "votation", "yes_percent", "is_final"]

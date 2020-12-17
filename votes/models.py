@@ -75,75 +75,77 @@ class Votation(models.Model):
     def result_dict(self) -> dict:
         """Returns a dict with results for the votation"""
         final_results = self.latestresult_set.filter(is_final=True).aggregate(
-            yes=Coalesce(Sum('yes_absolute'), 0), no=Coalesce(Sum('no_absolute'), 0))
+            yes=Coalesce(Sum("yes_absolute"), 0), no=Coalesce(Sum("no_absolute"), 0))
 
         predicted_results = self.latestresult_set.filter(is_final=False).aggregate(
-            yes=Coalesce(Sum('yes_absolute'), 0), no=Coalesce(Sum('no_absolute'), 0))
+            yes=Coalesce(Sum("yes_absolute"), 0), no=Coalesce(Sum("no_absolute"), 0))
 
-        total_counted = final_results['yes'] + final_results['no']
-        total_predicted = predicted_results['yes'] + predicted_results['no']
+        total_counted = final_results["yes"] + final_results["no"]
+        total_predicted = predicted_results["yes"] + predicted_results["no"]
 
         return {
-            'yes_counted':
-                final_results['yes'],
-            'no_counted':
-                final_results['no'],
-            'total_counted':
+            "yes_counted":
+                final_results["yes"],
+            "no_counted":
+                final_results["no"],
+            "total_counted":
                 total_counted,
-            'yes_predicted':
-                predicted_results['yes'],
-            'no_predicted':
-                predicted_results['no'],
-            'total_predicted':
+            "yes_predicted":
+                predicted_results["yes"],
+            "no_predicted":
+                predicted_results["no"],
+            "total_predicted":
                 total_predicted + total_counted,
-            'yes_percent_predicted':
-                ((final_results['yes'] + predicted_results['yes']) /
+            "yes_percent_predicted":
+                ((final_results["yes"] + predicted_results["yes"]) /
                  (total_predicted+total_counted)) if
-                (final_results['yes'] or predicted_results['yes']) else 0,
-            'yes_percent_counted':
-                final_results['yes'] / total_counted,
-            'percent_counted':
-                total_counted / (total_counted+total_predicted) if total_counted else 0
+                (final_results["yes"] or predicted_results["yes"]) else 0,
+            "yes_percent_counted":
+                final_results["yes"] / total_counted,
+            "percent_counted":
+                total_counted / (total_counted+total_predicted) if total_counted else 0,
         }
 
     def result_cantons(self) -> dict:
         """
 
         """
-        queryset = self.latestresult_set.values('gemeinde__kanton_id').order_by()
+        queryset = self.latestresult_set.values("gemeinde__kanton_id").order_by()
 
-        total = annotate_cantons(queryset).annotate(name=F("gemeinde__kanton__name"),
-                                                    total=Count("gemeinde__geo_id"),
-                                                    total_votes=F("yes") + F("no"))
-        total = {x['geo_id']: x for x in total}
+        total = annotate_cantons(queryset).annotate(
+            name=F("gemeinde__kanton__name"),
+            total=Count("gemeinde__geo_id"),
+            total_votes=F("yes") + F("no"),
+        )
+        total = {x["geo_id"]: x for x in total}
 
         counted = annotate_cantons(
             queryset.filter(is_final=True)).annotate(total=Count("gemeinde__geo_id"))
 
-        counted = {x['geo_id']: x for x in counted}
+        counted = {x["geo_id"]: x for x in counted}
 
         predicted = annotate_cantons(
             queryset.filter(is_final=False)).annotate(total=Count("gemeinde__geo_id"))
 
-        predicted = {x['geo_id']: x for x in predicted}
+        predicted = {x["geo_id"]: x for x in predicted}
 
         for geo_id in total:
-            total[geo_id]['yes_counted'] = counted[geo_id]['yes']
-            total[geo_id]['no_counted'] = counted[geo_id]['no']
-            total[geo_id]['yes_percent_counted'] = counted[geo_id]['yes_percent']
+            total[geo_id]["yes_counted"] = counted[geo_id]["yes"]
+            total[geo_id]["no_counted"] = counted[geo_id]["no"]
+            total[geo_id]["yes_percent_counted"] = counted[geo_id]["yes_percent"]
 
-            total[geo_id]['counted'] = counted[geo_id]['total']
+            total[geo_id]["counted"] = counted[geo_id]["total"]
 
             if geo_id in predicted.keys():
-                total[geo_id]['yes_predicted'] = predicted[geo_id]['yes']
-                total[geo_id]['no_predicted'] = predicted[geo_id]['no']
-                total[geo_id]['predicted'] = predicted[geo_id]['total']
-                total[geo_id]['is_final'] = False
+                total[geo_id]["yes_predicted"] = predicted[geo_id]["yes"]
+                total[geo_id]["no_predicted"] = predicted[geo_id]["no"]
+                total[geo_id]["predicted"] = predicted[geo_id]["total"]
+                total[geo_id]["is_final"] = False
             else:
-                total[geo_id]['yes_predicted'] = 0
-                total[geo_id]['no_predicted'] = 0
-                total[geo_id]['predicted'] = 0
-                total[geo_id]['is_final'] = True
+                total[geo_id]["yes_predicted"] = 0
+                total[geo_id]["no_predicted"] = 0
+                total[geo_id]["predicted"] = 0
+                total[geo_id]["is_final"] = True
 
         return total
 
@@ -175,13 +177,10 @@ class Votation(models.Model):
         resultset. If a result is missing, a result with NaN values is created.
         """
         missing_gemeinden = gemeinden.exclude(
-            pk__in=self.latestresult_set.values('gemeinde'))
+            pk__in=self.latestresult_set.values("gemeinde"))
 
         for missing in list(missing_gemeinden):
-            LatestResult.objects.create(
-                gemeinde=missing,
-                votation=self,
-            )
+            LatestResult.objects.create(gemeinde=missing, votation=self)
 
     def get_result_vector(self, gemeinden=None) -> np.ndarray:
         """
@@ -191,22 +190,22 @@ class Votation(models.Model):
         `get_index_vector`.
         """
         if gemeinden is None:
-            return np.array(self.latestresult_set.all().values_list('yes_percent',
+            return np.array(self.latestresult_set.all().values_list("yes_percent",
                                                                     flat=True))
         return np.array(
             self.latestresult_set.filter(gemeinde__in=gemeinden).values_list(
-                'yes_percent', flat=True))
+                "yes_percent", flat=True))
 
     def get_participation_vector(self, gemeinden=None) -> np.ndarray:
         """
         Return a list of the latest participation results
         """
         if gemeinden is None:
-            return np.array(self.latestresult_set.all().values_list('participation',
+            return np.array(self.latestresult_set.all().values_list("participation",
                                                                     flat=True))
         return np.array(
             self.latestresult_set.filter(gemeinde__in=gemeinden).values_list(
-                'participation', flat=True))
+                "participation", flat=True))
 
     def get_index_vector(self, gemeinden=None) -> np.ndarray:
         """
@@ -214,10 +213,10 @@ class Votation(models.Model):
         false for the projected results.
         """
         if gemeinden is None:
-            return np.array(self.latestresult_set.all().values_list('is_final',
+            return np.array(self.latestresult_set.all().values_list("is_final",
                                                                     flat=True))
         return np.array(
-            self.latestresult_set.filter(gemeinde__in=gemeinden).values_list('is_final',
+            self.latestresult_set.filter(gemeinde__in=gemeinden).values_list("is_final",
                                                                              flat=True))
 
     class Meta:
@@ -239,7 +238,7 @@ class VotationTitle(models.Model):
         votation that this title belongs to.
         """
 
-    language_code = models.CharField(max_length=2, verbose_name=_("language code",))
+    language_code = models.CharField(max_length=2, verbose_name=_("language code"))
     title = models.CharField(max_length=280, verbose_name=_("title"))
     votation = models.ForeignKey(Votation, models.CASCADE, verbose_name=_("votation"))
 
@@ -262,15 +261,14 @@ def annotate_cantons(queryset: QuerySet) -> QuerySet:
     Cacluates the total yes and no votes and the yes percentage
     """
     return queryset.annotate(
-        geo_id=F('gemeinde__kanton_id'),
-        yes=Cast(Coalesce(Sum('yes_absolute'), 0), models.FloatField()),
-        no=Cast(Coalesce(Sum('no_absolute'), 0),
-                models.FloatField())).annotate(yes_percent=F('yes') /
-                                               (F('no') + F('yes')) * 100)
+        geo_id=F("gemeinde__kanton_id"),
+        yes=Cast(Coalesce(Sum("yes_absolute"), 0), models.FloatField()),
+        no=Cast(Coalesce(Sum("no_absolute"), 0), models.FloatField()),
+    ).annotate(yes_percent=F("yes") / (F("no") + F("yes")) * 100)
 
 
 def annotate_communes(queryset: QuerySet) -> QuerySet:
-    return queryset.annotate(geo_id=F('gemeinde_id'),
-                             name=F("gemeinde__name")).values('yes_percent', 'geo_id',
-                                                              'name', 'yes_absolute',
-                                                              'no_absolute')
+    return queryset.annotate(geo_id=F("gemeinde_id"),
+                             name=F("gemeinde__name")).values("yes_percent", "geo_id",
+                                                              "name", "yes_absolute",
+                                                              "no_absolute")

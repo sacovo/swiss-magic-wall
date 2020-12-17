@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
             ],
             options={
                 "ordering": ["geo_id"],
-                "abstract": False,
+                "abstract": False
             },
         ),
         migrations.CreateModel(
@@ -37,7 +37,7 @@ class Migration(migrations.Migration):
             ],
             options={
                 "ordering": ["geo_id"],
-                "abstract": False,
+                "abstract": False
             },
         ),
     ]

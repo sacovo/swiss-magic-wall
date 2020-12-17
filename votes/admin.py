@@ -25,7 +25,7 @@ class VotationDateAdmin(admin.ModelAdmin):
         self.message_user(
             request,
             _(f"started fetching for {len(queryset)} votation dates"),
-            messages.SUCCESS
+            messages.SUCCESS,
         )
 
     init_votations.short_description = _("init votations")
@@ -57,6 +57,6 @@ class VotationAdmin(admin.ModelAdmin):
 
     def model_based_on_selection(self, request, queryset):
         pk_query = "?model_votations=" + ",".join(
-            str(x) for x in queryset.values_list('id', flat=True))
+            str(x) for x in queryset.values_list("id", flat=True))
 
         return redirect(reverse("admin:predict_votingmodel_add") + pk_query)

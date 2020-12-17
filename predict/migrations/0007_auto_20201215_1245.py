@@ -6,33 +6,31 @@ import predict.models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('predict', '0006_auto_20201215_1243'),
-    ]
+    dependencies = [("predict", "0006_auto_20201215_1243")]
 
     operations = [
         migrations.AlterField(
-            model_name='latestresult',
-            name='participation',
+            model_name="latestresult",
+            name="participation",
             field=models.FloatField(default=predict.models.nan,
-                                    verbose_name='participation'),
+                                    verbose_name="participation"),
         ),
         migrations.AlterField(
-            model_name='latestresult',
-            name='yes_percent',
+            model_name="latestresult",
+            name="yes_percent",
             field=models.FloatField(default=predict.models.nan,
-                                    verbose_name='yes percent'),
+                                    verbose_name="yes percent"),
         ),
         migrations.AlterField(
-            model_name='result',
-            name='participation',
+            model_name="result",
+            name="participation",
             field=models.FloatField(default=predict.models.nan,
-                                    verbose_name='participation'),
+                                    verbose_name="participation"),
         ),
         migrations.AlterField(
-            model_name='result',
-            name='yes_percent',
+            model_name="result",
+            name="yes_percent",
             field=models.FloatField(default=predict.models.nan,
-                                    verbose_name='yes percent'),
+                                    verbose_name="yes percent"),
         ),
     ]

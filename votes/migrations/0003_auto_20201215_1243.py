@@ -8,93 +8,98 @@ import taggit.managers
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('taggit', '0003_taggeditem_add_unique_index'),
-        ('votes', '0002_votationdate_is_finished'),
+        ("taggit", "0003_taggeditem_add_unique_index"),
+        ("votes", "0002_votationdate_is_finished"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='votation',
+            name="votation",
             options={
-                'verbose_name': 'votation',
-                'verbose_name_plural': 'votations'
+                "verbose_name": "votation",
+                "verbose_name_plural": "votations"
             },
         ),
         migrations.AlterModelOptions(
-            name='votationdate',
+            name="votationdate",
             options={
-                'verbose_name': 'votating day',
-                'verbose_name_plural': 'voting days'
+                "verbose_name": "votating day",
+                "verbose_name_plural": "voting days",
             },
         ),
         migrations.AlterModelOptions(
-            name='votationtitle',
+            name="votationtitle",
             options={
-                'verbose_name': 'votation title',
-                'verbose_name_plural': 'votation titles'
+                "verbose_name": "votation title",
+                "verbose_name_plural": "votation titles",
             },
         ),
         migrations.AddField(
-            model_name='votation',
-            name='tags',
+            model_name="votation",
+            name="tags",
             field=taggit.managers.TaggableManager(
-                help_text='A comma-separated list of tags.',
-                through='taggit.TaggedItem',
-                to='taggit.Tag',
-                verbose_name='Tags'),
+                help_text="A comma-separated list of tags.",
+                through="taggit.TaggedItem",
+                to="taggit.Tag",
+                verbose_name="Tags",
+            ),
         ),
         migrations.AlterField(
-            model_name='votation',
-            name='date',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
-                                    to='votes.votationdate',
-                                    verbose_name='date'),
+            model_name="votation",
+            name="date",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to="votes.votationdate",
+                verbose_name="date",
+            ),
         ),
         migrations.AlterField(
-            model_name='votation',
-            name='is_accepted',
-            field=models.BooleanField(default=False, verbose_name='is accepted'),
+            model_name="votation",
+            name="is_accepted",
+            field=models.BooleanField(default=False, verbose_name="is accepted"),
         ),
         migrations.AlterField(
-            model_name='votation',
-            name='is_finished',
-            field=models.BooleanField(default=False, verbose_name='is finished'),
+            model_name="votation",
+            name="is_finished",
+            field=models.BooleanField(default=False, verbose_name="is finished"),
         ),
         migrations.AlterField(
-            model_name='votation',
-            name='needs_staende',
-            field=models.BooleanField(verbose_name='needs staende'),
+            model_name="votation",
+            name="needs_staende",
+            field=models.BooleanField(verbose_name="needs staende"),
         ),
         migrations.AlterField(
-            model_name='votationdate',
-            name='is_finished',
-            field=models.BooleanField(default=False, verbose_name='is finished'),
+            model_name="votationdate",
+            name="is_finished",
+            field=models.BooleanField(default=False, verbose_name="is finished"),
         ),
         migrations.AlterField(
-            model_name='votationdate',
-            name='json_url',
-            field=models.URLField(max_length=500, verbose_name='json url'),
+            model_name="votationdate",
+            name="json_url",
+            field=models.URLField(max_length=500, verbose_name="json url"),
         ),
         migrations.AlterField(
-            model_name='votationdate',
-            name='start_date',
-            field=models.DateTimeField(verbose_name='start date'),
+            model_name="votationdate",
+            name="start_date",
+            field=models.DateTimeField(verbose_name="start date"),
         ),
         migrations.AlterField(
-            model_name='votationtitle',
-            name='language_code',
-            field=models.CharField(max_length=2, verbose_name='language code'),
+            model_name="votationtitle",
+            name="language_code",
+            field=models.CharField(max_length=2, verbose_name="language code"),
         ),
         migrations.AlterField(
-            model_name='votationtitle',
-            name='title',
-            field=models.CharField(max_length=280, verbose_name='title'),
+            model_name="votationtitle",
+            name="title",
+            field=models.CharField(max_length=280, verbose_name="title"),
         ),
         migrations.AlterField(
-            model_name='votationtitle',
-            name='votation',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
-                                    to='votes.votation',
-                                    verbose_name='votation'),
+            model_name="votationtitle",
+            name="votation",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to="votes.votation",
+                verbose_name="votation",
+            ),
         ),
     ]

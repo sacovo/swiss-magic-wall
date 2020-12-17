@@ -83,7 +83,7 @@ def init_gemeinde(gemeinde_data: dict, kanton: Kanton, votation: Votation) -> Ge
         },
     )
 
-    input_json_result(gemeinde, votation, gemeinde_data['resultat'])
+    input_json_result(gemeinde, votation, gemeinde_data["resultat"])
 
     return gemeinde
 

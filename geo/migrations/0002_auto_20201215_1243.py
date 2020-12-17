@@ -6,40 +6,40 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('geo', '0001_initial'),
-    ]
+    dependencies = [("geo", "0001_initial")]
 
     operations = [
         migrations.AlterModelOptions(
-            name='gemeinde',
+            name="gemeinde",
             options={
-                'verbose_name': 'commune',
-                'verbose_name_plural': 'communes'
+                "verbose_name": "commune",
+                "verbose_name_plural": "communes"
             },
         ),
         migrations.AlterModelOptions(
-            name='kanton',
+            name="kanton",
             options={
-                'verbose_name': 'canton',
-                'verbose_name_plural': 'cantons'
+                "verbose_name": "canton",
+                "verbose_name_plural": "cantons"
             },
         ),
         migrations.AlterField(
-            model_name='gemeinde',
-            name='kanton',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
-                                    to='geo.kanton',
-                                    verbose_name='canton'),
+            model_name="gemeinde",
+            name="kanton",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to="geo.kanton",
+                verbose_name="canton",
+            ),
         ),
         migrations.AlterField(
-            model_name='gemeinde',
-            name='voters',
-            field=models.IntegerField(verbose_name='eligible voters'),
+            model_name="gemeinde",
+            name="voters",
+            field=models.IntegerField(verbose_name="eligible voters"),
         ),
         migrations.AlterField(
-            model_name='kanton',
-            name='standesstimme',
-            field=models.FloatField(default=1.0, verbose_name='standesstimme'),
+            model_name="kanton",
+            name="standesstimme",
+            field=models.FloatField(default=1.0, verbose_name="standesstimme"),
         ),
     ]
