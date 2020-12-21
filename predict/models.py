@@ -199,7 +199,7 @@ def input_json_result(gemeinde: Gemeinde, votation: "Votation", result_data: dic
     info_dict = dict(
         is_final=is_final,
         yes_percent=result_data["jaStimmenInProzent"],
-        participation=result_data["stimmbeteiligungInProzent"],
+        participation=result_data["stimmbeteiligungInProzent"] or 0,
         yes_absolute=result_data["jaStimmenAbsolut"],
         no_absolute=result_data["neinStimmenAbsolut"],
     )
@@ -208,8 +208,9 @@ def input_json_result(gemeinde: Gemeinde, votation: "Votation", result_data: dic
                                           votation=votation,
                                           defaults=info_dict)
 
-    gemeinde.voters = result_data["anzahlStimmberechtigte"]
-    gemeinde.save()
+    if result_data["anzahlStimmberechtigte"]:
+        gemeinde.voters = result_data["anzahlStimmberechtigte"]
+        gemeinde.save()
 
     Result.objects.create(gemeinde=gemeinde,
                           votation=votation,
