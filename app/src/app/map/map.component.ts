@@ -82,7 +82,7 @@ export class MapComponent implements OnInit {
   }
 
   loadTopoJson(): void {
-    d3.json('/assets/switzerland.json').then((json) => {
+    d3.json('/switzerland.json').then((json) => {
       this.topoJson = json as Topology
       this.drawMap()
     })
@@ -233,6 +233,6 @@ export class MapComponent implements OnInit {
   }
 
   cantonImage(): string | undefined {
-    return `/assets/cantons/${this.cantonId}.svg`
+    return `/cantons/${this.cantonId}.svg`
   }
 }

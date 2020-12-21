@@ -28,7 +28,6 @@ export class VotationDatesComponent implements OnInit {
     this.votationDateService.getVotationDates().subscribe((votationDates) => {
       this.votationDates = votationDates
       const id = this.route.snapshot.paramMap.get('id');
-      console.log(id);
       if (id) {
         this.selectDate(+id);
       } else {

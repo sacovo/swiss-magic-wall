@@ -1,0 +1,10 @@
+{
+  "/api": {
+    "target": "http://web:8000",
+    "secure": false
+  },
+  "/admin": {
+    "target": "http://web:8000",
+    "secure": false
+  }
+}
