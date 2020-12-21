@@ -1,3 +1,4 @@
+from unittest.case import skip
 from django.test import TestCase
 import numpy as np
 
@@ -13,8 +14,7 @@ class BuildVotationMatrixTest(TestCase):
     Download past votation results and build a matrix from it.
     """
 
-    fixtures = ["test_data.json"]
-
+    @skip
     def test_building_matrix(self):
         """
         Create the votations and fetch the results for them
