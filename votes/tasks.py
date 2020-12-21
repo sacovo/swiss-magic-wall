@@ -8,7 +8,7 @@ import requests
 
 from geo.models import Gemeinde, Kanton
 from votes.models import Votation, VotationTitle, VotationDate
-from predict.models import input_json_result
+from predict.models import input_json_result, Timestamp
 
 
 def fetch_json_from(url) -> dict:
@@ -62,16 +62,18 @@ def init_kanton(kanton_data: dict) -> Kanton:
     return kanton
 
 
-def init_kantone(kanton_iterator: Iterable[dict], votation: Votation):
+def init_kantone(kanton_iterator: Iterable[dict], votation: Votation,
+                 timestamp: Timestamp):
     """Iterates over the kantone that and creates them and their gemeinden"""
 
     for kanton_data in kanton_iterator:
         kanton: Kanton = init_kanton(kanton_data)
 
-        init_gemeinden(iterate_gemeinden(kanton_data), kanton, votation)
+        init_gemeinden(iterate_gemeinden(kanton_data), kanton, votation, timestamp)
 
 
-def init_gemeinde(gemeinde_data: dict, kanton: Kanton, votation: Votation) -> Gemeinde:
+def init_gemeinde(gemeinde_data: dict, kanton: Kanton, votation: Votation,
+                  timestamp: Timestamp) -> Gemeinde:
     """Create a single gemeinde if not already present"""
 
     gemeinde, _ = Gemeinde.objects.get_or_create(
@@ -83,15 +85,16 @@ def init_gemeinde(gemeinde_data: dict, kanton: Kanton, votation: Votation) -> Ge
         },
     )
 
-    input_json_result(gemeinde, votation, gemeinde_data["resultat"])
+    input_json_result(gemeinde, votation, gemeinde_data["resultat"], timestamp)
 
     return gemeinde
 
 
-def init_gemeinden(gemeinde_iterator: Iterable[dict], kanton: Kanton, votation: Votation):
+def init_gemeinden(gemeinde_iterator: Iterable[dict], kanton: Kanton, votation: Votation,
+                   timestamp: Timestamp):
     """For every gemeinde in the iterator call the gemeinde init"""
     for gemeinde_data in gemeinde_iterator:
-        init_gemeinde(gemeinde_data, kanton, votation)
+        init_gemeinde(gemeinde_data, kanton, votation, timestamp)
 
 
 @shared_task
@@ -103,10 +106,11 @@ def init_votations(votation_date_pk: int):
         - Sets the amount of eligible if present for any votation
     """
     votation_date = VotationDate.objects.get(pk=votation_date_pk)
+    timestamp = Timestamp.objects.create()
 
     data = fetch_json_from(votation_date.json_url)
     votation_list = iterate_votations(data)
 
     for votation_data in votation_list:
         votation = init_votation(votation_data, votation_date)
-        init_kantone(iterate_kantone(votation_data), votation)
+        init_kantone(iterate_kantone(votation_data), votation, timestamp)

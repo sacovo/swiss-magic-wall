@@ -15,9 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf.urls.static import static
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("geo/", include("geo.urls")),
-    path("", include("votes.urls")),
-]
+    path("api/", include("api.urls")),
+] + static("/", document_root="app/dist/app/")

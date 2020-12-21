@@ -1,0 +1,72 @@
+<mat-drawer-container class="example-container" hasBackdrop="false">
+  <mat-drawer opened mode="over">
+    <div class="votation-info">
+      <h2>Schweiz</h2>
+      <ngx-charts-bar-vertical-stacked
+        *ngIf="colorScheme && results"
+        [view]="[200, 200]"
+        [results]="results"
+        [gradient]="false"
+        [xAxis]="true"
+        [yAxis]="false"
+        [legend]="false"
+        [showXAxisLabel]="false"
+        [showYAxisLabel]="false"
+        xAxisLabel="Stimmen"
+      >
+      </ngx-charts-bar-vertical-stacked>
+    </div>
+
+    <div *ngIf="selectedCantonId" class="votation-info">
+      <h2>
+        {{selectedCantonName}}
+        <mat-icon *ngIf="cantonCounted">verified</mat-icon>
+      </h2>
+      <ngx-charts-bar-vertical-stacked
+        *ngIf="colorScheme && results"
+        [view]="[200, 200]"
+        [results]="cantonResults"
+        [gradient]="false"
+        [xAxis]="true"
+        [yAxis]="false"
+        [legend]="false"
+        [showXAxisLabel]="false"
+        [showYAxisLabel]="false"
+        xAxisLabel="Stimmen"
+      >
+      </ngx-charts-bar-vertical-stacked>
+    </div>
+
+    <div *ngIf="selectedCommuneId" class="votation-info">
+      <h2>
+        {{selectedCommuneName}}
+        <mat-icon *ngIf="communeCounted">verified</mat-icon>
+      </h2>
+      <ngx-charts-pie-chart
+        *ngIf="colorScheme && results"
+        [view]="[200, 200]"
+        [results]="communeResults"
+        [gradient]="false"
+        [legend]="false"
+        label="true"
+        xAxisLabel="Stimmen"
+      >
+      </ngx-charts-pie-chart>
+    </div>
+  </mat-drawer>
+  <mat-drawer-content>
+    <app-map
+      (cantonSelect)="cantonEvent($event)"
+      (communeSelect)="communeEvent($event)"
+      (mapUpdated)="redrawMap($event)"
+    ></app-map>
+    <h1 *ngIf="votation" class="votation-title">{{getTitle()}}</h1>
+    <a
+      class="back"
+      *ngIf="votation"
+      [routerLink]="['/date', votation.date_id]"
+      mat-flat-button
+      >Zurück</a
+    >
+  </mat-drawer-content>
+</mat-drawer-container>

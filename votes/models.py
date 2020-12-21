@@ -40,6 +40,7 @@ class VotationDate(models.Model):
     class Meta:
         verbose_name = _("votating day")
         verbose_name_plural = _("voting days")
+        ordering = ['-start_date']
 
 
 class Votation(models.Model):
@@ -112,11 +113,7 @@ class Votation(models.Model):
         """
         queryset = self.latestresult_set.values("gemeinde__kanton_id").order_by()
 
-        total = annotate_cantons(queryset).annotate(
-            name=F("gemeinde__kanton__name"),
-            total=Count("gemeinde__geo_id"),
-            total_votes=F("yes") + F("no"),
-        )
+        total = annotate_cantons(queryset)
         total = {x["geo_id"]: x for x in total}
 
         counted = annotate_cantons(
@@ -132,19 +129,14 @@ class Votation(models.Model):
         for geo_id in total:
             total[geo_id]["yes_counted"] = counted[geo_id]["yes"]
             total[geo_id]["no_counted"] = counted[geo_id]["no"]
-            total[geo_id]["yes_percent_counted"] = counted[geo_id]["yes_percent"]
-
-            total[geo_id]["counted"] = counted[geo_id]["total"]
 
             if geo_id in predicted.keys():
                 total[geo_id]["yes_predicted"] = predicted[geo_id]["yes"]
                 total[geo_id]["no_predicted"] = predicted[geo_id]["no"]
-                total[geo_id]["predicted"] = predicted[geo_id]["total"]
                 total[geo_id]["is_final"] = False
             else:
                 total[geo_id]["yes_predicted"] = 0
                 total[geo_id]["no_predicted"] = 0
-                total[geo_id]["predicted"] = 0
                 total[geo_id]["is_final"] = True
 
         return total
@@ -160,11 +152,11 @@ class Votation(models.Model):
 
     def __str__(self):
         language_code: str = get_language()
-        translation = self.votationtitle_set.filter(language_code=language_code)
+        translation = self.titles.filter(language_code=language_code)
 
         if bool(translation):
             return translation[0].title
-        translations = self.votationtitle_set.all()
+        translations = self.titles.all()
 
         if bool(translations):
             return translations[0].title
@@ -240,7 +232,7 @@ class VotationTitle(models.Model):
 
     language_code = models.CharField(max_length=2, verbose_name=_("language code"))
     title = models.CharField(max_length=280, verbose_name=_("title"))
-    votation = models.ForeignKey(Votation, models.CASCADE, verbose_name=_("votation"))
+    votation = models.ForeignKey(Votation, models.CASCADE, verbose_name=_("votation"), related_name='titles')
 
     class Meta:
         constraints = [
@@ -264,7 +256,7 @@ def annotate_cantons(queryset: QuerySet) -> QuerySet:
         geo_id=F("gemeinde__kanton_id"),
         yes=Cast(Coalesce(Sum("yes_absolute"), 0), models.FloatField()),
         no=Cast(Coalesce(Sum("no_absolute"), 0), models.FloatField()),
-    ).annotate(yes_percent=F("yes") / (F("no") + F("yes")) * 100)
+    )
 
 
 def annotate_communes(queryset: QuerySet) -> QuerySet:

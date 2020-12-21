@@ -1,0 +1,65 @@
+.charts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  .overview {
+    grid-column: 1 / span 2;
+  }
+}
+
+mat-card-content {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+:host ::ng-deep {
+  /* Inline #9 | http://127.0.0.1:4200/ */
+
+  .advanced-pie-legend .total-value {
+    /* font-size: 36px; */
+    font-size: 21px;
+  }
+
+  .advanced-pie-legend .total-label {
+    /* font-size: 24px; */
+    /* margin-bottom: 19px; */
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+
+  .advanced-pie-legend
+    .legend-items-container
+    .legend-items
+    .legend-item
+    .item-value {
+    margin-top: 0px;
+  }
+
+  .advanced-pie-legend
+    .legend-items-container
+    .legend-items
+    .legend-item
+    .item-label {
+    margin-top: 0px;
+  }
+
+  /* Inline #9 | http://127.0.0.1:4200/ */
+
+  .advanced-pie-legend
+    .legend-items-container
+    .legend-items
+    .legend-item
+    .item-percent {
+    /* font-size: 24px; */
+    font-size: 16px;
+  }
+
+  .advanced-pie-legend
+    .legend-items-container
+    .legend-items
+    .legend-item
+    .item-label {
+    /* font-size: 14px; */
+    font-size: 12px;
+  }
+}

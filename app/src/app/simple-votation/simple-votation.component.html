@@ -1,0 +1,33 @@
+<mat-card>
+  <mat-card-title>
+    <a [routerLink]="['/votation', votation.id]">{{title()}}</a>
+  </mat-card-title>
+  <mat-card-content>
+    <div class="charts">
+      <ngx-charts-advanced-pie-chart
+        [view]="[380,200]"
+        [results]="counted"
+        [gradient]="gradient"
+        [animations]="false"
+        [label]="'Ausgezählt'"
+      ></ngx-charts-advanced-pie-chart>
+      <ngx-charts-advanced-pie-chart
+        *ngIf="!votation.is_finished"
+        [view]="[380,200]"
+        [results]="prediction"
+        [gradient]="gradient"
+        [animations]="false"
+        [label]="'Prognose'"
+      ></ngx-charts-advanced-pie-chart>
+      <ngx-charts-advanced-pie-chart
+        *ngIf="!votation.is_finished"
+        class="overview"
+        [view]="[760,200]"
+        [results]="results"
+        [gradient]="gradient"
+        [animations]="false"
+      >
+      </ngx-charts-advanced-pie-chart>
+    </div>
+  </mat-card-content>
+</mat-card>

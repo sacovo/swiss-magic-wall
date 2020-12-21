@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 
 services:
   web:
@@ -12,6 +12,17 @@ services:
       - ./.env.dev
     environment:
       - APPLY_MIGRATIONS="yes"
+
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+      target: app
+
+    volumes:
+      - ./app/:/app
+    ports:
+      - 4200:4200
 
   cache:
     image: memcached:alpine

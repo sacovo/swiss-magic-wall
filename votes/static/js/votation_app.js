@@ -10,6 +10,7 @@ const Info = {
       commune_active: false,
     };
   },
+
   methods: {
     selectCanton(canton_id) {
       this.canton_id = canton_id;
@@ -38,7 +39,11 @@ const Info = {
 
     stylePercent(p) {
       return numeral(p).format('0.0');
-    }
+    },
+
+    percentOfTotal(value) {
+      return value / this.getCanton().total_votes * 100;
+    },
 
   },
 
@@ -60,23 +65,24 @@ const Info = {
     commune() {
       return this.commune_json[this.commune_id];
     },
+
     canton_yes_c() {
-      let canton = this.getCanton();
-      return canton.yes_counted / canton.total_votes * 100 ;
+      return this.percentOfTotal(this.getCanton().yes_counted);
     },
+
     canton_yes_p() {
-      let canton = this.getCanton();
-      return canton.yes_predicted / canton.total_votes * 100 ;
+      return this.percentOfTotal(this.getCanton()yes_predicted);
     },
+
     canton_no_p() {
-      let canton = this.getCanton();
-      return canton.no_predicted / canton.total_votes * 100 ;
+      return this.percentOfTotal(this.getCanton().no_predicted);
 
     },
+
     canton_no_c() {
-      let canton = this.getCanton();
-      return canton.no_counted / canton.total_votes * 100 ;
+      return this.percentOfTotal(this.getCanton().no_counted);
     },
+
     commune_yes() {
       return this.commune_json[this.yes_percent] ;
 
@@ -93,7 +99,6 @@ window.addEventListener('load', (event) => {
   const vm = Vue.createApp(Info).mount('#cantonInfo')
 
   let votationMaps = document.getElementsByClassName('VotationMap');
-  console.log("Hello");
 
   for (var i = 0; i < votationMaps.length; i++) {
     let map = d3.select(votationMaps[i]);

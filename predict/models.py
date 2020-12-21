@@ -2,6 +2,7 @@
 This module defines the models to store results to elections or referenda
 """
 
+from django.utils import timezone
 import numpy as np
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -96,6 +97,13 @@ class VotingModel(models.Model):
         verbose_name_plural = _("voting models")
 
 
+class Timestamp(models.Model):
+    t = models.DateTimeField(auto_now_add=True, primary_key=True)
+
+    class Meta:
+        ordering = ['-t']
+
+
 class AbstractResult(models.Model):
     """
     Represents a result of an election, could be final or a temporary projection
@@ -167,7 +175,7 @@ class Result(AbstractResult):
     Not unique for every combination, used to store the timeseries
     """
 
-    timestamp = models.DateTimeField(auto_now_add=True)
+    timestamp = models.ForeignKey(Timestamp, models.CASCADE)
 
     class Meta:
         verbose_name = _("result")
@@ -175,7 +183,8 @@ class Result(AbstractResult):
         ordering = ["votation", "gemeinde"]
 
 
-def input_json_result(gemeinde: Gemeinde, votation: "Votation", result_data: dict):
+def input_json_result(gemeinde: Gemeinde, votation: "Votation", result_data: dict,
+                      timestamp: Timestamp):
     """
     Creates a new Result and updates or creates the latest result for this votation.
     """
@@ -202,4 +211,7 @@ def input_json_result(gemeinde: Gemeinde, votation: "Votation", result_data: dic
     gemeinde.voters = result_data["anzahlStimmberechtigte"]
     gemeinde.save()
 
-    Result.objects.create(gemeinde=gemeinde, votation=votation, **info_dict)
+    Result.objects.create(gemeinde=gemeinde,
+                          votation=votation,
+                          timestamp=timestamp,
+                          **info_dict)

@@ -21,5 +21,6 @@ env
 logs
 media/
 static/
+app/
 stats
 Dockerfile

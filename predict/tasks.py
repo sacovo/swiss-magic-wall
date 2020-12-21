@@ -7,7 +7,7 @@ from django.utils import timezone
 from geo.models import Gemeinde
 from votes.models import Votation, VotationDate
 
-from predict.models import input_json_result, VotingModel, Result, LatestResult
+from predict.models import input_json_result, VotingModel, Result, LatestResult, Timestamp
 from predict.utils import prediction
 from votes.tasks import (
     fetch_json_from,
@@ -17,7 +17,7 @@ from votes.tasks import (
 )
 
 
-def update_results(data: dict) -> bool:
+def update_results(data: dict, timestamp: Timestamp) -> bool:
     """
     Iterates over the votations in the data list,
     returns true if the votations are all finished and the
@@ -32,14 +32,14 @@ def update_results(data: dict) -> bool:
 
         for kanton_data in iterate_kantone(votation_data):
             for gemeinde_data in iterate_gemeinden(kanton_data):
-                update_gemeinde(gemeinde_data, votation)
+                update_gemeinde(gemeinde_data, votation, timestamp)
         calculate_projection.delay(votation.pk)
 
     return all_finished
 
 
 @shared_task
-def calculate_projection(votation_pk: int):
+def calculate_projection(votation_pk: int, timestamp: Timestamp):
     """
     Uses the results we already have and calculates the new results
     """
@@ -78,6 +78,7 @@ def calculate_projection(votation_pk: int):
                 no_absolute=latest_result.no_absolute,
                 votation=votation,
                 gemeinde=latest_result.gemeinde,
+                timestamp=timestamp,
                 is_final=False,
             ))
 
@@ -98,13 +99,13 @@ def update_votation(data: dict) -> Votation:
     return votation
 
 
-def update_gemeinde(data: dict, votation: Votation):
+def update_gemeinde(data: dict, votation: Votation, timestamp: Timestamp):
     """
     Create a new result for the given gemeinde and votation if
     the count in this votation is finished.
     """
     gemeinde = Gemeinde.objects.get(geo_id=data["geoLevelnummer"])
-    input_json_result(gemeinde, votation, data["resltat"])
+    input_json_result(gemeinde, votation, data["resltat"], timestamp)
 
 
 @shared_task
@@ -114,8 +115,10 @@ def check_running_counts():
     """
     active_votation_dates = VotationDate.objects.filter(start_date__lte=timezone.now(),
                                                         is_finished=False)
+    if active_votation_dates.exists():
+        timestamp = Timestamp.objects.create()
 
-    for active_votation_date in active_votation_dates:
-        active_votation_date.is_finished = update_results(
-            fetch_json_from(active_votation_date.json_url))
-        active_votation_date.save()
+        for active_votation_date in active_votation_dates:
+            active_votation_date.is_finished = update_results(
+                fetch_json_from(active_votation_date.json_url), timestamp)
+            active_votation_date.save()
