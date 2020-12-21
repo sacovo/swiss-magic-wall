@@ -81,7 +81,7 @@ def init_gemeinde(gemeinde_data: dict, kanton: Kanton, votation: Votation,
         defaults={
             "name": gemeinde_data["geoLevelname"],
             "kanton": kanton,
-            "voters": gemeinde_data["resultat"].get("anzahlStimmberechtigte", 0),
+            "voters": gemeinde_data["resultat"].get("anzahlStimmberechtigte", 0) or 0,
         },
     )
 
