@@ -16,7 +16,7 @@ RUN ng build app --configuration=production
 
 FROM nginx:alpine
 
-COPY --from=builder /app/dist/app/* /usr/share/nginx/html/
+COPY --from=builder /app/dist/app/ /usr/share/nginx/html/
 
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY nginx.conf /usr/local/nginx/conf/nginx.conf

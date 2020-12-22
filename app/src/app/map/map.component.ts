@@ -1,4 +1,10 @@
-import { Component, EventEmitter, HostListener, OnInit, Output } from '@angular/core'
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  OnInit,
+  Output,
+} from '@angular/core'
 import * as topojson from 'topojson-client'
 import { Topology } from 'topojson-specification'
 import * as d3 from 'd3'
@@ -36,9 +42,9 @@ export class MapComponent implements OnInit {
   private path: any
 
   private zoom = d3
-      .zoom()
-      .scaleExtent([0.8, 8])
-      .on('zoom', (event) => this.zoomed(event))
+    .zoom()
+    .scaleExtent([0.8, 8])
+    .on('zoom', (event) => this.zoomed(event))
   private width = 0
   private height = 0
   private topoJson: any
@@ -46,7 +52,7 @@ export class MapComponent implements OnInit {
   private colorScale: ScaleLinear<string, number, never>
   private g?: any
 
-  private cantonId: number = 0;
+  private cantonId: number = 0
 
   @Output() mapUpdated = new EventEmitter()
   @Output() cantonSelect = new EventEmitter()
@@ -82,15 +88,15 @@ export class MapComponent implements OnInit {
   }
 
   loadTopoJson(): void {
-    d3.json('/switzerland.json').then((json) => {
+    d3.json('/assets/switzerland.json').then((json) => {
       this.topoJson = json as Topology
       this.drawMap()
     })
   }
 
-  @HostListener("window:resize", ['$event'])
+  @HostListener('window:resize', ['$event'])
   onResize(event: any) {
-    this.drawMap();
+    this.drawMap()
   }
 
   drawMap() {
@@ -106,9 +112,9 @@ export class MapComponent implements OnInit {
     this.path = d3.geoPath(getProjection(this.width, this.topoJson))
 
     const root = d3.select('#map')
-    root.html("");
+    root.html('')
 
-    let latestTap = 0;
+    let latestTap = 0
 
     this.svg = root
       .append('svg')
@@ -118,11 +124,11 @@ export class MapComponent implements OnInit {
       .attr('preserveAspectRatio', 'xMinYMin meet')
       .attr('version', '1.1')
       .on('dblclick', () => this.reset())
-      .on("touchstart", (event: any) => {
+      .on('touchstart', (event: any) => {
         const timeSince = event.timeStamp - latestTap
         if (timeSince < 800) {
-          event.preventDefault();
-          this.reset();
+          event.preventDefault()
+          this.reset()
         }
         latestTap = event.timeStamp
       })
@@ -147,8 +153,8 @@ export class MapComponent implements OnInit {
         this.selectCaton(obj)
         d3.pointer(event, this.svg.node())
       }
-    );
-    this.mapUpdated.emit();
+    )
+    this.mapUpdated.emit()
   }
 
   createMap(): void {
@@ -157,7 +163,7 @@ export class MapComponent implements OnInit {
 
   reset() {
     this.g.selectAll(`.kanton`).attr('data-active', 'false')
-    this.cantonId = 0;
+    this.cantonId = 0
     this.cantonSelect.emit(null)
 
     this.svg
@@ -201,16 +207,15 @@ export class MapComponent implements OnInit {
           )
           .translate(-(x0 + x1) / 2, -(y0 + y1) / 2)
       )
-      this.cantonId = obj.properties.id;
+    this.cantonId = obj.properties.id
   }
 
   updateObject(geoId: number, type: string, result: number): void {
     if (this.svg) {
       this.svg
-      .select(`#${type}_${geoId}`)
-      .attr('fill', this.colorScale(result))
-      .attr('title', result)
-
+        .select(`#${type}_${geoId}`)
+        .attr('fill', this.colorScale(result))
+        .attr('title', result)
     }
   }
 
@@ -233,6 +238,6 @@ export class MapComponent implements OnInit {
   }
 
   cantonImage(): string | undefined {
-    return `/cantons/${this.cantonId}.svg`
+    return `/assets/cantons/${this.cantonId}.svg`
   }
 }
