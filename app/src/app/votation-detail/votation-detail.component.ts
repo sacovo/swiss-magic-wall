@@ -1,4 +1,10 @@
-import { ApplicationRef, Component, OnInit, ViewChild } from '@angular/core'
+import {
+  ApplicationRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core'
 import { Title } from '@angular/platform-browser'
 import { Router, ActivatedRoute } from '@angular/router'
 import { MapComponent } from '../map/map.component'
@@ -10,7 +16,7 @@ import { VotationService } from '../votation.service'
   templateUrl: './votation-detail.component.html',
   styleUrls: ['./votation-detail.component.less'],
 })
-export class VotationDetailComponent implements OnInit {
+export class VotationDetailComponent implements OnInit, OnDestroy {
   votation!: Votation
   interval: number | undefined
 
@@ -18,7 +24,7 @@ export class VotationDetailComponent implements OnInit {
   selectedCantonName: string = ''
   selectedCommuneId: number | null = null
   selectedCommuneName: string = ''
-  index: any = {};
+  index: any = {}
   cantonCounted: boolean = false
   communeCounted: boolean = false
 
@@ -41,9 +47,8 @@ export class VotationDetailComponent implements OnInit {
   ) {}
 
   buildIndex() {
-
-    for(let i = 0; i < this.votation.communes.length; i++) {
-      this.index[`${this.votation.communes[i].geo_id}`] = i;
+    for (let i = 0; i < this.votation.communes.length; i++) {
+      this.index[`${this.votation.communes[i].geo_id}`] = i
     }
   }
 
@@ -52,8 +57,8 @@ export class VotationDetailComponent implements OnInit {
     if (votationId) {
       this.votationService.getVotation(votationId).subscribe((votation) => {
         this.votation = votation
-        this.updateResults();
-        this.buildIndex();
+        this.updateResults()
+        this.buildIndex()
         this.map.updateCantons(votation.cantons)
         this.map.updateCommunes(votation.communes)
         this.titleService.setTitle(
@@ -66,13 +71,19 @@ export class VotationDetailComponent implements OnInit {
     }
   }
 
+  ngOnDestroy(): void {
+    if (this.interval) {
+      clearInterval(this.interval)
+    }
+  }
+
   reloadVotation(): void {
     if (this.votation) {
       this.votationService
         .getVotation(this.votation.id)
         .subscribe((votation) => {
           Object.assign(this.votation, votation)
-          this.updateResults();
+          this.updateResults()
           this.redrawMap()
           if (votation.is_finished) {
             clearInterval(this.interval)
@@ -84,52 +95,70 @@ export class VotationDetailComponent implements OnInit {
   updateResults() {
     if (this.votation) {
       this.results = [
-        {name: "Gezählt", series: [
-          {name: "JA", value: this.votation.yes_counted },
-          {name: "NEIN", value:  this.votation.no_counted },
-        ]},
-        {name: "Prognose", series: [
-          {name: "JA", value: this.votation.yes_counted + this.votation.yes_predicted},
-          {name: "NEIN", value: this.votation.no_counted + this.votation.no_predicted},
-        ]},
+        {
+          name: 'Gezählt',
+          series: [
+            { name: 'JA', value: this.votation.yes_counted },
+            { name: 'NEIN', value: this.votation.no_counted },
+          ],
+        },
+        {
+          name: 'Prognose',
+          series: [
+            {
+              name: 'JA',
+              value: this.votation.yes_counted + this.votation.yes_predicted,
+            },
+            {
+              name: 'NEIN',
+              value: this.votation.no_counted + this.votation.no_predicted,
+            },
+          ],
+        },
       ]
 
-      this.updateCantonalResults();
-      this.updateCommuneResults();
+      this.updateCantonalResults()
+      this.updateCommuneResults()
     }
   }
 
   updateCantonalResults() {
-    if(this.votation && this.selectedCantonId){
-      const result = this.votation.cantons.find((result) => result.geo_id == this.selectedCantonId)
+    if (this.votation && this.selectedCantonId) {
+      const result = this.votation.cantons.find(
+        (result) => result.geo_id == this.selectedCantonId
+      )
       if (result) {
         this.cantonResults = [
-          {name: "Gezählt", series: [
-            {name: "JA", value: result.yes_total - result.yes_predicted},
-            {name: "NEIN", value:  result.no_total - result.no_predicted },
-          ]},
-          {name: "Prognose", series: [
-            {name: "JA", value: result.yes_total},
-            {name: "NEIN", value: result.no_total},
-          ]},
+          {
+            name: 'Gezählt',
+            series: [
+              { name: 'JA', value: result.yes_total - result.yes_predicted },
+              { name: 'NEIN', value: result.no_total - result.no_predicted },
+            ],
+          },
+          {
+            name: 'Prognose',
+            series: [
+              { name: 'JA', value: result.yes_total },
+              { name: 'NEIN', value: result.no_total },
+            ],
+          },
         ]
-        this.cantonCounted = result.is_final;
+        this.cantonCounted = result.is_final
       }
-
     }
   }
 
-
   updateCommuneResults() {
-    if(this.votation && this.selectedCommuneId){
-      const index = this.index[`${this.selectedCommuneId}`];
+    if (this.votation && this.selectedCommuneId) {
+      const index = this.index[`${this.selectedCommuneId}`]
       if (index >= 0) {
         const result = this.votation.communes[index]
         this.communeResults = [
-          {name: "Nein", value: result.no_total},
-          {name: "Ja", value: result.yes_total},
+          { name: 'Nein', value: result.no_total },
+          { name: 'Ja', value: result.yes_total },
         ]
-        this.communeCounted = result.is_final;
+        this.communeCounted = result.is_final
       }
     }
   }
@@ -142,7 +171,7 @@ export class VotationDetailComponent implements OnInit {
   }
 
   communeEvent(event: any): void {
-    this.selectCommune(+event.properties.id, event.properties.name)
+    this.selectCommune(+event.properties.vogenr, event.properties.vogename)
   }
 
   redrawMap(event?: any): void {
@@ -155,13 +184,13 @@ export class VotationDetailComponent implements OnInit {
   selectCanton(id: number, name: string) {
     this.selectedCantonId = id
     this.selectedCantonName = name
-    this.updateCantonalResults();
+    this.updateCantonalResults()
   }
 
   selectCommune(id: number, name: string) {
     this.selectedCommuneId = id
     this.selectedCommuneName = name
-    this.updateCommuneResults();
+    this.updateCommuneResults()
   }
 
   deselectCanton() {
@@ -174,7 +203,6 @@ export class VotationDetailComponent implements OnInit {
     this.selectedCommuneId = null
     this.selectedCommuneName = ''
   }
-
 
   getSelectCantonResult(): CantonResult | undefined {
     const result = this.votation?.cantons.find(

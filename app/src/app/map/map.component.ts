@@ -78,6 +78,9 @@ export class MapComponent implements OnInit {
       .append('path')
       .attr('cursor', clicked ? 'pointer' : 'default')
       .attr('id', function (d: any) {
+        if (d.properties.vogenr) {
+          return `${cssClass}_${d.properties.vogenr}`
+        }
         return `${cssClass}_${d.properties.id}`
       })
       .attr('class', cssClass)
@@ -137,7 +140,7 @@ export class MapComponent implements OnInit {
     this.svg.call(this.zoom).on('dblclick.zoom', null)
 
     this.appendFeatures(
-      topojson.feature(this.topoJson, this.topoJson.objects.K4voge_20200101_gf),
+      topojson.feature(this.topoJson, this.topoJson.objects.K4voge_20201018_gf),
       'commune',
       (event: any, obj: any) => this.communeSelect.emit(obj)
     )

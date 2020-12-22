@@ -1,5 +1,12 @@
 import { formatDate } from '@angular/common'
-import { Component, Input, OnInit, SimpleChanges } from '@angular/core'
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core'
 import { Title } from '@angular/platform-browser'
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router'
 import { VotationDate } from '../votation'
@@ -10,7 +17,8 @@ import { VotationDateService } from '../votation-date.service'
   templateUrl: './votation-date-detail.component.html',
   styleUrls: ['./votation-date-detail.component.less'],
 })
-export class VotationDateDetailComponent implements OnInit {
+export class VotationDateDetailComponent
+  implements OnInit, OnDestroy, OnChanges {
   @Input() dateId!: number
 
   date?: VotationDate
@@ -28,7 +36,6 @@ export class VotationDateDetailComponent implements OnInit {
         .getVotationDate(this.dateId)
         .subscribe((date: VotationDate) => {
           this.date = date
-          const start = new Date(date.start_date)
 
           this.title.setTitle(
             formatDate(date.start_date, 'YYYY-MM-dd', 'en-US')
@@ -42,6 +49,12 @@ export class VotationDateDetailComponent implements OnInit {
             this.updateVotationDates()
           }, 5000)
         })
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.interval) {
+      window.clearInterval(this.interval)
     }
   }
 

@@ -8,7 +8,7 @@ RUN npm install
 
 COPY ./ /app/
 
-CMD ["npm", "start", "--", "--host", "0.0.0.0", "--poll", "50"]
+CMD ["npm", "start", "--", "--host", "0.0.0.0", "--poll", "50", "--disable-host-check"]
 
 FROM app as builder
 
