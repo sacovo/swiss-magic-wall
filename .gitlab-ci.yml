@@ -81,6 +81,5 @@ docker-build-app:
   before_script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   script:
-    - docker pull $CI_REGISTRY_IMAGE:ngx || true
-    - docker build --pull --cache-from "$CI_REGISTRY_IMAGE:ngx" -t "$CI_REGISTRY_IMAGE:ngx" app/
+    - docker build -t "$CI_REGISTRY_IMAGE:ngx" app/
     - docker push "$CI_REGISTRY_IMAGE:ngx"
