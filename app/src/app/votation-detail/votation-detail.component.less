@@ -2,6 +2,65 @@ mat-drawer {
   width: 200px;
 }
 
+:host::ng-deep {
+  /* Inline #13 | http://127.0.0.1:4200/votation/6360 */
+
+  .advanced-pie-legend .total-value {
+    /* font-size: 36px; */
+    font-size: 21px;
+  }
+
+  .advanced-pie-legend .total-label {
+    /* font-size: 24px; */
+    font-size: 17px;
+  }
+
+  .advanced-pie-legend
+    .legend-items-container
+    .legend-items
+    .legend-item
+    .item-percent {
+    /* font-size: 24px; */
+    font-size: 19px;
+  }
+
+  .advanced-pie-legend
+    .legend-items-container
+    .legend-items
+    .legend-item
+    .item-value {
+    /* font-size: 24px; */
+    /* margin-top: -6px; */
+    font-size: 12px;
+    margin-top: 0px;
+  }
+
+  .advanced-pie-legend
+    .legend-items-container
+    .legend-items
+    .legend-item
+    .item-label {
+    /* font-size: 14px; */
+    font-size: 10px;
+  }
+
+  .advanced-pie-legend .legend-items-container .legend-items .legend-item {
+    /* margin-right: 20px; */
+    margin-right: 14px;
+  }
+
+  .advanced-pie-legend
+    .legend-items-container
+    .legend-items
+    .legend-item
+    .item-color {
+    /* border-left: 4px solid; */
+    /* width: 4px; */
+    border-left: 12px solid;
+    width: 0px;
+  }
+}
+
 mat-toolbar {
   overflow-x: auto;
 }
@@ -11,15 +70,26 @@ mat-toolbar {
   margin-top: 1em;
 }
 
-
-.votation-title {
-  position: absolute;
-  left: 210px;
-  top: 10px;
+.votation-info .numbers  span {
+  font-weight: bold;
 }
 
-.back {
+.moreStats {
+  width: 600px;
+  max-width: 600px;
+  overflow: hidden;
   position: absolute;
   right: 10px;
   bottom: 10px;
+  h1 {
+    font-size: 1.2rem;
+  }
+  font-size: 0.8rem;
+}
+
+.numbers {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
 }

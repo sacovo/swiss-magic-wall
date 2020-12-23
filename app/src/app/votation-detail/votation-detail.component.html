@@ -1,7 +1,12 @@
 <mat-drawer-container class="example-container" hasBackdrop="false">
   <mat-drawer opened mode="over">
-    <div class="votation-info">
+    <mat-spinner *ngIf="!votation"> </mat-spinner>
+    <div class="votation-info" *ngIf="votation">
       <h2>Schweiz</h2>
+      <div class="numbers">
+        <span>{{yesCountedPercent() | number:"2.2-2"}}%</span>
+        <span>{{yesPredictedPercent() | number:"2.2-2"}}%</span>
+      </div>
       <ngx-charts-bar-vertical-stacked
         *ngIf="colorScheme && results"
         [view]="[200, 200]"
@@ -13,6 +18,7 @@
         [showXAxisLabel]="false"
         [showYAxisLabel]="false"
         xAxisLabel="Stimmen"
+        [scheme]="binaryColorScheme"
       >
       </ngx-charts-bar-vertical-stacked>
     </div>
@@ -22,6 +28,10 @@
         {{selectedCantonName}}
         <mat-icon *ngIf="cantonCounted">verified</mat-icon>
       </h2>
+      <div class="numbers">
+        <span>{{yesCountedPercentCanton() | number:"2.2-2"}}%</span>
+        <span>{{yesPredictedPercentCanton() | number:"2.2-2"}}%</span>
+      </div>
       <ngx-charts-bar-vertical-stacked
         *ngIf="colorScheme && results"
         [view]="[200, 200]"
@@ -33,6 +43,7 @@
         [showXAxisLabel]="false"
         [showYAxisLabel]="false"
         xAxisLabel="Stimmen"
+        [scheme]="binaryColorScheme"
       >
       </ngx-charts-bar-vertical-stacked>
     </div>
@@ -42,6 +53,9 @@
         {{selectedCommuneName}}
         <mat-icon *ngIf="communeCounted">verified</mat-icon>
       </h2>
+      <div class="numbers">
+        <span>{{yesPercentCommune() | number:"2.2-2"}}%</span>
+      </div>
       <ngx-charts-pie-chart
         *ngIf="colorScheme && results"
         [view]="[200, 200]"
@@ -50,6 +64,7 @@
         [legend]="false"
         label="true"
         xAxisLabel="Stimmen"
+        [scheme]="binaryColorScheme"
       >
       </ngx-charts-pie-chart>
     </div>
@@ -60,13 +75,48 @@
       (communeSelect)="communeEvent($event)"
       (mapUpdated)="redrawMap($event)"
     ></app-map>
-    <h1 *ngIf="votation" class="votation-title">{{getTitle()}}</h1>
-    <a
-      class="back"
-      *ngIf="votation"
-      [routerLink]="['/date', votation.date_id]"
-      mat-flat-button
-      >Zurück</a
-    >
+    <mat-card class="moreStats">
+      <mat-card-title>
+        <h1 *ngIf="votation" class="votation-title">{{getTitle()}}</h1>
+      </mat-card-title>
+      <mat-card-content>
+        <ngx-charts-advanced-pie-chart
+          *ngIf="!selectedCantonId"
+          class="overview"
+          [view]="[600,200]"
+          [results]="pieResults"
+          [gradient]="false"
+          [animations]="false"
+          [scheme]="colorScheme"
+        >
+        </ngx-charts-advanced-pie-chart>
+        <ngx-charts-advanced-pie-chart
+          *ngIf="selectedCantonId"
+          class="overview"
+          [view]="[600,200]"
+          [results]="pieResultsCanton"
+          [gradient]="false"
+          [animations]="false"
+          [scheme]="colorScheme"
+        >
+        </ngx-charts-advanced-pie-chart>
+        <a
+          class="back"
+          *ngIf="votation"
+          [routerLink]="['/date', votation.date_id]"
+          mat-flat-button
+          color="secondary"
+          >Zurück</a
+        >
+        <a
+          class="table"
+          *ngIf="votation"
+          [routerLink]="['/votation', votation.id, 'table']"
+          mat-flat-button
+          color="primary"
+          >Tabelle</a
+        >
+      </mat-card-content>
+    </mat-card>
   </mat-drawer-content>
 </mat-drawer-container>

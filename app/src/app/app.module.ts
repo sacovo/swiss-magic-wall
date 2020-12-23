@@ -10,6 +10,9 @@ import { NgxChartsModule } from '@swimlane/ngx-charts'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { MatButtonModule } from '@angular/material/button'
 import { MatListModule } from '@angular/material/list'
+import { MatTabsModule } from '@angular/material/tabs'
+import {TableModule} from 'primeng/table';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'; 
 
 import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
@@ -17,8 +20,9 @@ import { VotationDatesComponent } from './votation-dates/votation-dates.componen
 import { SimpleVotationComponent } from './simple-votation/simple-votation.component'
 import { VotationDetailComponent } from './votation-detail/votation-detail.component'
 import { MapComponent } from './map/map.component'
-import { VotationDateDetailComponent } from './votation-date-detail/votation-date-detail.component';
+import { VotationDateDetailComponent } from './votation-date-detail/votation-date-detail.component'
 import { AboutComponent } from './about/about.component'
+import { VotationTableComponent } from './votation-table/votation-table.component'
 
 @NgModule({
   declarations: [
@@ -29,6 +33,7 @@ import { AboutComponent } from './about/about.component'
     MapComponent,
     VotationDateDetailComponent,
     AboutComponent,
+    VotationTableComponent,
   ],
   imports: [
     BrowserModule,
@@ -42,6 +47,9 @@ import { AboutComponent } from './about/about.component'
     MatButtonModule,
     MatIconModule,
     MatListModule,
+    MatTabsModule,
+    TableModule,
+    MatProgressSpinnerModule
   ],
   providers: [],
   bootstrap: [AppComponent],

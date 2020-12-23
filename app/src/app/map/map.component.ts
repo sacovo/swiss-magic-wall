@@ -10,6 +10,7 @@ import { Topology } from 'topojson-specification'
 import * as d3 from 'd3'
 import { ScaleLinear } from 'd3'
 import { Result } from '../votation'
+import { TopoService } from '../topo.service'
 
 function getHeight(width: number, topoJson: any): number {
   const [minX, minY, maxX, maxY] = topojson.bbox(topoJson)
@@ -49,6 +50,8 @@ export class MapComponent implements OnInit {
   private height = 0
   private topoJson: any
 
+  hideCantons = false
+
   private colorScale: ScaleLinear<string, number, never>
   private g?: any
 
@@ -58,7 +61,7 @@ export class MapComponent implements OnInit {
   @Output() cantonSelect = new EventEmitter()
   @Output() communeSelect = new EventEmitter()
 
-  constructor() {
+  constructor(private topoService: TopoService) {
     this.colorScale = d3
       .scaleLinear<string, number, never>()
       .range(['#DD0000', '#FFFFFF', '#0000DD'])
@@ -91,7 +94,7 @@ export class MapComponent implements OnInit {
   }
 
   loadTopoJson(): void {
-    d3.json('/assets/switzerland.json').then((json) => {
+    this.topoService.getTopoData().then((json: any) => {
       this.topoJson = json as Topology
       this.drawMap()
     })
@@ -242,5 +245,9 @@ export class MapComponent implements OnInit {
 
   cantonImage(): string | undefined {
     return `/assets/cantons/${this.cantonId}.svg`
+  }
+
+  toggleCanton(event: any) {
+    this.hideCantons = !this.hideCantons
   }
 }

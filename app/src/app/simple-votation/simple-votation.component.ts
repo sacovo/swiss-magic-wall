@@ -21,11 +21,11 @@ export class SimpleVotationComponent implements OnInit {
   showLegend: boolean = false
 
   colorScheme = {
-    domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'],
+    domain: ['#0B12CD', '#9CDBFA', '#F98888', '#B40101'],
   }
 
   binaryColorScheme = {
-    domain: ['#00ff00', '#ff0000'],
+    domain: ['#0B12CD', '#B40101'],
   }
 
   constructor() {}
@@ -36,26 +36,26 @@ export class SimpleVotationComponent implements OnInit {
 
   updateResults(): void {
     this.results = [
-      { name: 'Nein gezählt', value: this.votation.no_counted },
       { name: 'Ja gezählt', value: this.votation.yes_counted },
-      { name: 'Nein prognostiziert', value: this.votation.no_predicted },
       { name: 'Ja prognostiziert', value: this.votation.yes_predicted },
+      { name: 'Nein prognostiziert', value: this.votation.no_predicted },
+      { name: 'Nein gezählt', value: this.votation.no_counted },
     ]
 
     this.prediction = [
       {
-        name: 'Nein',
-        value: this.votation.no_counted + this.votation.no_predicted,
-      },
-      {
         name: 'Ja',
         value: this.votation.yes_counted + this.votation.yes_predicted,
+      },
+      {
+        name: 'Nein',
+        value: this.votation.no_counted + this.votation.no_predicted,
       },
     ]
 
     this.counted = [
-      { name: 'Nein', value: this.votation.no_counted },
       { name: 'Ja', value: this.votation.yes_counted },
+      { name: 'Nein', value: this.votation.no_counted },
     ]
   }
 

@@ -1,2 +1,2 @@
-<div id="map"></div>
-<img [src]="cantonImage()" id="wappen" />
+<div id="map" [class.noCantons]="hideCantons"></div>
+<img [src]="cantonImage()" (click)="toggleCanton($event)" id="wappen" />

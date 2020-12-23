@@ -20,6 +20,18 @@ export class VotationDetailComponent implements OnInit, OnDestroy {
   votation!: Votation
   interval: number | undefined
 
+
+  colorScheme = {
+    domain: ['#0B12CD', '#9CDBFA', '#F98888', '#B40101'],
+  }
+
+  binaryColorScheme = {
+    domain: ['#0B12CD', '#B40101'],
+  }
+
+
+  selectedCanton: CantonResult | undefined
+
   selectedCantonId: number | null = null
   selectedCantonName: string = ''
   selectedCommuneId: number | null = null
@@ -28,13 +40,12 @@ export class VotationDetailComponent implements OnInit, OnDestroy {
   cantonCounted: boolean = false
   communeCounted: boolean = false
 
-  colorScheme = {
-    domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'],
-  }
 
   results: any[] = []
 
   cantonResults: any[] = []
+  pieResults: any[] = []
+  pieResultsCanton: any[] = []
   communeResults: any[] = []
 
   @ViewChild(MapComponent) map!: MapComponent
@@ -117,6 +128,13 @@ export class VotationDetailComponent implements OnInit, OnDestroy {
         },
       ]
 
+      this.pieResults = [
+        { name: 'Ja gezählt', value: this.votation.yes_counted },
+        { name: 'Ja prognostiziert', value: this.votation.yes_predicted },
+        { name: 'Nein prognostiziert', value: this.votation.no_predicted },
+        { name: 'Nein gezählt', value: this.votation.no_counted },
+      ]
+
       this.updateCantonalResults()
       this.updateCommuneResults()
     }
@@ -124,6 +142,7 @@ export class VotationDetailComponent implements OnInit, OnDestroy {
 
   updateCantonalResults() {
     if (this.votation && this.selectedCantonId) {
+      this.selectedCanton = this.getSelectCantonResult()
       const result = this.votation.cantons.find(
         (result) => result.geo_id == this.selectedCantonId
       )
@@ -144,6 +163,13 @@ export class VotationDetailComponent implements OnInit, OnDestroy {
             ],
           },
         ]
+        this.pieResultsCanton = [
+              { name: 'JA gezählt', value: result.yes_total - result.yes_predicted },
+              { name: 'NEIN prognostiziert', value: result.no_predicted },
+              { name: 'JA prognostiziert', value: result.yes_predicted },
+              { name: 'NEIN gezählt', value: result.no_total - result.no_predicted },
+
+        ]
         this.cantonCounted = result.is_final
       }
     }
@@ -155,8 +181,8 @@ export class VotationDetailComponent implements OnInit, OnDestroy {
       if (index >= 0) {
         const result = this.votation.communes[index]
         this.communeResults = [
-          { name: 'Nein', value: result.no_total },
           { name: 'Ja', value: result.yes_total },
+          { name: 'Nein', value: result.no_total },
         ]
         this.communeCounted = result.is_final
       }
@@ -184,6 +210,7 @@ export class VotationDetailComponent implements OnInit, OnDestroy {
   selectCanton(id: number, name: string) {
     this.selectedCantonId = id
     this.selectedCantonName = name
+    this.selectedCanton = this.getSelectCantonResult()
     this.updateCantonalResults()
   }
 
@@ -222,5 +249,57 @@ export class VotationDetailComponent implements OnInit, OnDestroy {
     }
 
     return ''
+  }
+
+  yesCountedPercent(): number {
+    return (
+      (this.votation.yes_counted /
+        (this.votation.yes_counted + this.votation.no_counted)) *
+      100
+    )
+  }
+
+  yesPredictedPercent(): number {
+    return (
+      ((this.votation.yes_predicted + this.votation.yes_counted) /
+        (this.votation.yes_predicted +
+          this.votation.no_predicted +
+          this.votation.yes_counted +
+          this.votation.no_counted)) *
+      100
+    )
+  }
+
+  yesCountedPercentCanton(): number {
+    if (this.selectedCanton) {
+      return (
+        ((this.selectedCanton.yes_total - this.selectedCanton.yes_predicted) /
+          (this.selectedCanton.yes_total -
+            this.selectedCanton.yes_predicted +
+            this.selectedCanton.no_total -
+            this.selectedCanton.no_predicted)) *
+        100
+      )
+    }
+    return 0
+  }
+
+  yesPredictedPercentCanton(): number {
+    if (this.selectedCanton) {
+      return (
+        (this.selectedCanton.yes_total /
+          (this.selectedCanton.yes_total + this.selectedCanton.no_total)) *
+        100
+      )
+    }
+    return 0
+  }
+
+  yesPercentCommune(): number {
+    return (
+      (this.communeResults[0]['value'] /
+        (this.communeResults[1]['value'] + this.communeResults[0]['value'])) *
+      100
+    )
   }
 }

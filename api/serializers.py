@@ -21,7 +21,13 @@ class ResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = LatestResult
 
-        fields = ['participation', 'yes_total', 'no_total', 'is_final', 'geo_id']
+        fields = [
+            'participation',
+            'yes_total',
+            'no_total',
+            'is_final',
+            'geo_id',
+        ]
 
 
 class CantonResultSerializer(serializers.Serializer):
@@ -34,6 +40,7 @@ class CantonResultSerializer(serializers.Serializer):
     no_predicted = serializers.IntegerField()
 
     is_final = serializers.BooleanField()
+    name = serializers.CharField()
 
 
 class VotationSerializer(serializers.ModelSerializer):

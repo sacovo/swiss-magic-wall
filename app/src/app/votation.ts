@@ -30,10 +30,12 @@ export interface Result {
   no_total: number
   is_final: boolean
   geo_id: number
+  name: string
 }
 
 export interface CommuneResult extends Result {
   participation: number
+  canton: string
 }
 
 export interface CantonResult extends Result {

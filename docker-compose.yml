@@ -4,11 +4,12 @@ services:
   web:
     build: .
     command: python manage.py runserver 0.0.0.0:8000
+    hostname: web.magic-wall
     volumes:
       - .:/home/app/web/
       - static:/home/app/web/static
-    ports:
-      - 8000:8000
+    expose:
+      - 8000
     env_file:
       - ./.env.dev
     environment:
@@ -23,6 +24,7 @@ services:
       - ./app/:/app
     ports:
       - 4200:4200
+    hostname: app.magic-wall
 
   cache:
     image: memcached:alpine

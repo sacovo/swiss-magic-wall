@@ -254,6 +254,7 @@ def annotate_cantons(queryset: QuerySet) -> QuerySet:
     """
     return queryset.annotate(
         geo_id=F("gemeinde__kanton_id"),
+        name=F("gemeinde__kanton__name"),
         yes=Cast(Coalesce(Sum("yes_absolute"), 0), models.FloatField()),
         no=Cast(Coalesce(Sum("no_absolute"), 0), models.FloatField()),
     )

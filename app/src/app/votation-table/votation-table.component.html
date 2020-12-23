@@ -1,0 +1,79 @@
+<mat-toolbar color="secondary" *ngIf="votation">
+  <a
+    class="map"
+    [routerLink]="['/votation', votation.id]"
+    mat-flat-button
+    color="primary"
+    >Karte</a
+  >
+  <h1>{{getTitle()}}</h1>
+</mat-toolbar>
+<mat-tab-group>
+  <mat-tab label="Kantone">
+    <p-table *ngIf="votation" [value]="votation.cantons" sortMode="multiple">
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="name">
+            Name
+            <p-sortIcon field="name"></p-sortIcon>
+            <p-columnFilter field="name" display="menu"></p-columnFilter>
+          </th>
+          <th>JA Gezählt</th>
+          <th>NEIN Gezählt</th>
+          <th>Zwichenresultat</th>
+          <th pSortableColumn="yes_total">
+            JA Prognose
+            <p-sortIcon field="yes_total"></p-sortIcon>
+          </th>
+          <th pSortableColumn="no_total">
+            NEIN Prognose
+            <p-sortIcon field="no_total"></p-sortIcon>
+          </th>
+          <th>Prognose</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-canton>
+        <tr>
+          <td>{{canton.name}}</td>
+          <td>{{(canton.yes_total - canton.yes_predicted) | number}}</td>
+          <td>{{(canton.no_total - canton.no_predicted) | number}}</td>
+          <td>
+            {{(canton.yes_total - canton.yes_predicted) / (canton.no_total -
+            canton.no_predicted + canton.yes_total - canton.yes_predicted) *
+            100| number:"2.3-3"}} %
+          </td>
+          <td>{{canton.yes_total | number}}</td>
+          <td>{{canton.no_total | number}}</td>
+          <td>
+            {{canton.yes_total / (canton.yes_total + canton.no_total) * 100 |
+            number:"2.3"}}%
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </mat-tab>
+  <mat-tab label="Gemeinden">
+    <p-table
+      *ngIf="votation"
+      [value]="votation.communes"
+      sortMode="multiple"
+      [paginator]="true"
+      [rows]="10"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Name</th>
+          <th>JA Prognose</th>
+          <th>NEIN Prognose</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-result>
+        <tr>
+          <td>{{getNameFor(result.geo_id)}}</td>
+          <td>{{result.yes_total}}</td>
+          <td>{{result.no_total}}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </mat-tab>
+</mat-tab-group>
