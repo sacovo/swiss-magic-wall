@@ -39,7 +39,6 @@ def votation_date_detail(request: HttpRequest, votation_date_id: int):
     return JsonResponse(serializer.data)
 
 
-@cache_page(30)
 def votation_detail(request: HttpRequest, votation_id: int):
     """
     Dict for CH with:

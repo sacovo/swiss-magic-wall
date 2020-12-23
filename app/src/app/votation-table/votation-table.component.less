@@ -1,4 +1,32 @@
-
-.mat-toolbar-row, .mat-toolbar-single-row {
+.mat-toolbar-row,
+.mat-toolbar-single-row {
   justify-content: space-between;
+}
+
+.loading-text {
+  display: block;
+  background-color: #f1f1f1;
+  min-height: 19px;
+  animation: pulse 1s infinite ease-in-out;
+  text-indent: -99999px;
+  overflow: hidden;
+}
+
+:host::ng-deep .p-datatable .p-datatable-tbody > tr {
+  td.number {
+    text-align: right;
+  }
+  td.boolean {
+    text-align: center;
+  }
+} 
+
+td.yes {
+  background-color: #0B12CD;
+  color: white;
+}
+
+td.no {
+  background-color: #B40101;
+  color: white;
 }

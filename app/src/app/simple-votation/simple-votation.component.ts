@@ -1,6 +1,8 @@
 import { Component, Input, OnInit, SimpleChanges } from '@angular/core'
 import { SimpleVotation, getTitle } from '../votation'
 
+import { COLOR_SCHEME, BINARY_COLOR_SCHEME } from '../settings'
+
 @Component({
   selector: 'app-simple-votation',
   templateUrl: './simple-votation.component.html',
@@ -20,13 +22,8 @@ export class SimpleVotationComponent implements OnInit {
   gradient: boolean = false
   showLegend: boolean = false
 
-  colorScheme = {
-    domain: ['#0B12CD', '#9CDBFA', '#F98888', '#B40101'],
-  }
-
-  binaryColorScheme = {
-    domain: ['#0B12CD', '#B40101'],
-  }
+  colorScheme = COLOR_SCHEME
+  binaryColorScheme = BINARY_COLOR_SCHEME
 
   constructor() {}
 

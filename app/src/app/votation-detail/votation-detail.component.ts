@@ -1,15 +1,11 @@
-import {
-  ApplicationRef,
-  Component,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core'
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { Title } from '@angular/platform-browser'
 import { Router, ActivatedRoute } from '@angular/router'
 import { MapComponent } from '../map/map.component'
 import { Votation, getTitle, CantonResult } from '../votation'
 import { VotationService } from '../votation.service'
+
+import { COLOR_SCHEME, BINARY_COLOR_SCHEME } from '../settings'
 
 @Component({
   selector: 'app-votation-detail',
@@ -20,17 +16,10 @@ export class VotationDetailComponent implements OnInit, OnDestroy {
   votation!: Votation
   interval: number | undefined
 
-
-  colorScheme = {
-    domain: ['#0B12CD', '#9CDBFA', '#F98888', '#B40101'],
-  }
-
-  binaryColorScheme = {
-    domain: ['#0B12CD', '#B40101'],
-  }
-
-
   selectedCanton: CantonResult | undefined
+
+  colorScheme = COLOR_SCHEME
+  binaryColorScheme = BINARY_COLOR_SCHEME
 
   selectedCantonId: number | null = null
   selectedCantonName: string = ''
@@ -40,13 +29,12 @@ export class VotationDetailComponent implements OnInit, OnDestroy {
   cantonCounted: boolean = false
   communeCounted: boolean = false
 
-
   results: any[] = []
 
   cantonResults: any[] = []
   pieResults: any[] = []
   pieResultsCanton: any[] = []
-  communeResults: any[] = []
+  communeResults: any[] | undefined = []
 
   @ViewChild(MapComponent) map!: MapComponent
 
@@ -164,11 +152,16 @@ export class VotationDetailComponent implements OnInit, OnDestroy {
           },
         ]
         this.pieResultsCanton = [
-              { name: 'JA gezählt', value: result.yes_total - result.yes_predicted },
-              { name: 'NEIN prognostiziert', value: result.no_predicted },
-              { name: 'JA prognostiziert', value: result.yes_predicted },
-              { name: 'NEIN gezählt', value: result.no_total - result.no_predicted },
-
+          {
+            name: 'JA gezählt',
+            value: result.yes_total - result.yes_predicted,
+          },
+          { name: 'NEIN prognostiziert', value: result.no_predicted },
+          { name: 'JA prognostiziert', value: result.yes_predicted },
+          {
+            name: 'NEIN gezählt',
+            value: result.no_total - result.no_predicted,
+          },
         ]
         this.cantonCounted = result.is_final
       }
@@ -178,13 +171,16 @@ export class VotationDetailComponent implements OnInit, OnDestroy {
   updateCommuneResults() {
     if (this.votation && this.selectedCommuneId) {
       const index = this.index[`${this.selectedCommuneId}`]
-      if (index >= 0) {
+      if (index && index >= 0) {
         const result = this.votation.communes[index]
         this.communeResults = [
           { name: 'Ja', value: result.yes_total },
           { name: 'Nein', value: result.no_total },
         ]
         this.communeCounted = result.is_final
+      } else {
+        this.communeResults = undefined;
+        this.communeCounted = false
       }
     }
   }
@@ -254,19 +250,19 @@ export class VotationDetailComponent implements OnInit, OnDestroy {
   yesCountedPercent(): number {
     return (
       (this.votation.yes_counted /
-        (this.votation.yes_counted + this.votation.no_counted)) *
-      100
+       (this.votation.yes_counted + this.votation.no_counted)) *
+       100
     )
   }
 
   yesPredictedPercent(): number {
     return (
       ((this.votation.yes_predicted + this.votation.yes_counted) /
-        (this.votation.yes_predicted +
-          this.votation.no_predicted +
-          this.votation.yes_counted +
-          this.votation.no_counted)) *
-      100
+       (this.votation.yes_predicted +
+        this.votation.no_predicted +
+        this.votation.yes_counted +
+        this.votation.no_counted)) *
+        100
     )
   }
 
@@ -274,11 +270,11 @@ export class VotationDetailComponent implements OnInit, OnDestroy {
     if (this.selectedCanton) {
       return (
         ((this.selectedCanton.yes_total - this.selectedCanton.yes_predicted) /
-          (this.selectedCanton.yes_total -
-            this.selectedCanton.yes_predicted +
-            this.selectedCanton.no_total -
-            this.selectedCanton.no_predicted)) *
-        100
+         (this.selectedCanton.yes_total -
+          this.selectedCanton.yes_predicted +
+          this.selectedCanton.no_total -
+          this.selectedCanton.no_predicted)) *
+          100
       )
     }
     return 0
@@ -288,18 +284,18 @@ export class VotationDetailComponent implements OnInit, OnDestroy {
     if (this.selectedCanton) {
       return (
         (this.selectedCanton.yes_total /
-          (this.selectedCanton.yes_total + this.selectedCanton.no_total)) *
-        100
+         (this.selectedCanton.yes_total + this.selectedCanton.no_total)) *
+         100
       )
     }
     return 0
   }
 
   yesPercentCommune(): number {
-    return (
+    return this.communeResults ? (
       (this.communeResults[0]['value'] /
-        (this.communeResults[1]['value'] + this.communeResults[0]['value'])) *
-      100
-    )
+       (this.communeResults[1]['value'] + this.communeResults[0]['value'])) *
+       100
+    ) : 0
   }
 }

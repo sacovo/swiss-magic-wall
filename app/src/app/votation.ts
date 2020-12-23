@@ -35,7 +35,7 @@ export interface Result {
 
 export interface CommuneResult extends Result {
   participation: number
-  canton: string
+  canton: number
 }
 
 export interface CantonResult extends Result {

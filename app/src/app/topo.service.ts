@@ -9,28 +9,32 @@ import { FeatureCollection } from 'geojson'
 })
 export class TopoService {
   data: Promise<Topology> | undefined = undefined
+  names_ready!: Promise<void>
 
-  names: any = {}
+  canton_names: any = {}
 
   constructor() {}
 
   getTopoData(): Promise<Topology> {
     if (!this.data) {
       this.data = d3.json('/assets/switzerland.json') as Promise<Topology>
-      this.data.then((topo: Topology) => {
-        const communes = topojson.feature(
-          topo,
-          topo.objects.K4voge_20201018_gf
-        ) as FeatureCollection;
-        communes.features.forEach((commune) => {
-          this.names[commune.properties!.vogenr] = commune.properties!.vogename;
-        })
+      this.names_ready = this.data.then((topo: Topology) => {
+        {
+          const cantons = topojson.feature(
+            topo,
+            topo.objects.K4kant_19970101_gf
+          ) as FeatureCollection
+          cantons.features.forEach((canton) => {
+            this.canton_names[canton.properties!.id] = canton.properties!.name
+          })
+        }
       })
     }
     return this.data
   }
 
-  getNameFor(id: number): string {
-    return this.names[id] || id
+
+  getCantonName(id: number): string {
+    return this.canton_names[id]
   }
 }

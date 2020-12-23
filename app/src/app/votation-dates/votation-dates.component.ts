@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { VotationDate } from '../votation'
-import {VotationDateDetailComponent} from '../votation-date-detail/votation-date-detail.component'
+import { VotationDateDetailComponent } from '../votation-date-detail/votation-date-detail.component'
 import { VotationDateService } from '../votation-date.service'
 
 @Component({
@@ -13,11 +13,12 @@ export class VotationDatesComponent implements OnInit {
   votationDates: VotationDate[] = []
   selectedDate: number = 0
 
-  @ViewChild(VotationDateDetailComponent) dateDetail!: VotationDateDetailComponent
+  @ViewChild(VotationDateDetailComponent)
+  dateDetail!: VotationDateDetailComponent
 
   constructor(
     private votationDateService: VotationDateService,
-    private route: ActivatedRoute,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -27,9 +28,10 @@ export class VotationDatesComponent implements OnInit {
   fetchVotationDates(): void {
     this.votationDateService.getVotationDates().subscribe((votationDates) => {
       this.votationDates = votationDates
-      const id = this.route.snapshot.paramMap.get('id');
+
+      const id = this.route.snapshot.paramMap.get('id')
       if (id) {
-        this.selectDate(+id);
+        this.selectDate(+id)
       } else {
         this.selectDate(this.votationDates[0].id)
       }

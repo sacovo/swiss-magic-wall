@@ -64,7 +64,7 @@ export class MapComponent implements OnInit {
   constructor(private topoService: TopoService) {
     this.colorScale = d3
       .scaleLinear<string, number, never>()
-      .range(['#DD0000', '#FFFFFF', '#0000DD'])
+      .range(['#FF0000', '#FFFFFF', '#0000FF'])
       .domain([0.2, 0.5, 0.8])
   }
 

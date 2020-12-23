@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router'
 import { TopoService } from '../topo.service'
 import { getTitle, Votation } from '../votation'
 import { VotationService } from '../votation.service'
+import { CantonEntry, CommuneEntry } from './results'
 
 @Component({
   selector: 'app-votation-table',
@@ -12,6 +13,9 @@ import { VotationService } from '../votation.service'
 })
 export class VotationTableComponent implements OnInit {
   votation!: Votation
+  canton_rows: CantonEntry[] = []
+  commune_rows: CommuneEntry[] = []
+
   interval: number | undefined
   constructor(
     private votationService: VotationService,
@@ -21,24 +25,19 @@ export class VotationTableComponent implements OnInit {
     private topoService: TopoService
   ) {}
 
-
-  getNameFor(id: number): string {
-    return this.topoService.getNameFor(id);
-  }
-
   ngOnInit(): void {
     const votationId = this.route.snapshot.paramMap.get('id')
-    this.topoService.getTopoData();
+    this.topoService.getTopoData()
     if (votationId) {
       this.votationService.getVotation(votationId).subscribe((votation) => {
-        this.votation = votation
+        this.updateVotation(votation)
         this.titleService.setTitle(
           getTitle(this.votation, 'de') + ' - Magic Wall'
         )
       })
       this.interval = window.setInterval(() => {
         this.reloadVotation()
-      }, 2000)
+      }, 20 * 1000)
     }
   }
 
@@ -47,12 +46,20 @@ export class VotationTableComponent implements OnInit {
       this.votationService
         .getVotation(this.votation.id)
         .subscribe((votation) => {
-          this.votation = votation
+          this.updateVotation(votation)
           if (votation.is_finished) {
             clearInterval(this.interval)
           }
         })
     }
+  }
+
+  updateVotation(votation: Votation): void {
+    this.votation = votation
+    this.canton_rows = votation.cantons.map((result) => new CantonEntry(result))
+    this.commune_rows = votation.communes.map(
+      (result) => new CommuneEntry(result, this.topoService)
+    )
   }
 
   getTitle(): string {

@@ -17,16 +17,15 @@ class ResultSerializer(serializers.ModelSerializer):
     geo_id = serializers.IntegerField(source="gemeinde_id")
     yes_total = serializers.IntegerField(source="yes_absolute")
     no_total = serializers.IntegerField(source="no_absolute")
+    canton = serializers.IntegerField(source="gemeinde.kanton_id")
+    name = serializers.CharField(source="gemeinde.name")
 
     class Meta:
         model = LatestResult
 
         fields = [
-            'participation',
-            'yes_total',
-            'no_total',
-            'is_final',
-            'geo_id',
+            'participation', 'yes_total', 'no_total', 'is_final', 'geo_id', 'canton',
+            'name'
         ]
 
 
@@ -118,10 +117,15 @@ class VotationDateSerializer(serializers.ModelSerializer):
 
 class ExpandedVotationSerializer(VotationSerializer):
     cantons = CantonResultSerializer(source="kanton_results", many=True, read_only=True)
-    communes = ResultSerializer(source="latestresult_set", many=True, read_only=True)
+    communes = ResultSerializer(
+        source="prefetched",
+        many=True,
+        read_only=True,
+    )
 
     def to_representation(self, instance):
         instance.kanton_results = instance.result_cantons().values()
+        instance.prefetched = instance.latestresult_set.prefetch_related('gemeinde')
 
         return super().to_representation(instance)
 

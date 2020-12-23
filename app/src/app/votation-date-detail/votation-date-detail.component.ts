@@ -8,7 +8,6 @@ import {
   SimpleChanges,
 } from '@angular/core'
 import { Title } from '@angular/platform-browser'
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router'
 import { VotationDate } from '../votation'
 import { VotationDateService } from '../votation-date.service'
 

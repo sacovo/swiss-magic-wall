@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser'
-import { NgModule } from '@angular/core'
+import { LOCALE_ID, NgModule } from '@angular/core'
 import { HttpClientModule } from '@angular/common/http'
 
 import { MatCardModule } from '@angular/material/card'
@@ -11,8 +11,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { MatButtonModule } from '@angular/material/button'
 import { MatListModule } from '@angular/material/list'
 import { MatTabsModule } from '@angular/material/tabs'
-import { TableModule } from 'primeng/table';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'; 
+import { TableModule } from 'primeng/table'
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 
 import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
@@ -23,6 +23,9 @@ import { MapComponent } from './map/map.component'
 import { VotationDateDetailComponent } from './votation-date-detail/votation-date-detail.component'
 import { AboutComponent } from './about/about.component'
 import { VotationTableComponent } from './votation-table/votation-table.component'
+import { registerLocaleData } from '@angular/common'
+import localeDECH from '@angular/common/locales/de-CH'
+registerLocaleData(localeDECH)
 
 @NgModule({
   declarations: [
@@ -49,9 +52,9 @@ import { VotationTableComponent } from './votation-table/votation-table.componen
     MatListModule,
     MatTabsModule,
     TableModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
   ],
-  providers: [],
+  providers: [{ provide: LOCALE_ID, useValue: 'de-CH' }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

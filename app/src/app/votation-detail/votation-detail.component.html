@@ -53,11 +53,11 @@
         {{selectedCommuneName}}
         <mat-icon *ngIf="communeCounted">verified</mat-icon>
       </h2>
-      <div class="numbers">
+      <div class="numbers" *ngIf="communeResults">
         <span>{{yesPercentCommune() | number:"2.2-2"}}%</span>
       </div>
       <ngx-charts-pie-chart
-        *ngIf="colorScheme && results"
+        *ngIf="communeResults"
         [view]="[200, 200]"
         [results]="communeResults"
         [gradient]="false"

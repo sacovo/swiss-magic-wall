@@ -10,7 +10,7 @@
 </mat-toolbar>
 <mat-tab-group>
   <mat-tab label="Kantone">
-    <p-table *ngIf="votation" [value]="votation.cantons" sortMode="multiple">
+    <p-table *ngIf="votation" [value]="canton_rows" sortMode="multiple">
       <ng-template pTemplate="header">
         <tr>
           <th pSortableColumn="name">
@@ -18,35 +18,102 @@
             <p-sortIcon field="name"></p-sortIcon>
             <p-columnFilter field="name" display="menu"></p-columnFilter>
           </th>
-          <th>JA Gezählt</th>
-          <th>NEIN Gezählt</th>
-          <th>Zwichenresultat</th>
-          <th pSortableColumn="yes_total">
+          <th pSortableColumn="yes_counted">
+            JA Gezählt
+            <p-sortIcon field="yes_counted"></p-sortIcon>
+            <p-columnFilter
+              field="yes_counted"
+              type="numeric"
+              display="menu"
+            ></p-columnFilter>
+          </th>
+          <th pSortableColumn="no_counted">
+            NEIN Gezählt
+            <p-sortIcon field="no_counted"></p-sortIcon>
+            <p-columnFilter
+              field="no_counted"
+              type="numeric"
+              display="menu"
+            ></p-columnFilter>
+          </th>
+          <th pSortableColumn="yes_percent_counted">
+            Zwischenresultat
+            <p-sortIcon field="yes_predicted"></p-sortIcon>
+            <p-columnFilter
+              field="yes_percent_counted"
+              type="numeric"
+              display="menu"
+            ></p-columnFilter>
+          </th>
+          <th pSortableColumn="yes_predicted">
             JA Prognose
-            <p-sortIcon field="yes_total"></p-sortIcon>
+            <p-sortIcon field="yes_predicted"></p-sortIcon>
+            <p-columnFilter
+              field="yes_predicted"
+              type="numeric"
+              display="menu"
+            ></p-columnFilter>
           </th>
-          <th pSortableColumn="no_total">
+          <th pSortableColumn="no_predicted">
             NEIN Prognose
-            <p-sortIcon field="no_total"></p-sortIcon>
+            <p-sortIcon field="no_predicted"></p-sortIcon>
+            <p-columnFilter
+              field="no_predicted"
+              type="numeric"
+              display="menu"
+            ></p-columnFilter>
           </th>
-          <th>Prognose</th>
+          <th pSortableColumn="yes_percent">
+            Prognose
+            <p-sortIcon field="yes_percent"></p-sortIcon>
+            <p-columnFilter
+              field="yes_percent"
+              type="numeric"
+              display="menu"
+            ></p-columnFilter>
+          </th>
+
+          <th pSortableColumn="is_final">
+            Final
+            <p-sortIcon field="is_final"></p-sortIcon>
+            <p-columnFilter
+              field="is_final"
+              type="boolean"
+              display="menu"
+            ></p-columnFilter>
+          </th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-canton>
         <tr>
-          <td>{{canton.name}}</td>
-          <td>{{(canton.yes_total - canton.yes_predicted) | number}}</td>
-          <td>{{(canton.no_total - canton.no_predicted) | number}}</td>
           <td>
-            {{(canton.yes_total - canton.yes_predicted) / (canton.no_total -
-            canton.no_predicted + canton.yes_total - canton.yes_predicted) *
-            100| number:"2.3-3"}} %
+            <img
+              [src]="'assets/cantons/' + canton.id + '.svg'"
+              [alt]="canton.name"
+              width="20"
+              class="p-shadow-4"
+            />
+            {{ canton.name}}
           </td>
-          <td>{{canton.yes_total | number}}</td>
-          <td>{{canton.no_total | number}}</td>
-          <td>
-            {{canton.yes_total / (canton.yes_total + canton.no_total) * 100 |
-            number:"2.3"}}%
+          <td class="number">{{ canton.yes_counted | number}}</td>
+          <td class="number">{{ canton.no_counted | number}}</td>
+          <td
+            [ngClass]="{'yes': canton.yes_percent_counted > 50, 'no': canton.yes_percent_counted <= 50, 'number': true}"
+          >
+            {{ canton.yes_percent_counted| number:"2.3-3"}} %
+          </td>
+          <td class="number">{{ canton.yes_predicted | number}}</td>
+          <td class="number">{{ canton.no_predicted | number}}</td>
+          <td
+            [ngClass]="{'yes': canton.yes_percent > 50, 'no': canton.yes_percent <= 50, 'number': true}"
+          >
+            {{ canton.yes_percent | number:"2.3"}}%
+          </td>
+          <td class="boolean">
+            <i
+              class="pi"
+              [ngClass]="{'true-icon pi-check-circle': canton.is_final, 'false-icon pi-times-circle': !canton.is_final}"
+            ></i>
           </td>
         </tr>
       </ng-template>
@@ -54,24 +121,93 @@
   </mat-tab>
   <mat-tab label="Gemeinden">
     <p-table
+      styleClass="p-datatable-sm"
       *ngIf="votation"
-      [value]="votation.communes"
+      [value]="commune_rows"
       sortMode="multiple"
       [paginator]="true"
-      [rows]="10"
+      [rows]="25"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      [rowsPerPageOptions]="[25,50,100]"
     >
       <ng-template pTemplate="header">
         <tr>
-          <th>Name</th>
-          <th>JA Prognose</th>
-          <th>NEIN Prognose</th>
+          <th pSortableColumn="name">
+            Name
+            <p-sortIcon field="name"></p-sortIcon>
+            <p-columnFilter field="name" display="menu"></p-columnFilter>
+          </th>
+          <th pSortableColumn="canton">
+            Kanton
+            <p-sortIcon field="canton"></p-sortIcon>
+            <p-columnFilter field="canton" display="menu"></p-columnFilter>
+          </th>
+          <th pSortableColumn="yes_total">
+            JA
+            <p-sortIcon field="yes_total"></p-sortIcon>
+            <p-columnFilter
+              field="yes_total"
+              type="numeric"
+              display="menu"
+            ></p-columnFilter>
+          </th>
+          <th pSortableColumn="no_total">
+            NEIN
+            <p-sortIcon field="no_total"></p-sortIcon>
+            <p-columnFilter
+              field="no_total"
+              type="numeric"
+              display="menu"
+            ></p-columnFilter>
+          </th>
+          <th pSortableColumn="yes_percent">
+            Zustimmung in %
+            <p-sortIcon field="yes_percent"></p-sortIcon>
+            <p-columnFilter
+              field="yes_percent"
+              type="numeric"
+              display="menu"
+            ></p-columnFilter>
+          </th>
+          <th pSortableColumn="participation">
+            Beteiligung in %
+            <p-sortIcon field="participation"></p-sortIcon>
+            <p-columnFilter
+              field="participation"
+              type="numeric"
+              display="menu"
+            ></p-columnFilter>
+          </th>
+          <th pSortableColumn="final">
+            Final
+            <p-sortIcon field="final"></p-sortIcon>
+            <p-columnFilter
+              field="final"
+              type="boolean"
+              display="menu"
+            ></p-columnFilter>
+          </th>
         </tr>
       </ng-template>
-      <ng-template pTemplate="body" let-result>
-        <tr>
-          <td>{{getNameFor(result.geo_id)}}</td>
-          <td>{{result.yes_total}}</td>
-          <td>{{result.no_total}}</td>
+      <ng-template pTemplate="body" let-commune>
+        <tr style="height: 34px">
+          <td>{{ commune.name }}</td>
+          <td>{{ commune.canton }}</td>
+          <td class="number">{{ commune.yes_total | number}}</td>
+          <td class="number">{{ commune.no_total | number}}</td>
+          <td
+            [ngClass]="{'yes': commune.yes_percent > 50, 'no': commune.yes_percent <= 50, 'number': true}"
+          >
+            {{ commune.yes_percent | number:"2.3-3"}} %
+          </td>
+          <td class="number">{{ commune.participation | number:"2.3-3"}} %</td>
+          <td class="boolean">
+            <i
+              class="pi"
+              [ngClass]="{'true-icon pi-check-circle': commune.final, 'false-icon pi-times-circle': !commune.final}"
+            ></i>
+          </td>
         </tr>
       </ng-template>
     </p-table>

@@ -8,7 +8,7 @@
         (click)="selectDate(date.id)"
         [disabled]="selectedDate == date.id"
       >
-        {{ date.start_date | date:'YYYY-MM-dd' }}
+        {{ date.start_date | date:'longDate' }}
       </a>
     </mat-nav-list>
   </mat-drawer>
