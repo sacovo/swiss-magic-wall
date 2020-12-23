@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser'
-import { LOCALE_ID, NgModule } from '@angular/core'
+import { NgModule } from '@angular/core'
 import { HttpClientModule } from '@angular/common/http'
 
 import { MatCardModule } from '@angular/material/card'
@@ -11,8 +11,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { MatButtonModule } from '@angular/material/button'
 import { MatListModule } from '@angular/material/list'
 import { MatTabsModule } from '@angular/material/tabs'
-import {TableModule} from 'primeng/table';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'; 
+import { TableModule } from 'primeng/table';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'; 
 
 import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
