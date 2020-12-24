@@ -168,10 +168,6 @@ export class MapComponent implements OnInit {
   }
 
   reset() {
-    this.g.selectAll(`.kanton`).attr('data-active', 'false')
-    this.cantonId = 0
-    this.cantonSelect.emit(null)
-
     this.svg
       .transition()
       .duration(400)
@@ -182,22 +178,20 @@ export class MapComponent implements OnInit {
           .zoomTransform(this.svg.node())
           .invert([this.width / 2, this.height / 2])
       )
+    this.g.selectAll(`.kanton`).attr('data-active', 'false')
+    this.cantonId = 0
+    this.cantonSelect.emit(null)
   }
 
   zoomed(event: any) {
     const { transform } = event
     this.g.attr('transform', transform)
-    this.g.attr('stroke-width', 1 / transform.k)
+    //this.g.attr('stroke-width', 1 / transform.k)
   }
 
   selectCaton(obj: any) {
-    this.g.attr('data-canton-id', obj.properties.id)
-    this.cantonSelect.emit(obj)
-
-    this.g.selectAll(`.kanton`).attr('data-active', 'false')
-    this.g.select(`#kanton_${obj.properties.id}`).attr('data-active', 'true')
-
     const [[x0, y0], [x1, y1]] = this.path.bounds(obj)
+
     this.svg
       .transition()
       .duration(400)
@@ -214,6 +208,9 @@ export class MapComponent implements OnInit {
           .translate(-(x0 + x1) / 2, -(y0 + y1) / 2)
       )
     this.cantonId = obj.properties.id
+    this.cantonSelect.emit(obj)
+    this.g.selectAll(`.kanton`).attr('data-active', 'false')
+    this.g.select(`#kanton_${obj.properties.id}`).attr('data-active', 'true')
   }
 
   updateObject(geoId: number, type: string, result: number): void {

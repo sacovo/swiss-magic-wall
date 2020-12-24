@@ -128,12 +128,10 @@ export class VotationDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  updateCantonalResults() {
+  async updateCantonalResults() {
     if (this.votation && this.selectedCantonId) {
       this.selectedCanton = this.getSelectCantonResult()
-      const result = this.votation.cantons.find(
-        (result) => result.geo_id == this.selectedCantonId
-      )
+      const result = this.selectedCanton
       if (result) {
         this.cantonResults = [
           {
