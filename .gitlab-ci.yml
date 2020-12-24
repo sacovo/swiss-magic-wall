@@ -4,6 +4,7 @@ stages:
   - check
   - test
   - build
+  - release
 
 variables:
   POSTGRES_DB: db
