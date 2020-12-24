@@ -1,11 +1,9 @@
 image: python:latest
 
 stages:
-  - build-ng
   - check
   - test
   - build
-  - release
 
 variables:
   POSTGRES_DB: db
@@ -77,7 +75,6 @@ docker-build:
 
 build-ng:
   image: node
-  stage: build-ng
   script:
     - cd app/
     - npm install
@@ -85,14 +82,15 @@ build-ng:
   artifacts:
     paths:
       - app/dist/
+    expire_in: 20 minutes
   cache:
     key: node-cache
     paths:
-      - node_modules/
+      - app/node_modules/
 
 docker-build-app:
   image: docker
-  stage: release
+  stage: build
   services:
     - docker:dind
   before_script:
@@ -100,3 +98,5 @@ docker-build-app:
   script:
     - docker build -t "$CI_REGISTRY_IMAGE:ngx" app/
     - docker push "$CI_REGISTRY_IMAGE:ngx"
+  needs:
+    - build-ng
