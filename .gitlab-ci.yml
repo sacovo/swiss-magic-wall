@@ -20,6 +20,7 @@ variables:
 cache:
   paths:
     - "$CI_PROJECT_DIR/.pip-cache"
+    - "$CI_PROJECT_DIR/.pip"
   key: "$CI_PROJECT_DIR"
 
 # This is a basic example for a gem or script which doesn't use
