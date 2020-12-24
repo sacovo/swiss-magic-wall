@@ -73,9 +73,23 @@ docker-build:
   except:
     - master
 
+build-ng:
+  image: node
+  stage: build
+  script:
+    - npm install
+    - npm run build app --prod
+  artifacts:
+    paths:
+      - dist
+  cache:
+    key: node-cache
+    paths:
+      - node_modules/
+
 docker-build-app:
   image: docker
-  stage: build
+  stage: release
   services:
     - docker:dind
   before_script:
