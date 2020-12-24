@@ -1,6 +1,7 @@
 image: python:latest
 
 stages:
+  - build-ng
   - check
   - test
   - build
@@ -76,13 +77,14 @@ docker-build:
 
 build-ng:
   image: node
-  stage: build
+  stage: build-ng
   script:
+    - cd app/
     - npm install
     - npm run build app --prod
   artifacts:
     paths:
-      - dist
+      - app/dist/
   cache:
     key: node-cache
     paths:
