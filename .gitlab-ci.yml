@@ -30,14 +30,14 @@ bandit:
   stage: check
   script:
     - export PATH=$PATH:.pip/bin/
-    - pip install bandit
+    - pip install --user bandit
     - bandit -r .
 
 yapf:
   stage: check
   script:
     - export PATH=$PATH:.pip/bin/
-    - pip install yapf
+    - pip install --user yapf
     - yapf --quiet --recursive .
 
 django_test:
@@ -47,7 +47,7 @@ django_test:
   script:
     - python -V # Print out python version for debugging
     - export PATH=$PATH:.pip/bin/
-    - pip install -r requirements.txt
+    - pip install --user -r requirements.txt
     - python manage.py test
 
 docker-build-master:
