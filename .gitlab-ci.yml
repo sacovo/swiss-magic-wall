@@ -12,12 +12,14 @@ variables:
   SQL_HOST: postgres
   SQL_ENGINE: django.db.backends.postgresql
   DOCKER_TLS_CERTDIR: "/certs"
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.pip-cache"
 
 # This folder is cached between builds
 # http://docs.gitlab.com/ee/ci/yaml/README.html#cache
 cache:
   paths:
-    - ~/.cache/pip/
+    - "$CI_PROJECT_DIR/.pip-cache"
+  key: "$CI_PROJECT_DIR"
 
 # This is a basic example for a gem or script which doesn't use
 # services such as redis or postgres
@@ -54,6 +56,7 @@ docker-build-master:
   script:
     - docker pull $CI_REGISTRY_IMAGE:latest || true
     - docker build --pull --cache-from "$CI_REGISTRY_IMAGE:latest" -t "$CI_REGISTRY_IMAGE" .
+    - docker run "$CI_REGISTRY_IMAGE:latest" python manage.py test
     - docker push "$CI_REGISTRY_IMAGE"
   only:
     - master
@@ -87,6 +90,9 @@ build-ng:
     key: node-cache
     paths:
       - app/node_modules/
+  only:
+    changes:
+      - app/
 
 docker-build-app:
   image: docker
@@ -100,3 +106,6 @@ docker-build-app:
     - docker push "$CI_REGISTRY_IMAGE:ngx"
   needs:
     - build-ng
+  only:
+    changes:
+      - app/
