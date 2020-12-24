@@ -13,6 +13,7 @@ variables:
   SQL_ENGINE: django.db.backends.postgresql
   DOCKER_TLS_CERTDIR: "/certs"
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.pip-cache"
+  PYTHONUSERBASE: "$CI_PROJECT_DIR/.pip"
 
 # This folder is cached between builds
 # http://docs.gitlab.com/ee/ci/yaml/README.html#cache
@@ -27,12 +28,14 @@ cache:
 bandit:
   stage: check
   script:
+    - export PATH=$PATH:.pip/bin/
     - pip install bandit
     - bandit -r .
 
 yapf:
   stage: check
   script:
+    - export PATH=$PATH:.pip/bin/
     - pip install yapf
     - yapf --quiet --recursive .
 
@@ -42,6 +45,7 @@ django_test:
   stage: test
   script:
     - python -V # Print out python version for debugging
+    - export PATH=$PATH:.pip/bin/
     - pip install -r requirements.txt
     - python manage.py test
 
@@ -56,7 +60,6 @@ docker-build-master:
   script:
     - docker pull $CI_REGISTRY_IMAGE:latest || true
     - docker build --pull --cache-from "$CI_REGISTRY_IMAGE:latest" -t "$CI_REGISTRY_IMAGE" .
-    - docker run "$CI_REGISTRY_IMAGE:latest" python manage.py test
     - docker push "$CI_REGISTRY_IMAGE"
   only:
     - master
