@@ -37,6 +37,6 @@ RUN chown app:app $APP_HOME/static $APP_HOME/media
 # change to the app user
 USER app
 
-RUN python manage.py compilemessages
+RUN python manage.py compilemessages --ignore .pip
 
 ENTRYPOINT ["/home/app/web/entrypoint.sh"]
