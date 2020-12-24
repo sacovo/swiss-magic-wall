@@ -31,14 +31,14 @@ bandit:
   script:
     - export PATH=$PATH:.pip/bin/
     - pip install --user bandit
-    - bandit -r .
+    - bandit --exclude ./.pip,./app --recursive ./
 
 yapf:
   stage: check
   script:
     - export PATH=$PATH:.pip/bin/
     - pip install --user yapf
-    - yapf --quiet --recursive .
+    - yapf --quiet --exclude .pip --exclude app --recursive .
 
 django_test:
   services:
