@@ -24,6 +24,7 @@ def update_results(data: dict, timestamp: Timestamp) -> bool:
     counting can stop.
     """
     all_finished = True
+    results = []
 
     for votation_data in iterate_votations(data):
         votation = update_votation(votation_data)
@@ -32,8 +33,15 @@ def update_results(data: dict, timestamp: Timestamp) -> bool:
 
         for kanton_data in iterate_kantone(votation_data):
             for gemeinde_data in iterate_gemeinden(kanton_data):
-                update_gemeinde(gemeinde_data, votation, timestamp)
-        calculate_projection.delay(votation.pk)
+                result = update_gemeinde(gemeinde_data, votation, timestamp)
+
+                if result:
+                    results.append(result)
+
+        Result.objects.bulk_create(results)
+
+        if not votation.is_finished:
+            calculate_projection.delay(votation.pk)
 
     return all_finished
 
@@ -99,13 +107,17 @@ def update_votation(data: dict) -> Votation:
     return votation
 
 
-def update_gemeinde(data: dict, votation: Votation, timestamp: Timestamp):
+def update_gemeinde(data: dict, votation: Votation, timestamp: Timestamp) -> Result:
     """
     Create a new result for the given gemeinde and votation if
     the count in this votation is finished.
     """
     gemeinde = Gemeinde.objects.get(geo_id=data["geoLevelnummer"])
-    input_json_result(gemeinde, votation, data["resltat"], timestamp)
+
+    if gemeinde.latestresult_set.filter(is_final=True, votation=votation).exists():
+        return
+
+    return input_json_result(gemeinde, votation, data["resltat"], timestamp)
 
 
 @shared_task

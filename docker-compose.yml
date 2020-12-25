@@ -18,7 +18,7 @@ services:
   app:
     build:
       context: ./app
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
       target: app
     volumes:
       - ./app/:/app

@@ -108,7 +108,7 @@ export class MapComponent implements OnInit {
   drawMap() {
     this.width = window.innerWidth - 200
     this.height = getHeight(this.width, this.topoJson)
-    const maxHeight = window.innerHeight - 64
+    const maxHeight = window.innerHeight - 38
 
     if (this.height > maxHeight) {
       this.width = this.width * (maxHeight / this.height)
