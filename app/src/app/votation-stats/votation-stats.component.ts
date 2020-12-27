@@ -1,5 +1,12 @@
 import { DatePipe, formatDate } from '@angular/common'
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core'
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core'
 import { COLOR_SCHEME, REFRESH_INTERVAL } from '../settings'
 import { VotationDataSeries } from '../votation'
 import { VotationService } from '../votation.service'
@@ -13,12 +20,12 @@ export class VotationStatsComponent implements OnInit, OnDestroy, OnChanges {
   data: VotationDataSeries[] = []
   xTicks: Date[] = []
   @Input() votationId!: number
-  @Input() cantonId: number | undefined
+  @Input() cantonId: number | null = null
   interval: number | undefined
 
   colorScheme = COLOR_SCHEME
 
-  view: any[] = [550, 260]
+  view: [number, number] = [550, 260]
   legend: boolean = true
   showLabels: boolean = true
   animations: boolean = false
@@ -74,10 +81,9 @@ export class VotationStatsComponent implements OnInit, OnDestroy, OnChanges {
     const entries = this.data[0].series
     const stepSize = Math.max(Math.round(entries.length / 8), 1)
     const steps = []
-    for(let i = 0; i < entries.length; i+=stepSize) {
+    for (let i = 0; i < entries.length; i += stepSize) {
       steps.push(entries[Math.round(i)].name)
     }
     this.xTicks = steps
   }
 }
-
