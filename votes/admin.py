@@ -35,6 +35,8 @@ class VotationDateAdmin(admin.ModelAdmin):
         for date in queryset:
             LatestResult.objects.filter(votation__date__id=date.id).delete()
             Result.objects.filter(votation__date__id=date.id).delete()
+            date.latest_hash = ''
+            date.save()
             tasks.init_votations.delay(date.id)
 
 

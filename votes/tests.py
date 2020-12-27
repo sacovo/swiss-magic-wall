@@ -22,7 +22,7 @@ class VotationDateInitTest(TestCase):
         """
         Test the whole fetching process in steps
         """
-        data = tasks.fetch_json_from(self.url)
+        data, _ = tasks.fetch_json_from(self.url)
 
         votation_list = tasks.iterate_votations(data)
         self.assertEqual(len(votation_list), 2)

@@ -10,6 +10,7 @@ from api import serializers
 # Create your views here.
 
 
+@cache_page(60 * 15)
 def votation_date_list(request: HttpRequest) -> JsonResponse:
     """
     A list of all votation dates,
@@ -21,6 +22,7 @@ def votation_date_list(request: HttpRequest) -> JsonResponse:
     return JsonResponse(serializer.data, safe=False)
 
 
+@cache_page(60)
 def votation_date_detail(request: HttpRequest, votation_date_id: int):
     """
     Info about the selected date and list of votations
@@ -37,6 +39,7 @@ def votation_date_detail(request: HttpRequest, votation_date_id: int):
     return JsonResponse(serializer.data)
 
 
+@cache_page(30)
 def votation_detail(request: HttpRequest, votation_id: int):
     """
     Dict for CH with:
@@ -60,6 +63,7 @@ def votation_detail(request: HttpRequest, votation_id: int):
     return JsonResponse(serializer.data)
 
 
+@cache_page(30)
 def votation_stats(request: HttpRequest,
                    votation_id: int,
                    canton_id=None) -> JsonResponse:

@@ -34,6 +34,7 @@ class VotationDate(models.Model):
     json_url = models.URLField(max_length=500, verbose_name=_("json url"))
     is_finished = models.BooleanField(default=False, verbose_name=_("is finished"))
     is_demo = models.BooleanField(default=False, verbose_name=_("is demo"))
+    latest_hash = models.CharField(max_length=500, verbose_name=_("latest hash"), blank=True)
 
     def __str__(self):
         return self.start_date.strftime("%Y-%m-%d")

@@ -1,10 +1,10 @@
 """
 shared tasks for fetching votation results
 """
-from typing import List, Iterable
+import hashlib
+from typing import List, Iterable, Tuple
 
 from celery import shared_task
-from django.conf import settings
 import requests
 
 from geo.models import Gemeinde, Kanton
@@ -12,9 +12,12 @@ from votes.models import Votation, VotationTitle, VotationDate
 from predict.models import Result, input_json_result, Timestamp, LatestResult
 
 
-def fetch_json_from(url) -> dict:
+def fetch_json_from(url) -> Tuple[dict, str]:
     """Retrieves the json from the given url and returns the json as dict"""
-    return requests.get(url).json()["schweiz"]
+    response = requests.get(url)
+    response_hash = hashlib.sha256(response.content).hexdigest()
+
+    return (response.json()["schweiz"], response_hash)
 
 
 def iterate_votations(data: Iterable[dict]) -> List[dict]:
@@ -121,8 +124,12 @@ def init_votations(votation_date_pk: int):
     votation_date = VotationDate.objects.get(pk=votation_date_pk)
     timestamp = Timestamp.objects.create()
 
-    data = fetch_json_from(votation_date.json_url)
+    data, h = fetch_json_from(votation_date.json_url)
     votation_list = iterate_votations(data)
+
+    if not votation_date.is_demo:
+        votation_date.latest_hash = h
+        votation_date.save()
 
     for votation_data in votation_list:
         votation = init_votation(votation_data, votation_date)

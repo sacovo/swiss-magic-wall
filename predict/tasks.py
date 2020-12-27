@@ -1,6 +1,7 @@
 """
 Shared tasks for calculating projections
 """
+import json
 import random
 
 from celery import shared_task
@@ -21,7 +22,7 @@ from votes.tasks import (
 )
 
 
-def apply_update(votation_data, timestamp_pk):
+def apply_update(votation_data, timestamp_pk) -> bool:
     timestamp = Timestamp.objects.get(pk=timestamp_pk)
 
     with transaction.atomic():
@@ -145,6 +146,14 @@ def check_running_counts():
         timestamp = Timestamp.objects.create()
 
         for active_votation_date in active_votation_dates:
-            active_votation_date.is_finished = update_results(
-                fetch_json_from(active_votation_date.json_url), timestamp)
+
+            data, h = fetch_json_from(active_votation_date.json_url)
+
+            if h == active_votation_date.latest_hash and not active_votation_date.is_demo:
+                continue
+
+            if not active_votation_date.is_demo:
+                active_votation_date.latest_hash = h
+
+            active_votation_date.is_finished = update_results(data, timestamp)
             active_votation_date.save()
