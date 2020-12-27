@@ -1,6 +1,13 @@
 mat-drawer {
   width: 200px;
+  mat-spinner {
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 2em;
+  }
 }
+
+
 
 :host::ng-deep {
   /* Inline #13 | http://127.0.0.1:4200/votation/6360 */
@@ -16,19 +23,19 @@ mat-drawer {
   }
 
   .advanced-pie-legend
-    .legend-items-container
-    .legend-items
-    .legend-item
-    .item-percent {
+  .legend-items-container
+  .legend-items
+  .legend-item
+  .item-percent {
     /* font-size: 24px; */
     font-size: 19px;
   }
 
   .advanced-pie-legend
-    .legend-items-container
-    .legend-items
-    .legend-item
-    .item-value {
+  .legend-items-container
+  .legend-items
+  .legend-item
+  .item-value {
     /* font-size: 24px; */
     /* margin-top: -6px; */
     font-size: 12px;
@@ -36,10 +43,10 @@ mat-drawer {
   }
 
   .advanced-pie-legend
-    .legend-items-container
-    .legend-items
-    .legend-item
-    .item-label {
+  .legend-items-container
+  .legend-items
+  .legend-item
+  .item-label {
     /* font-size: 14px; */
     font-size: 10px;
   }
@@ -50,10 +57,10 @@ mat-drawer {
   }
 
   .advanced-pie-legend
-    .legend-items-container
-    .legend-items
-    .legend-item
-    .item-color {
+  .legend-items-container
+  .legend-items
+  .legend-item
+  .item-color {
     /* border-left: 4px solid; */
     /* width: 4px; */
     border-left: 12px solid;
@@ -70,7 +77,7 @@ mat-toolbar {
   margin-top: 1em;
 }
 
-.votation-info .numbers  span {
+.votation-info .numbers span {
   font-weight: bold;
 }
 
@@ -92,4 +99,12 @@ mat-toolbar {
   flex-direction: row;
   align-items: center;
   justify-content: space-evenly;
+}
+
+mat-spinner#map-spinner {
+  position: absolute;
+  left: 210px;
+  top: 10px;
+  width: 20px;
+  height: 20px;
 }

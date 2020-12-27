@@ -8,6 +8,7 @@ import {
   SimpleChanges,
 } from '@angular/core'
 import { Title } from '@angular/platform-browser'
+import { REFRESH_INTERVAL } from '../settings'
 import { VotationDate } from '../votation'
 import { VotationDateService } from '../votation-date.service'
 
@@ -46,7 +47,7 @@ export class VotationDateDetailComponent
 
           this.interval = window.setInterval(() => {
             this.updateVotationDates()
-          }, 5000)
+          }, REFRESH_INTERVAL)
         })
     }
   }

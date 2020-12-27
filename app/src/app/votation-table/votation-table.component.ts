@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core'
 import { Title } from '@angular/platform-browser'
 import { ActivatedRoute, Router } from '@angular/router'
+import { REFRESH_INTERVAL } from '../settings'
 import { TopoService } from '../topo.service'
 import { getTitle, Votation } from '../votation'
 import { VotationService } from '../votation.service'
@@ -15,6 +16,7 @@ export class VotationTableComponent implements OnInit {
   votation!: Votation
   canton_rows: CantonEntry[] = []
   commune_rows: CommuneEntry[] = []
+  loading: boolean = false
 
   interval: number | undefined
   constructor(
@@ -37,15 +39,17 @@ export class VotationTableComponent implements OnInit {
       })
       this.interval = window.setInterval(() => {
         this.reloadVotation()
-      }, 20 * 1000)
+      }, REFRESH_INTERVAL)
     }
   }
 
   reloadVotation(): void {
     if (this.votation) {
+      this.loading = true
       this.votationService
         .getVotation(this.votation.id)
         .subscribe((votation) => {
+          this.loading = false
           this.updateVotation(votation)
           if (votation.is_finished) {
             clearInterval(this.interval)

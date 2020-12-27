@@ -12,7 +12,7 @@ class VotationDateAdmin(admin.ModelAdmin):
     admin for votation date
     """
 
-    list_display = ["start_date", "json_url"]
+    list_display = ["start_date", "json_url", "is_finished"]
     date_hierarchy = "start_date"
     actions = ["init_votations"]
 

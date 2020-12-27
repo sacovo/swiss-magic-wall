@@ -5,7 +5,11 @@ import { MapComponent } from '../map/map.component'
 import { Votation, getTitle, CantonResult } from '../votation'
 import { VotationService } from '../votation.service'
 
-import { COLOR_SCHEME, BINARY_COLOR_SCHEME } from '../settings'
+import {
+  COLOR_SCHEME,
+  BINARY_COLOR_SCHEME,
+  REFRESH_INTERVAL,
+} from '../settings'
 
 @Component({
   selector: 'app-votation-detail',
@@ -28,6 +32,8 @@ export class VotationDetailComponent implements OnInit, OnDestroy {
   index: any = {}
   cantonCounted: boolean = false
   communeCounted: boolean = false
+
+  loading: boolean = true
 
   results: any[] = []
 
@@ -56,6 +62,7 @@ export class VotationDetailComponent implements OnInit, OnDestroy {
     if (votationId) {
       this.votationService.getVotation(votationId).subscribe((votation) => {
         this.votation = votation
+        this.loading = false
         this.updateResults()
         this.buildIndex()
         this.map.updateCantons(votation.cantons)
@@ -66,7 +73,7 @@ export class VotationDetailComponent implements OnInit, OnDestroy {
       })
       this.interval = window.setInterval(() => {
         this.reloadVotation()
-      }, 2000)
+      }, REFRESH_INTERVAL)
     }
   }
 
@@ -177,7 +184,7 @@ export class VotationDetailComponent implements OnInit, OnDestroy {
         ]
         this.communeCounted = result.is_final
       } else {
-        this.communeResults = undefined;
+        this.communeResults = undefined
         this.communeCounted = false
       }
     }
@@ -248,19 +255,19 @@ export class VotationDetailComponent implements OnInit, OnDestroy {
   yesCountedPercent(): number {
     return (
       (this.votation.yes_counted /
-       (this.votation.yes_counted + this.votation.no_counted)) *
-       100
+        (this.votation.yes_counted + this.votation.no_counted)) *
+      100
     )
   }
 
   yesPredictedPercent(): number {
     return (
       ((this.votation.yes_predicted + this.votation.yes_counted) /
-       (this.votation.yes_predicted +
-        this.votation.no_predicted +
-        this.votation.yes_counted +
-        this.votation.no_counted)) *
-        100
+        (this.votation.yes_predicted +
+          this.votation.no_predicted +
+          this.votation.yes_counted +
+          this.votation.no_counted)) *
+      100
     )
   }
 
@@ -268,11 +275,11 @@ export class VotationDetailComponent implements OnInit, OnDestroy {
     if (this.selectedCanton) {
       return (
         ((this.selectedCanton.yes_total - this.selectedCanton.yes_predicted) /
-         (this.selectedCanton.yes_total -
-          this.selectedCanton.yes_predicted +
-          this.selectedCanton.no_total -
-          this.selectedCanton.no_predicted)) *
-          100
+          (this.selectedCanton.yes_total -
+            this.selectedCanton.yes_predicted +
+            this.selectedCanton.no_total -
+            this.selectedCanton.no_predicted)) *
+        100
       )
     }
     return 0
@@ -282,18 +289,18 @@ export class VotationDetailComponent implements OnInit, OnDestroy {
     if (this.selectedCanton) {
       return (
         (this.selectedCanton.yes_total /
-         (this.selectedCanton.yes_total + this.selectedCanton.no_total)) *
-         100
+          (this.selectedCanton.yes_total + this.selectedCanton.no_total)) *
+        100
       )
     }
     return 0
   }
 
   yesPercentCommune(): number {
-    return this.communeResults ? (
-      (this.communeResults[0]['value'] /
-       (this.communeResults[1]['value'] + this.communeResults[0]['value'])) *
-       100
-    ) : 0
+    return this.communeResults
+      ? (this.communeResults[0]['value'] /
+          (this.communeResults[1]['value'] + this.communeResults[0]['value'])) *
+          100
+      : 0
   }
 }

@@ -1,4 +1,4 @@
-export const REFRESH_INTERVAL = 20_000
+export const REFRESH_INTERVAL = 10_000
 
 export const RED = ''
 export const BLUE = ''

@@ -1,8 +1,9 @@
+from django.utils import timezone
 from rest_framework import serializers
-from django.db.models import Sum, F
+from django.db.models import Sum, F, Max
 
 from geo.models import Gemeinde, Kanton
-from predict.models import LatestResult
+from predict.models import LatestResult, Timestamp
 from votes.models import Votation, VotationDate, VotationTitle
 
 
@@ -122,28 +123,19 @@ class ExpandedVotationSerializer(VotationSerializer):
         many=True,
         read_only=True,
     )
+    timestamp = serializers.DateTimeField()
 
     def to_representation(self, instance):
         instance.kanton_results = instance.result_cantons().values()
         instance.prefetched = instance.latestresult_set.prefetch_related('gemeinde')
+        instance.timestamp = instance.latestresult_set.aggregate(t=Max('timestamp'))['t']
 
         return super().to_representation(instance)
 
     class Meta:
         model = Votation
         fields = [
-            'id',
-            'titles',
-            'is_finished',
-            'needs_staende',
-            'is_accepted',
-            'yes_counted',
-            'no_counted',
-            'yes_predicted',
-            'no_predicted',
-            'counted_communes',
-            'predicted_communes',
-            'communes',
-            'cantons',
-            'date_id',
+            'id', 'titles', 'is_finished', 'needs_staende', 'is_accepted', 'yes_counted',
+            'no_counted', 'yes_predicted', 'no_predicted', 'counted_communes',
+            'predicted_communes', 'communes', 'cantons', 'date_id', 'timestamp'
         ]

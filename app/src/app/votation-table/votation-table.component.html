@@ -1,4 +1,10 @@
-<mat-toolbar color="secondary" *ngIf="votation">
+<div class="heading" *ngIf="votation">
+  <div class="mat-typography">
+    <h1 class="mat-title">{{getTitle()}}</h1>
+    <h3 class="mat-subheading-1">
+      Letzte Aktualisierung: {{ votation.timestamp | date: "long" }}
+    </h3>
+  </div>
   <a
     class="map"
     [routerLink]="['/votation', votation.id]"
@@ -6,8 +12,7 @@
     color="primary"
     >Karte</a
   >
-  <h1>{{getTitle()}}</h1>
-</mat-toolbar>
+</div>
 <mat-tab-group>
   <mat-tab label="Kantone">
     <p-table *ngIf="votation" [value]="canton_rows" sortMode="multiple">

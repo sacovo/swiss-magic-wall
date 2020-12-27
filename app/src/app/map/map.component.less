@@ -1,6 +1,8 @@
 #map {
   display: flex;
   justify-content: flex-end;
+  background-color: #040f2d;
+
 }
 :host::ng-deep {
   .see {
@@ -10,6 +12,14 @@
   #map.noCantons .kanton {
     fill: transparent;
     stroke-width: 2px;
+  }
+
+  svg .switzerland {
+    fill: #000000;
+  }
+
+  .commune[state='predicted'] {
+    fill-opacity: 0.4;
   }
 
   .kanton {
@@ -33,4 +43,6 @@ img#wappen {
   right: 10px;
   width: 5vw;
   cursor: pointer;
+
+  filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.6));
 }

@@ -4,11 +4,12 @@ shared tasks for fetching votation results
 from typing import List, Iterable
 
 from celery import shared_task
+from django.conf import settings
 import requests
 
 from geo.models import Gemeinde, Kanton
 from votes.models import Votation, VotationTitle, VotationDate
-from predict.models import Result, input_json_result, Timestamp
+from predict.models import Result, input_json_result, Timestamp, LatestResult
 
 
 def fetch_json_from(url) -> dict:
@@ -88,6 +89,10 @@ def init_gemeinde(gemeinde_data: dict, kanton: Kanton, votation: Votation,
             "voters": gemeinde_data["resultat"].get("anzahlStimmberechtigte", 0) or 0,
         },
     )
+
+    if settings.FAKE_VOTATIONS:
+        LatestResult.objects.create(votation=votation, gemeinde=gemeinde)
+        return
 
     return input_json_result(gemeinde, votation, gemeinde_data["resultat"], timestamp)
 

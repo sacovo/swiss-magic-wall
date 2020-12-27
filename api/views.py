@@ -59,4 +59,8 @@ def votation_detail(request: HttpRequest, votation_id: int):
 
     serializer = serializers.ExpandedVotationSerializer(votation)
 
-    return JsonResponse(serializer.data)
+    return JsonResponse(serializer.data,
+                        json_dumps_params={
+                            'indent': 2,
+                            'allow_nan': False
+                        })

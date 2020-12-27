@@ -62,7 +62,7 @@ class VotingModel(models.Model):
     def build_projection_matrix(self):
         """Builds and saves the projection matrix"""
         votations = list(self.model_votations.all())
-        gemeinden = Gemeinde.objects.filter(result__votation_id=self.votation_id)
+        gemeinden = Gemeinde.objects.filter(latestresult__votation_id=self.votation_id)
 
         result_matrix = np.empty(shape=(len(gemeinden), len(votations)))
         particpation_matrix = np.empty(shape=(len(gemeinden), len(votations)))
@@ -131,11 +131,11 @@ class AbstractResult(models.Model):
     """
 
     id = models.BigAutoField(primary_key=True, verbose_name=_("id"))
-    yes_percent = models.FloatField(default=nan, verbose_name=_("yes percent"))
-    participation = models.FloatField(default=nan, verbose_name=_("participation"))
+    yes_percent = models.FloatField(default=0, verbose_name=_("yes percent"))
+    participation = models.FloatField(default=0, verbose_name=_("participation"))
 
-    yes_absolute = models.IntegerField(default=-1, verbose_name=_("yes absolute"))
-    no_absolute = models.IntegerField(default=-1, verbose_name=_("no absolute"))
+    yes_absolute = models.IntegerField(default=0, verbose_name=_("yes absolute"))
+    no_absolute = models.IntegerField(default=0, verbose_name=_("no absolute"))
 
     is_final = models.BooleanField(default=False, verbose_name=_("is final"))
 
@@ -191,7 +191,7 @@ def input_json_result(gemeinde: Gemeinde, votation: "Votation", result_data: dic
     is_final = result_data["gebietAusgezaehlt"]
 
     if not is_final:
-        LatestResult.objects.create(votation, gemeinde)
+        LatestResult.objects.get_or_create(votation=votation, gemeinde=gemeinde)
         return None
 
     info_dict = dict(
@@ -209,5 +209,10 @@ def input_json_result(gemeinde: Gemeinde, votation: "Votation", result_data: dic
     if result_data["anzahlStimmberechtigte"]:
         gemeinde.voters = result_data["anzahlStimmberechtigte"]
         gemeinde.save()
+    info_dict['id'] = None
 
-    return Result(gemeinde=gemeinde, votation=votation, timestamp=timestamp, **info_dict)
+    Result.objects.create(gemeinde=gemeinde,
+                          votation=votation,
+                          timestamp=timestamp,
+                          **info_dict)
+    return None

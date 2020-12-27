@@ -46,6 +46,7 @@ export interface CantonResult extends Result {
 export interface Votation extends SimpleVotation {
   communes: CommuneResult[]
   cantons: CantonResult[]
+  timestamp: Date
 }
 
 export function getTitle(

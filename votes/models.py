@@ -127,8 +127,12 @@ class Votation(models.Model):
         predicted = {x["geo_id"]: x for x in predicted}
 
         for geo_id in total:
-            total[geo_id]["yes_counted"] = counted[geo_id]["yes"]
-            total[geo_id]["no_counted"] = counted[geo_id]["no"]
+            if geo_id in counted.keys():
+                total[geo_id]["yes_counted"] = counted[geo_id]["yes"]
+                total[geo_id]["no_counted"] = counted[geo_id]["no"]
+            else:
+                total[geo_id]["yes_counted"] = 0
+                total[geo_id]["no_counted"] = 0
 
             if geo_id in predicted.keys():
                 total[geo_id]["yes_predicted"] = predicted[geo_id]["yes"]
@@ -214,6 +218,7 @@ class Votation(models.Model):
     class Meta:
         verbose_name = _("votation")
         verbose_name_plural = _("votations")
+        ordering = ['-date__start_date']
 
 
 class VotationTitle(models.Model):

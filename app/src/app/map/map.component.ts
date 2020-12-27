@@ -87,6 +87,7 @@ export class MapComponent implements OnInit {
         return `${cssClass}_${d.properties.id}`
       })
       .attr('class', cssClass)
+      .attr('fill', '#fff')
       .on('click', clicked)
       .attr('d', this.path)
 
@@ -141,6 +142,8 @@ export class MapComponent implements OnInit {
     this.g = this.svg.append('g').attr('id', 'mapRoot')
 
     this.svg.call(this.zoom).on('dblclick.zoom', null)
+
+    this.appendFeatures(topojson.feature(this.topoJson, this.topoJson.objects.K4suis_18480101_gf), "switzerland")
 
     this.appendFeatures(
       topojson.feature(this.topoJson, this.topoJson.objects.K4voge_20201018_gf),
@@ -213,12 +216,17 @@ export class MapComponent implements OnInit {
     this.g.select(`#kanton_${obj.properties.id}`).attr('data-active', 'true')
   }
 
-  updateObject(geoId: number, type: string, result: number): void {
-    if (this.svg) {
+  updateObject(
+    geoId: number,
+    type: string,
+    result: number,
+    is_final: boolean
+  ): void {
+    if (this.svg && !isNaN(result)) {
       this.svg
         .select(`#${type}_${geoId}`)
         .attr('fill', this.colorScale(result))
-        .attr('title', result)
+        .attr('state', is_final ? 'final' : 'predicted')
     }
   }
 
@@ -227,7 +235,8 @@ export class MapComponent implements OnInit {
       this.updateObject(
         obj.geo_id,
         type,
-        obj.yes_total / (obj.yes_total + obj.no_total)
+        obj.yes_total / (obj.yes_total + obj.no_total),
+        obj.is_final
       )
     })
   }
