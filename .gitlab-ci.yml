@@ -94,9 +94,7 @@ build-ng:
     key: node-cache
     paths:
       - app/node_modules/
-  only:
-    changes:
-      - app/
+
 
 docker-build-app:
   image: docker
@@ -110,6 +108,4 @@ docker-build-app:
     - docker push "$CI_REGISTRY_IMAGE:ngx"
   needs:
     - build-ng
-  only:
-    changes:
-      - app/
+
