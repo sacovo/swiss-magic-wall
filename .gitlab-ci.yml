@@ -96,7 +96,7 @@ build-ng:
       - app/node_modules/
   only:
     changes:
-      - app/
+      - "app/**"
 
 docker-build-app:
   image: docker
@@ -112,4 +112,4 @@ docker-build-app:
     - build-ng
   only:
     changes:
-      - app/
+      - "app/**"
