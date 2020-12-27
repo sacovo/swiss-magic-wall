@@ -25,7 +25,7 @@ export class VotationStatsComponent implements OnInit, OnDestroy, OnChanges {
 
   colorScheme = COLOR_SCHEME
 
-  view: [number, number] = [550, 260]
+  view: [number, number] = [600, 180]
   legend: boolean = true
   showLabels: boolean = true
   animations: boolean = false
@@ -35,7 +35,7 @@ export class VotationStatsComponent implements OnInit, OnDestroy, OnChanges {
   showXAxisLabel: boolean = true
   xAxisLabel: string = 'Zeit'
   yAxisLabel: string = 'Zustimmung in %'
-  timeline: boolean = true
+  timeline: boolean = false
 
   xAxisTickFormatting = (t: Date) => formatDate(t, 'HH:mm:ss', 'de-CH')
 

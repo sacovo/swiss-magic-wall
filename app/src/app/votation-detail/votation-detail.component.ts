@@ -161,8 +161,8 @@ export class VotationDetailComponent implements OnInit, OnDestroy {
             name: 'JA gezählt',
             value: result.yes_total - result.yes_predicted,
           },
-          { name: 'NEIN prognostiziert', value: result.no_predicted },
           { name: 'JA prognostiziert', value: result.yes_predicted },
+          { name: 'NEIN prognostiziert', value: result.no_predicted },
           {
             name: 'NEIN gezählt',
             value: result.no_total - result.no_predicted,
