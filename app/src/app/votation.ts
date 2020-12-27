@@ -63,3 +63,13 @@ export function getTitle(
 
   return ''
 }
+
+interface VotationDataPoint {
+  name: Date
+  value: number
+}
+
+export interface VotationDataSeries {
+  name: string
+  series: VotationDataPoint[]
+}

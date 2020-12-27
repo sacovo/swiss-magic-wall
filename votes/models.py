@@ -1,6 +1,6 @@
-from operator import ge
 from django.db.models.aggregates import Count
-from django.db.models.fields import FloatField
+from django.db.models.expressions import ExpressionWrapper
+from django.db.models.fields import CharField, FloatField
 from django.db.models.query import QuerySet
 import numpy as np
 from django.db import models
@@ -33,6 +33,7 @@ class VotationDate(models.Model):
 
     json_url = models.URLField(max_length=500, verbose_name=_("json url"))
     is_finished = models.BooleanField(default=False, verbose_name=_("is finished"))
+    is_demo = models.BooleanField(default=False, verbose_name=_("is demo"))
 
     def __str__(self):
         return self.start_date.strftime("%Y-%m-%d")
@@ -71,7 +72,7 @@ class Votation(models.Model):
 
     is_accepted = models.BooleanField(default=False, verbose_name=_("is accepted"))
 
-    tags = TaggableManager()
+    tags = TaggableManager(blank=True)
 
     def result_dict(self) -> dict:
         """Returns a dict with results for the votation"""
@@ -153,6 +154,32 @@ class Votation(models.Model):
                 gemeinde__kanton_id=canton_id).order_by()
 
         return annotate_communes(queryset)
+
+    def get_count_stats(self, canton_id=None):
+        query = self.result_set.order_by('timestamp__t').values('timestamp')
+
+        if canton_id:
+            query = query.filter(gemeinde__kanton_id=canton_id)
+
+        annotate_dict = {
+            'yes': Cast(Sum("yes_absolute"), models.FloatField()),
+            'no': Cast(Sum("no_absolute"), models.FloatField()),
+            'name': F('timestamp__t'),
+            'value': F('yes') / (F('yes') + F('no')) * 100,
+            'count': Count('id')
+        }
+
+        return [{
+            'name': "Prognose",
+            'series': list(query.annotate(**annotate_dict).values('name', 'value'))
+        }, {
+            'name':
+                "Count",
+            'series':
+                list(
+                    query.filter(is_final=True).annotate(**annotate_dict).values(
+                        'name', 'value'))
+        }]
 
     def __str__(self):
         language_code: str = get_language()

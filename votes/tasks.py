@@ -34,7 +34,7 @@ def iterate_gemeinden(kanton_data) -> List[dict]:
 
 def init_votation(votation_data: dict, votation_date: VotationDate) -> Votation:
     """Read metadata from votation json and create votation in database if not already present"""
-    votation, _ = Votation.objects.get_or_create(
+    votation, _ = Votation.objects.update_or_create(
         id=votation_data["vorlagenId"],
         defaults={
             "date": votation_date,
@@ -90,7 +90,7 @@ def init_gemeinde(gemeinde_data: dict, kanton: Kanton, votation: Votation,
         },
     )
 
-    if settings.FAKE_VOTATIONS:
+    if votation.date.is_demo:
         LatestResult.objects.create(votation=votation, gemeinde=gemeinde)
         return
 

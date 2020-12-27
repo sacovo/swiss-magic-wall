@@ -10,4 +10,9 @@ urlpatterns = [
          views.votation_date_detail,
          name="votation_date_detail"),
     path("votation/<int:votation_id>/", views.votation_detail, name="votation_detail"),
+    path("votation/<int:votation_id>/stats/", views.votation_stats,
+         name="votation_stats"),
+    path("votation/<int:votation_id>/stats/<int:canton_id>/",
+         views.votation_stats,
+         name="votation_stats_canton"),
 ]

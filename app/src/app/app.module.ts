@@ -13,6 +13,7 @@ import { MatListModule } from '@angular/material/list'
 import { MatTabsModule } from '@angular/material/tabs'
 import { TableModule } from 'primeng/table'
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
+import { MatExpansionModule } from '@angular/material/expansion'
 
 import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
@@ -25,6 +26,7 @@ import { AboutComponent } from './about/about.component'
 import { VotationTableComponent } from './votation-table/votation-table.component'
 import { registerLocaleData } from '@angular/common'
 import localeDECH from '@angular/common/locales/de-CH'
+import { VotationStatsComponent } from './votation-stats/votation-stats.component'
 registerLocaleData(localeDECH)
 
 @NgModule({
@@ -37,6 +39,7 @@ registerLocaleData(localeDECH)
     VotationDateDetailComponent,
     AboutComponent,
     VotationTableComponent,
+    VotationStatsComponent,
   ],
   imports: [
     BrowserModule,
@@ -52,6 +55,7 @@ registerLocaleData(localeDECH)
     MatListModule,
     MatTabsModule,
     TableModule,
+    MatExpansionModule,
     MatProgressSpinnerModule,
   ],
   providers: [{ provide: LOCALE_ID, useValue: 'de-CH' }],

@@ -1,3 +1,4 @@
+from predict.models import LatestResult, Result
 from django.contrib import admin, messages
 from django.utils.translation import gettext as _
 from django.shortcuts import redirect, reverse
@@ -14,7 +15,8 @@ class VotationDateAdmin(admin.ModelAdmin):
 
     list_display = ["start_date", "json_url", "is_finished"]
     date_hierarchy = "start_date"
-    actions = ["init_votations"]
+
+    actions = ["init_votations", "reset_votations"]
 
     def init_votations(self, request, queryset):
         """
@@ -27,6 +29,15 @@ class VotationDateAdmin(admin.ModelAdmin):
             _(f"started fetching for {len(queryset)} votation dates"),
             messages.SUCCESS,
         )
+
+    def reset_votations(self, request, queryset):
+
+        for date in queryset:
+            LatestResult.objects.filter(votation__date__id=date.id).delete()
+            Result.objects.filter(votation__date__id=date.id).delete()
+            tasks.init_votations.delay(date.id)
+
+
 
     init_votations.short_description = _("init votations")
 

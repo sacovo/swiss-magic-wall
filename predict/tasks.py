@@ -21,6 +21,22 @@ from votes.tasks import (
 )
 
 
+def apply_update(votation_data, timestamp_pk):
+    timestamp = Timestamp.objects.get(pk=timestamp_pk)
+
+    with transaction.atomic():
+        votation = update_votation(votation_data)
+
+        for kanton_data in iterate_kantone(votation_data):
+            for gemeinde_data in iterate_gemeinden(kanton_data):
+                update_gemeinde(gemeinde_data, votation, timestamp)
+
+        if not votation.is_finished:
+            calculate_projection(votation.pk, timestamp.pk)
+
+        return votation.is_finished
+
+
 def update_results(data: dict, timestamp: Timestamp) -> bool:
     """
     Iterates over the votations in the data list,
@@ -30,17 +46,7 @@ def update_results(data: dict, timestamp: Timestamp) -> bool:
     all_finished = True
 
     for votation_data in iterate_votations(data):
-        with transaction.atomic():
-            votation = update_votation(votation_data)
-
-            all_finished = all_finished and votation.is_finished
-
-            for kanton_data in iterate_kantone(votation_data):
-                for gemeinde_data in iterate_gemeinden(kanton_data):
-                    update_gemeinde(gemeinde_data, votation, timestamp)
-
-            if not votation.is_finished:
-                calculate_projection(votation.pk, timestamp.pk)
+        all_finished = apply_update(votation_data, timestamp.pk) and all_finished
 
     return all_finished
 
@@ -104,7 +110,7 @@ def update_votation(data: dict) -> Votation:
     """
     votation: Votation = Votation.objects.get(id=data["vorlagenId"])
 
-    if not settings.FAKE_VOTATIONS:
+    if not votation.date.is_demo:
         votation.is_finished = data["vorlageBeendet"]
     votation.is_accepted = data["vorlageAngenommen"]
     votation.save()
@@ -117,13 +123,13 @@ def update_gemeinde(data: dict, votation: Votation, timestamp: Timestamp) -> Res
     Create a new result for the given gemeinde and votation if
     the count in this votation is finished.
     """
-    if settings.FAKE_VOTATIONS and random.random() < 0.8: # nosec
-        return
-
     gemeinde = Gemeinde.objects.get(geo_id=data["geoLevelnummer"])
 
-    if gemeinde.latestresult_set.filter(is_final=True, votation=votation).exists():
-        return
+    if votation.date.is_demo and random.random() < 0.95: # nosec
+        result = LatestResult.objects.get(gemeinde=gemeinde, votation=votation)
+
+        if not result.is_final:
+            return
 
     input_json_result(gemeinde, votation, data["resultat"], timestamp)
 
@@ -139,7 +145,6 @@ def check_running_counts():
         timestamp = Timestamp.objects.create()
 
         for active_votation_date in active_votation_dates:
-            print(active_votation_date)
             active_votation_date.is_finished = update_results(
                 fetch_json_from(active_votation_date.json_url), timestamp)
             active_votation_date.save()

@@ -81,31 +81,50 @@
         <mat-card-title>
           <h1 class="votation-title">{{getTitle()}}</h1>
         </mat-card-title>
-        <mat-card-subtitle
-          >Letzte Aktualisierung: {{ votation.timestamp | date: "long" }}
-        </mat-card-subtitle>
+        <mat-card-subtitle> </mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
-        <ngx-charts-advanced-pie-chart
-          *ngIf="!selectedCantonId"
-          class="overview"
-          [view]="[600,200]"
-          [results]="pieResults"
-          [gradient]="false"
-          [animations]="false"
-          [scheme]="colorScheme"
-        >
-        </ngx-charts-advanced-pie-chart>
-        <ngx-charts-advanced-pie-chart
-          *ngIf="selectedCantonId"
-          class="overview"
-          [view]="[600,200]"
-          [results]="pieResultsCanton"
-          [gradient]="false"
-          [animations]="false"
-          [scheme]="colorScheme"
-        >
-        </ngx-charts-advanced-pie-chart>
+        <mat-accordion multi>
+          <mat-expansion-panel [expanded]="true">
+            <mat-expansion-panel-header>
+              <mat-panel-title> Resultat </mat-panel-title>
+              <mat-panel-description
+                >Letzte Aktualisierung: {{ votation.timestamp | date: "medium"
+                }}</mat-panel-description
+              >
+            </mat-expansion-panel-header>
+            <ngx-charts-advanced-pie-chart
+              *ngIf="!selectedCantonId"
+              class="overview"
+              [view]="[600,200]"
+              [results]="pieResults"
+              [gradient]="false"
+              [animations]="false"
+              [scheme]="colorScheme"
+            >
+            </ngx-charts-advanced-pie-chart>
+            <ngx-charts-advanced-pie-chart
+              *ngIf="selectedCantonId"
+              class="overview"
+              [view]="[600,200]"
+              [results]="pieResultsCanton"
+              [gradient]="false"
+              [animations]="false"
+              [scheme]="colorScheme"
+            >
+            </ngx-charts-advanced-pie-chart>
+          </mat-expansion-panel>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title> Verlauf </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <app-votation-stats
+              [cantonId]="selectedCantonId"
+              [votationId]="votation.id"
+            ></app-votation-stats>
+          </mat-expansion-panel>
+        </mat-accordion>
       </mat-card-content>
       <mat-card-actions>
         <a

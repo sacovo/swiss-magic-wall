@@ -184,7 +184,7 @@ class Result(AbstractResult):
 
 
 def input_json_result(gemeinde: Gemeinde, votation: "Votation", result_data: dict,
-                      timestamp: Timestamp) -> Result:
+                      timestamp: Timestamp):
     """
     Creates a new Result and updates or creates the latest result for this votation.
     """
@@ -192,7 +192,7 @@ def input_json_result(gemeinde: Gemeinde, votation: "Votation", result_data: dic
 
     if not is_final:
         LatestResult.objects.get_or_create(votation=votation, gemeinde=gemeinde)
-        return None
+        return
 
     info_dict = dict(
         is_final=is_final,
@@ -215,4 +215,4 @@ def input_json_result(gemeinde: Gemeinde, votation: "Votation", result_data: dic
                           votation=votation,
                           timestamp=timestamp,
                           **info_dict)
-    return None
+    return
