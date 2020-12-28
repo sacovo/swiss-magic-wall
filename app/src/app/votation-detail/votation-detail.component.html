@@ -4,8 +4,8 @@
     <div class="votation-info" *ngIf="votation">
       <h2>Schweiz</h2>
       <div class="numbers">
-        <span>{{yesCountedPercent() | number:"2.2-2"}}%</span>
-        <span>{{yesPredictedPercent() | number:"2.2-2"}}%</span>
+        <span>{{ yesCountedPercent() | number: '2.2-2' }}%</span>
+        <span>{{ yesPredictedPercent() | number: '2.2-2' }}%</span>
       </div>
       <ngx-charts-bar-vertical-stacked
         *ngIf="colorScheme && results"
@@ -25,12 +25,12 @@
 
     <div *ngIf="selectedCantonId" class="votation-info">
       <h2>
-        {{selectedCantonName}}
+        {{ selectedCantonName }}
         <mat-icon *ngIf="cantonCounted">verified</mat-icon>
       </h2>
       <div class="numbers">
-        <span>{{yesCountedPercentCanton() | number:"2.2-2"}}%</span>
-        <span>{{yesPredictedPercentCanton() | number:"2.2-2"}}%</span>
+        <span>{{ yesCountedPercentCanton() | number: '2.2-2' }}%</span>
+        <span>{{ yesPredictedPercentCanton() | number: '2.2-2' }}%</span>
       </div>
       <ngx-charts-bar-vertical-stacked
         *ngIf="colorScheme && results"
@@ -50,12 +50,12 @@
 
     <div *ngIf="selectedCommuneId" class="votation-info">
       <h2>
-        {{selectedCommuneName}}
+        {{ selectedCommuneName }}
         <mat-icon *ngIf="communeCounted">done</mat-icon>
         <mat-icon *ngIf="!communeCounted">history_toggle_off</mat-icon>
       </h2>
       <div class="numbers" *ngIf="communeResults">
-        <span>{{yesPercentCommune() | number:"2.2-2"}}%</span>
+        <span>{{ yesPercentCommune() | number: '2.2-2' }}%</span>
       </div>
       <ngx-charts-pie-chart
         *ngIf="communeResults"
@@ -89,7 +89,7 @@
         <mat-expansion-panel [expanded]="hideInfoPanel">
           <mat-expansion-panel-header id="votationTitle">
             <mat-panel-title>
-              <h1 class="votation-title">{{getTitle()}}</h1>
+              <h1 class="votation-title">{{ getTitle() }}</h1>
             </mat-panel-title>
           </mat-expansion-panel-header>
           <mat-accordion multi>
@@ -97,14 +97,16 @@
               <mat-expansion-panel-header>
                 <mat-panel-title> Resultat </mat-panel-title>
                 <mat-panel-description
-                  >Letzte Aktualisierung: {{ votation.timestamp | date: "medium"
+                  >Letzte Aktualisierung:
+                  {{
+                    votation.timestamp | date: 'medium'
                   }}</mat-panel-description
                 >
               </mat-expansion-panel-header>
               <ngx-charts-advanced-pie-chart
                 *ngIf="!selectedCantonId"
                 class="overview"
-                [view]="[600,220]"
+                [view]="[600, 220]"
                 [results]="pieResults"
                 [gradient]="false"
                 [animations]="false"
@@ -114,7 +116,7 @@
               <ngx-charts-advanced-pie-chart
                 *ngIf="selectedCantonId"
                 class="overview"
-                [view]="[600,220]"
+                [view]="[600, 220]"
                 [results]="pieResultsCanton"
                 [gradient]="false"
                 [animations]="false"

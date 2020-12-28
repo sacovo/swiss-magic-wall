@@ -1,8 +1,8 @@
 <div class="heading" *ngIf="votation">
   <div class="mat-typography">
-    <h1 class="mat-title">{{getTitle()}}</h1>
+    <h1 class="mat-title">{{ getTitle() }}</h1>
     <h3 class="mat-subheading-1">
-      Letzte Aktualisierung: {{ votation.timestamp | date: "long" }}
+      Letzte Aktualisierung: {{ votation.timestamp | date: 'long' }}
     </h3>
   </div>
   <a
@@ -103,26 +103,37 @@
               width="20"
               class="p-shadow-4"
             />
-            {{ canton.name}}
+            {{ canton.name }}
           </td>
-          <td class="number">{{ canton.yes_counted | number}}</td>
-          <td class="number">{{ canton.no_counted | number}}</td>
+          <td class="number">{{ canton.yes_counted | number }}</td>
+          <td class="number">{{ canton.no_counted | number }}</td>
           <td
-            [ngClass]="{'yes': canton.yes_percent_counted > 50, 'no': canton.yes_percent_counted <= 50, 'number': true}"
+            [ngClass]="{
+              yes: canton.yes_percent_counted > 50,
+              no: canton.yes_percent_counted <= 50,
+              number: true
+            }"
           >
-            {{ canton.yes_percent_counted| number:"2.3-3"}} %
+            {{ canton.yes_percent_counted | number: '2.3-3' }} %
           </td>
-          <td class="number">{{ canton.yes_predicted | number}}</td>
-          <td class="number">{{ canton.no_predicted | number}}</td>
+          <td class="number">{{ canton.yes_predicted | number }}</td>
+          <td class="number">{{ canton.no_predicted | number }}</td>
           <td
-            [ngClass]="{'yes': canton.yes_percent > 50, 'no': canton.yes_percent <= 50, 'number': true}"
+            [ngClass]="{
+              yes: canton.yes_percent > 50,
+              no: canton.yes_percent <= 50,
+              number: true
+            }"
           >
-            {{ canton.yes_percent | number:"2.3"}}%
+            {{ canton.yes_percent | number: '2.3' }}%
           </td>
           <td class="boolean">
             <i
               class="pi"
-              [ngClass]="{'true-icon pi-check-circle': canton.is_final, 'false-icon pi-times-circle': !canton.is_final}"
+              [ngClass]="{
+                'true-icon pi-check-circle': canton.is_final,
+                'false-icon pi-times-circle': !canton.is_final
+              }"
             ></i>
           </td>
         </tr>
@@ -139,7 +150,7 @@
       [rows]="25"
       [showCurrentPageReport]="true"
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-      [rowsPerPageOptions]="[25,50,100]"
+      [rowsPerPageOptions]="[25, 50, 100]"
     >
       <ng-template pTemplate="header">
         <tr>
@@ -204,18 +215,27 @@
         <tr style="height: 34px">
           <td>{{ commune.name }}</td>
           <td>{{ commune.canton }}</td>
-          <td class="number">{{ commune.yes_total | number}}</td>
-          <td class="number">{{ commune.no_total | number}}</td>
+          <td class="number">{{ commune.yes_total | number }}</td>
+          <td class="number">{{ commune.no_total | number }}</td>
           <td
-            [ngClass]="{'yes': commune.yes_percent > 50, 'no': commune.yes_percent <= 50, 'number': true}"
+            [ngClass]="{
+              yes: commune.yes_percent > 50,
+              no: commune.yes_percent <= 50,
+              number: true
+            }"
           >
-            {{ commune.yes_percent | number:"2.3-3"}} %
+            {{ commune.yes_percent | number: '2.3-3' }} %
           </td>
-          <td class="number">{{ commune.participation | number:"2.3-3"}} %</td>
+          <td class="number">
+            {{ commune.participation | number: '2.3-3' }} %
+          </td>
           <td class="boolean">
             <i
               class="pi"
-              [ngClass]="{'true-icon pi-check-circle': commune.final, 'false-icon pi-times-circle': !commune.final}"
+              [ngClass]="{
+                'true-icon pi-check-circle': commune.final,
+                'false-icon pi-times-circle': !commune.final
+              }"
             ></i>
           </td>
         </tr>

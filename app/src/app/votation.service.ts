@@ -16,9 +16,14 @@ export class VotationService {
     return this.http.get<Votation>(this.apiURL + id + '/')
   }
 
-  getVotationStats(id: number | string, cantonId?: number | string): Observable<VotationDataSeries[]> {
+  getVotationStats(
+    id: number | string,
+    cantonId?: number | string
+  ): Observable<VotationDataSeries[]> {
     if (cantonId) {
-      return this.http.get<VotationDataSeries[]>(this.apiURL + id + '/stats/' + cantonId + "/")
+      return this.http.get<VotationDataSeries[]>(
+        this.apiURL + id + '/stats/' + cantonId + '/'
+      )
     }
     return this.http.get<VotationDataSeries[]>(this.apiURL + id + '/stats/')
   }

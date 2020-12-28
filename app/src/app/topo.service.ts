@@ -33,7 +33,6 @@ export class TopoService {
     return this.data
   }
 
-
   getCantonName(id: number): string {
     return this.canton_names[id]
   }

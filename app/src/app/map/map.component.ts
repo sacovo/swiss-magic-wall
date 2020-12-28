@@ -49,7 +49,7 @@ export class MapComponent implements OnInit {
   private width = 0
   private height = 0
   private topoJson: any
-  fullWidth= false;
+  fullWidth = false
 
   hideCantons = false
 
@@ -108,7 +108,8 @@ export class MapComponent implements OnInit {
   }
 
   drawMap() {
-    this.width = window.innerWidth < 900 ? window.innerWidth : window.innerWidth - 200
+    this.width =
+      window.innerWidth < 900 ? window.innerWidth : window.innerWidth - 200
     this.height = getHeight(this.width, this.topoJson)
     const maxHeight = window.innerHeight - 38
 
@@ -144,7 +145,10 @@ export class MapComponent implements OnInit {
 
     this.svg.call(this.zoom).on('dblclick.zoom', null)
 
-    this.appendFeatures(topojson.feature(this.topoJson, this.topoJson.objects.K4suis_18480101_gf), "switzerland")
+    this.appendFeatures(
+      topojson.feature(this.topoJson, this.topoJson.objects.K4suis_18480101_gf),
+      'switzerland'
+    )
 
     this.appendFeatures(
       topojson.feature(this.topoJson, this.topoJson.objects.K4voge_20201018_gf),
