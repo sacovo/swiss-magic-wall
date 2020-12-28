@@ -1,5 +1,6 @@
 mat-drawer {
-  width: 200px;
+  width: 201px;
+  overflow-x: hidden;
   mat-spinner {
     margin-right: auto;
     margin-left: auto;
@@ -91,18 +92,30 @@ mat-toolbar {
   font-weight: bold;
 }
 
+.moreStats.openBar {
+  max-width: calc(100vw - 20px - 200px);
+
+}
+
 .moreStats {
   width: 690px;
-  max-width: 95vw;
-  max-height: 90vh;
-  overflow: auto;
+  max-width: calc(100vw - 20px);
+  overflow: hidden;
   position: fixed;
   right: 10px;
   bottom: 10px;
+  z-index: 5;
   h1 {
-    font-size: 1.2rem;
+    font-size: 1rem;
+    line-height: 1rem;
+    margin: 0.8rem 0;
   }
   font-size: 0.8rem;
+
+  .stat-content {
+    max-height: 50vh;
+    overflow: auto;
+  }
 }
 
 #closeSidebar {
@@ -111,7 +124,7 @@ mat-toolbar {
   left: 20px;
 }
 
-mat-card-actions {
+.button-bar {
   display: flex;
   flex-direction: row;
   justify-content: space-between;

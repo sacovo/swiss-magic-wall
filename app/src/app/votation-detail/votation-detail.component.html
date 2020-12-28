@@ -1,5 +1,5 @@
 <mat-drawer-container class="example-container" hasBackdrop="false">
-  <mat-drawer opened mode="side" #sideDrawer>
+  <mat-drawer [opened]="!hideInfoPanel" mode="side" #sideDrawer>
     <mat-spinner *ngIf="!votation"> </mat-spinner>
     <div class="votation-info" *ngIf="votation">
       <h2>Schweiz</h2>
@@ -79,63 +79,66 @@
     <button (click)="sideDrawer.toggle()" mat-mini-fab id="closeSidebar">
       <mat-icon>menu</mat-icon>
     </button>
-    <mat-card class="moreStats mat-elevation-z4" *ngIf="votation" #infoPanel>
-      <mat-card-content>
-        <mat-expansion-panel [expanded]="!hideInfoPanel">
-          <mat-expansion-panel-header id="votationTitle">
-            <mat-panel-title>
-              <h1 class="votation-title">{{ getTitle() }}</h1>
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <mat-accordion multi>
-            <mat-expansion-panel [expanded]="true">
-              <mat-expansion-panel-header>
-                <mat-panel-title> Resultat </mat-panel-title>
-                <mat-panel-description
-                  >Letzte Aktualisierung: {{ votation.timestamp | date: 'medium'
-                  }}</mat-panel-description
-                >
-              </mat-expansion-panel-header>
-              <ngx-charts-advanced-pie-chart
-                *ngIf="!selectedCantonId"
-                class="overview"
-                [view]="[600, 220]"
-                [results]="pieResults"
-                [gradient]="false"
-                [animations]="false"
-                [scheme]="colorScheme"
+    <mat-expansion-panel
+      [expanded]="!hideInfoPanel"
+      class="moreStats openBar"
+      [ngClass]="{'moreStats': true, 'openBar': sideDrawer.opened}"
+      *ngIf="votation"
+    >
+      <mat-expansion-panel-header id="votationTitle">
+        <mat-panel-title>
+          <h1 class="votation-title">{{ getTitle() }}</h1>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div class="stat-content">
+        <mat-accordion multi>
+          <mat-expansion-panel [expanded]="true">
+            <mat-expansion-panel-header>
+              <mat-panel-title> Resultat </mat-panel-title>
+              <mat-panel-description
+                >Letzte Aktualisierung: {{ votation.timestamp | date: 'medium'
+                }}</mat-panel-description
               >
-              </ngx-charts-advanced-pie-chart>
-              <ngx-charts-advanced-pie-chart
-                *ngIf="selectedCantonId"
-                class="overview"
-                [view]="[600, 220]"
-                [results]="pieResultsCanton"
-                [gradient]="false"
-                [animations]="false"
-                [scheme]="colorScheme"
-              >
-              </ngx-charts-advanced-pie-chart>
-            </mat-expansion-panel>
-            <mat-expansion-panel>
-              <mat-expansion-panel-header>
-                <mat-panel-title> Verlauf </mat-panel-title>
-              </mat-expansion-panel-header>
+            </mat-expansion-panel-header>
+            <ngx-charts-advanced-pie-chart
+              *ngIf="!selectedCantonId"
+              class="overview"
+              [view]="[600, 200]"
+              [results]="pieResults"
+              [gradient]="false"
+              [animations]="false"
+              [scheme]="colorScheme"
+            >
+            </ngx-charts-advanced-pie-chart>
+            <ngx-charts-advanced-pie-chart
+              *ngIf="selectedCantonId"
+              class="overview"
+              [view]="[600, 200]"
+              [results]="pieResultsCanton"
+              [gradient]="false"
+              [animations]="false"
+              [scheme]="colorScheme"
+            >
+            </ngx-charts-advanced-pie-chart>
+          </mat-expansion-panel>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title> Verlauf </mat-panel-title>
+            </mat-expansion-panel-header>
 
-              <app-votation-stats
-                [cantonId]="selectedCantonId"
-                [votationId]="votation.id"
-              ></app-votation-stats>
-            </mat-expansion-panel>
-          </mat-accordion>
-        </mat-expansion-panel>
-      </mat-card-content>
-      <mat-card-actions>
+            <app-votation-stats
+              [cantonId]="selectedCantonId"
+              [votationId]="votation.id"
+            ></app-votation-stats>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+      <div class="button-bar">
         <a
           class="back"
           *ngIf="votation"
           [routerLink]="['/date', votation.date_id]"
-          mat-flat-button
+          mat-raised-button
           color="secondary"
           >Zurück</a
         >
@@ -143,11 +146,11 @@
           class="table"
           *ngIf="votation"
           [routerLink]="['/votation', votation.id, 'table']"
-          mat-flat-button
+          mat-raised-button
           color="primary"
           >Tabelle</a
         >
-      </mat-card-actions>
-    </mat-card>
+      </div>
+    </mat-expansion-panel>
   </mat-drawer-content>
 </mat-drawer-container>
