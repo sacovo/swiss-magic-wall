@@ -15,7 +15,12 @@
 </div>
 <mat-tab-group>
   <mat-tab label="Kantone">
-    <p-table *ngIf="votation" [value]="canton_rows" sortMode="multiple">
+    <p-table
+      styleClass="p-datatable-sm"
+      *ngIf="votation"
+      [value]="canton_rows"
+      sortMode="multiple"
+    >
       <ng-template pTemplate="header">
         <tr>
           <th pSortableColumn="name">
