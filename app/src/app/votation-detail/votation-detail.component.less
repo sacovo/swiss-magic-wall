@@ -107,7 +107,8 @@ mat-toolbar {
   z-index: 5;
   h1 {
     font-size: 1rem;
-    line-height: 1rem;
+    font-size: clamp(0.8rem, 4vw, 1.4rem);
+    line-height: 1.2em;
     margin: 0.8rem 0;
   }
   font-size: 0.8rem;
@@ -125,6 +126,7 @@ mat-toolbar {
 }
 
 .button-bar {
+  margin-top: 0.2rem;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
