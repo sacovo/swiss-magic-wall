@@ -77,7 +77,7 @@ export class VotationDetailComponent implements OnInit, OnDestroy {
       }, REFRESH_INTERVAL)
     }
 
-    if (window.innerWidth < 900) {
+    if (window.innerWidth < 1000) {
       this.hideInfoPanel = true
     }
   }

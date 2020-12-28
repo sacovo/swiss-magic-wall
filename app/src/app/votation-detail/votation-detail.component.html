@@ -79,14 +79,9 @@
     <button (click)="sideDrawer.toggle()" mat-mini-fab id="closeSidebar">
       <mat-icon>menu</mat-icon>
     </button>
-    <mat-card
-      class="moreStats mat-elevation-z4"
-      *ngIf="votation"
-      #infoPanel
-      [hidden]="hideInfoPanel"
-    >
+    <mat-card class="moreStats mat-elevation-z4" *ngIf="votation" #infoPanel>
       <mat-card-content>
-        <mat-expansion-panel [expanded]="hideInfoPanel">
+        <mat-expansion-panel [expanded]="!hideInfoPanel">
           <mat-expansion-panel-header id="votationTitle">
             <mat-panel-title>
               <h1 class="votation-title">{{ getTitle() }}</h1>
@@ -97,9 +92,7 @@
               <mat-expansion-panel-header>
                 <mat-panel-title> Resultat </mat-panel-title>
                 <mat-panel-description
-                  >Letzte Aktualisierung:
-                  {{
-                    votation.timestamp | date: 'medium'
+                  >Letzte Aktualisierung: {{ votation.timestamp | date: 'medium'
                   }}</mat-panel-description
                 >
               </mat-expansion-panel-header>
