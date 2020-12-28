@@ -1,3 +1,4 @@
+<mat-spinner *ngIf="!date"></mat-spinner>
 <app-simple-votation
   *ngFor="let votation of date?.votations"
   [votation]="votation"

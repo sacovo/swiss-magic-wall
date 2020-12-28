@@ -32,6 +32,7 @@ export class VotationDateDetailComponent
 
   getVotationDate() {
     if (this.dateId > 0) {
+      this.date = undefined
       this.dateService
         .getVotationDate(this.dateId)
         .subscribe((date: VotationDate) => {
