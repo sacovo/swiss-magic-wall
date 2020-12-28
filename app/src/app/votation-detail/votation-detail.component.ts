@@ -130,8 +130,8 @@ export class VotationDetailComponent implements OnInit, OnDestroy {
 
       if (this.votation.is_finished) {
         this.pieResults = [
-          { name: 'Ja gezählt', value: this.votation.yes_counted },
-          { name: 'Nein gezählt', value: this.votation.no_counted },
+          { name: 'Ja', value: this.votation.yes_counted },
+          { name: 'Nein', value: this.votation.no_counted },
         ]
 
       } else {
@@ -174,11 +174,11 @@ export class VotationDetailComponent implements OnInit, OnDestroy {
         if (this.votation.is_finished) {
         this.pieResultsCanton = [
           {
-            name: 'JA gezählt',
+            name: 'JA',
             value: result.yes_total - result.yes_predicted,
           },
           {
-            name: 'NEIN gezählt',
+            name: 'NEIN',
             value: result.no_total - result.no_predicted,
           },
         ]
