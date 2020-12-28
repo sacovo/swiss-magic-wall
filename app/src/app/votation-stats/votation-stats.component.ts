@@ -25,7 +25,7 @@ export class VotationStatsComponent implements OnInit, OnDestroy, OnChanges {
 
   colorScheme = COLOR_SCHEME
 
-  view: [number, number] = [600, 180]
+  view: [number, number] = [580, 180]
   legend: boolean = true
   showLabels: boolean = true
   animations: boolean = false

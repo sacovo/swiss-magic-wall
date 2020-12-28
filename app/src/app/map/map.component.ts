@@ -49,6 +49,7 @@ export class MapComponent implements OnInit {
   private width = 0
   private height = 0
   private topoJson: any
+  fullWidth= false;
 
   hideCantons = false
 
@@ -107,7 +108,7 @@ export class MapComponent implements OnInit {
   }
 
   drawMap() {
-    this.width = window.innerWidth - 200
+    this.width = window.innerWidth < 900 ? window.innerWidth : window.innerWidth - 200
     this.height = getHeight(this.width, this.topoJson)
     const maxHeight = window.innerHeight - 38
 
@@ -126,14 +127,14 @@ export class MapComponent implements OnInit {
     this.svg = root
       .append('svg')
       .attr('viewbox', `0 0 ${window.innerWidth} ${maxHeight}`)
-      .attr('width', window.innerWidth - 200)
+      .attr('width', window.innerWidth)
       .attr('height', maxHeight)
       .attr('preserveAspectRatio', 'xMinYMin meet')
       .attr('version', '1.1')
       .on('dblclick', () => this.reset())
       .on('touchstart', (event: any) => {
         const timeSince = event.timeStamp - latestTap
-        if (timeSince < 800) {
+        if (timeSince < 600) {
           event.preventDefault()
           this.reset()
         }

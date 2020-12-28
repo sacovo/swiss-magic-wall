@@ -24,6 +24,7 @@ export class VotationDetailComponent implements OnInit, OnDestroy {
 
   colorScheme = COLOR_SCHEME
   binaryColorScheme = BINARY_COLOR_SCHEME
+  hideInfoPanel = false
 
   selectedCantonId: number | null = null
   selectedCantonName: string = ''
@@ -74,6 +75,10 @@ export class VotationDetailComponent implements OnInit, OnDestroy {
       this.interval = window.setInterval(() => {
         this.reloadVotation()
       }, REFRESH_INTERVAL)
+    }
+
+    if (window.innerWidth < 900) {
+      this.hideInfoPanel = true
     }
   }
 
@@ -302,5 +307,9 @@ export class VotationDetailComponent implements OnInit, OnDestroy {
           (this.communeResults[1]['value'] + this.communeResults[0]['value'])) *
           100
       : 0
+  }
+
+  toggleInfoPanel(): void {
+    this.hideInfoPanel = !this.hideInfoPanel
   }
 }

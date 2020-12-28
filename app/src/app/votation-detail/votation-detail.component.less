@@ -10,6 +10,9 @@ mat-drawer {
 :host::ng-deep {
   /* Inline #13 | http://127.0.0.1:4200/votation/6360 */
 
+  .mat-expansion-panel-body {
+    overflow-x: auto;
+  }
   .advanced-pie-legend .total-value {
     /* font-size: 36px; */
     font-size: 21px;
@@ -64,6 +67,16 @@ mat-drawer {
     border-left: 12px solid;
     width: 0px;
   }
+
+  mat-expansion-panel .mat-expansion-panel-body {
+    padding: 0 6px 16px;
+  }
+
+
+.mat-expansion-panel-header {
+    height: auto;
+    min-height: 48px;
+  }
 }
 
 mat-toolbar {
@@ -80,16 +93,29 @@ mat-toolbar {
 }
 
 .moreStats {
-  width: 630px;
-  max-width: 630px;
-  overflow: hidden;
-  position: absolute;
+  width: 690px;
+  max-width: 95vw;
+  max-height: 90vh;
+  overflow: auto;
+  position: fixed;
   right: 10px;
   bottom: 10px;
   h1 {
     font-size: 1.2rem;
   }
   font-size: 0.8rem;
+}
+
+#closeSidebar {
+  position: absolute;
+  top: 10px;
+  left: 20px;
+}
+
+mat-card-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .numbers {
@@ -100,7 +126,7 @@ mat-toolbar {
 }
 
 mat-spinner#map-spinner {
-  position: absolute;
+  position: fixed;
   left: 210px;
   top: 10px;
   width: 20px;
