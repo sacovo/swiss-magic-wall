@@ -73,3 +73,9 @@ export interface VotationDataSeries {
   name: string
   series: VotationDataPoint[]
 }
+
+export interface RelatedResult {
+  y: number
+  n: number
+  title: string
+}

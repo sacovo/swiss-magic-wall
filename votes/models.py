@@ -72,6 +72,7 @@ class Votation(models.Model):
     needs_staende = models.BooleanField(verbose_name=_("needs staende"))
 
     is_accepted = models.BooleanField(default=False, verbose_name=_("is accepted"))
+    related = models.ManyToManyField("self", blank=True)
 
     tags = TaggableManager(blank=True)
 
@@ -108,6 +109,37 @@ class Votation(models.Model):
             "percent_counted":
                 total_counted / (total_counted+total_predicted) if total_counted else 0,
         }
+
+    def related_stats(self):
+
+        return list(
+            self.related.annotate(
+                y=Sum('latestresult__yes_absolute'),
+                n=Sum('latestresult__no_absolute'),
+                l=F('titles__language_code'),
+                title=F('titles__title'),
+            ).filter(l="de").values('title', 'y', 'n'))
+
+    def related_stats_canton(self, canton_id: int):
+
+        return list(
+            self.related.annotate(
+                y=Sum('latestresult__yes_absolute'),
+                n=Sum('latestresult__no_absolute'),
+                l=F('titles__language_code'),
+                k=F('latestresult__gemeinde__kanton_id'),
+                title=F('titles__title'),
+            ).filter(l="de", k=canton_id).values('title', 'y', 'n'))
+
+    def related_stats_commune(self, commune_id: int):
+        return list(
+            self.related.annotate(
+                y=Sum('latestresult__yes_absolute'),
+                n=Sum('latestresult__no_absolute'),
+                l=F('titles__language_code'),
+                c=F('latestresult__gemeinde_id'),
+                title=F('titles__title'),
+            ).filter(l="de", c=commune_id).values('title', 'y', 'n'))
 
     def result_cantons(self) -> dict:
         """
@@ -161,6 +193,30 @@ class Votation(models.Model):
 
         if canton_id:
             query = query.filter(gemeinde__kanton_id=canton_id)
+
+        annotate_dict = {
+            'yes': Cast(Sum("yes_absolute"), models.FloatField()),
+            'no': Cast(Sum("no_absolute"), models.FloatField()),
+            'name': F('timestamp__t'),
+            'value': F('yes') / (F('yes') + F('no')) * 100,
+            'count': Count('id')
+        }
+
+        return [{
+            'name': "Prognose",
+            'series': list(query.annotate(**annotate_dict).values('name', 'value'))
+        }, {
+            'name':
+                "Count",
+            'series':
+                list(
+                    query.filter(is_final=True).annotate(**annotate_dict).values(
+                        'name', 'value'))
+        }]
+
+    def get_count_stats_commune(self, commune_id):
+        query = self.result_set.filter(
+            gemeinde_id=commune_id).order_by('timestamp__t').values('timestamp')
 
         annotate_dict = {
             'yes': Cast(Sum("yes_absolute"), models.FloatField()),

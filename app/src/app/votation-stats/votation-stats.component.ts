@@ -21,6 +21,7 @@ export class VotationStatsComponent implements OnInit, OnDestroy, OnChanges {
   xTicks: Date[] = []
   @Input() votationId!: number
   @Input() cantonId: number | null = null
+  @Input() communeId: number | null = null
   interval: number | undefined
 
   colorScheme = COLOR_SCHEME
@@ -50,13 +51,20 @@ export class VotationStatsComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if ('cantonId' in changes) {
+    if ('cantonId' in changes || 'communeId' in changes) {
       this.updateResults()
     }
   }
 
   updateResults() {
-    if (this.cantonId) {
+    if (this.communeId) {
+      this.votationService
+        .getVotationStatsCommune(this.votationId, this.communeId)
+        .subscribe((result: VotationDataSeries[]) => {
+          this.data = result
+          this.updateXTicks()
+        })
+    } else if (this.cantonId) {
       this.votationService
         .getVotationStats(this.votationId, this.cantonId)
         .subscribe((result: VotationDataSeries[]) => {

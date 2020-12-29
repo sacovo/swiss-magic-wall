@@ -44,7 +44,7 @@ export class MapComponent implements OnInit {
 
   private zoom = d3
     .zoom()
-    .scaleExtent([0.8, 8])
+    .scaleExtent([0.8, 12])
     .on('zoom', (event) => this.zoomed(event))
   private width = 0
   private height = 0
@@ -56,7 +56,9 @@ export class MapComponent implements OnInit {
   private colorScale: ScaleLinear<string, number, never>
   private g?: any
 
-  private cantonId: number = 0
+  private cantonId?: number = 0
+  private selectedCanton?: any
+  private communeId?: number
 
   @Output() mapUpdated = new EventEmitter()
   @Output() cantonSelect = new EventEmitter()
@@ -123,8 +125,6 @@ export class MapComponent implements OnInit {
     const root = d3.select('#map')
     root.html('')
 
-    let latestTap = 0
-
     this.svg = root
       .append('svg')
       .attr('viewbox', `0 0 ${window.innerWidth} ${maxHeight}`)
@@ -132,15 +132,6 @@ export class MapComponent implements OnInit {
       .attr('height', maxHeight)
       .attr('preserveAspectRatio', 'xMinYMin meet')
       .attr('version', '1.1')
-      .on('dblclick', () => this.reset())
-      .on('touchstart', (event: any) => {
-        const timeSince = event.timeStamp - latestTap
-        if (timeSince < 600) {
-          event.preventDefault()
-          this.reset()
-        }
-        latestTap = event.timeStamp
-      })
     this.g = this.svg.append('g').attr('id', 'mapRoot')
 
     this.svg.call(this.zoom).on('dblclick.zoom', null)
@@ -153,7 +144,9 @@ export class MapComponent implements OnInit {
     this.appendFeatures(
       topojson.feature(this.topoJson, this.topoJson.objects.K4voge_20201018_gf),
       'commune',
-      (event: any, obj: any) => this.communeSelect.emit(obj)
+      (event: any, obj: any) => {
+        this.selectCommune(obj)
+      }
     )
     this.appendFeatures(
       topojson.feature(this.topoJson, this.topoJson.objects.K4seen_yyymmdd11),
@@ -164,7 +157,7 @@ export class MapComponent implements OnInit {
       'kanton',
       (event: any, obj: any) => {
         event.stopPropagation()
-        this.selectCaton(obj)
+        this.selectCanton(obj)
         d3.pointer(event, this.svg.node())
       }
     )
@@ -176,19 +169,24 @@ export class MapComponent implements OnInit {
   }
 
   reset() {
-    this.svg
-      .transition()
-      .duration(400)
-      .call(
-        this.zoom.transform,
-        d3.zoomIdentity,
-        d3
-          .zoomTransform(this.svg.node())
-          .invert([this.width / 2, this.height / 2])
-      )
-    this.g.selectAll(`.kanton`).attr('data-active', 'false')
-    this.cantonId = 0
-    this.cantonSelect.emit(null)
+    if (this.communeId) {
+      this.communeId = undefined
+      this.selectCanton(this.selectedCanton)
+    } else {
+      this.svg
+        .transition()
+        .duration(400)
+        .call(
+          this.zoom.transform,
+          d3.zoomIdentity,
+          d3
+            .zoomTransform(this.svg.node())
+            .invert([this.width / 2, this.height / 2])
+        )
+      this.g.selectAll(`.kanton`).attr('data-active', 'false')
+      this.cantonId = 0
+      this.cantonSelect.emit(null)
+    }
   }
 
   zoomed(event: any) {
@@ -197,7 +195,7 @@ export class MapComponent implements OnInit {
     //this.g.attr('stroke-width', 1 / transform.k)
   }
 
-  selectCaton(obj: any) {
+  selectCanton(obj: any) {
     const [[x0, y0], [x1, y1]] = this.path.bounds(obj)
 
     this.svg
@@ -209,16 +207,40 @@ export class MapComponent implements OnInit {
           .translate(this.width / 2, this.height / 2)
           .scale(
             Math.min(
-              8,
+              10,
               0.9 / Math.max((x1 - x0) / this.width, (y1 - y0) / this.height)
             )
           )
           .translate(-(x0 + x1) / 2, -(y0 + y1) / 2)
       )
     this.cantonId = obj.properties.id
+    this.selectedCanton = obj
     this.cantonSelect.emit(obj)
     this.g.selectAll(`.kanton`).attr('data-active', 'false')
     this.g.select(`#kanton_${obj.properties.id}`).attr('data-active', 'true')
+  }
+
+  selectCommune(obj: any) {
+    const [[x0, y0], [x1, y1]] = this.path.bounds(obj)
+
+    this.svg
+      .transition()
+      .duration(400)
+      .call(
+        this.zoom.transform,
+        d3.zoomIdentity
+          .translate(this.width / 2, this.height / 2)
+          .scale(
+            Math.min(
+              12,
+              0.9 / Math.max((x1 - x0) / this.width, (y1 - y0) / this.height)
+            )
+          )
+          .translate(-(x0 + x1) / 2, -(y0 + y1) / 2)
+      )
+    this.communeId = obj.properties.vogenr
+
+    this.communeSelect.emit(obj)
   }
 
   updateObject(
@@ -258,7 +280,15 @@ export class MapComponent implements OnInit {
     return `/assets/cantons/${this.cantonId}.svg`
   }
 
-  toggleCanton(event: any) {
+  wappenClicked() {
+    if (this.cantonId === 0) {
+      this.toggleCanton()
+    } else {
+      this.reset()
+    }
+  }
+
+  toggleCanton() {
     this.hideCantons = !this.hideCantons
   }
 }

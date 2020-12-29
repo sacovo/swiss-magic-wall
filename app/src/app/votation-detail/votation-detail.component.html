@@ -111,13 +111,23 @@
             >
             </ngx-charts-advanced-pie-chart>
             <ngx-charts-advanced-pie-chart
-              *ngIf="selectedCantonId"
+              *ngIf="selectedCantonId && !selectedCommuneId"
               class="overview"
               [view]="[600, 200]"
               [results]="pieResultsCanton"
               [gradient]="false"
               [animations]="false"
               [scheme]="votation.is_finished? binaryColorScheme: colorScheme"
+            >
+            </ngx-charts-advanced-pie-chart>
+            <ngx-charts-advanced-pie-chart
+              *ngIf="selectedCommuneId"
+              class="overview"
+              [view]="[600, 200]"
+              [results]="communeResults"
+              [gradient]="false"
+              [animations]="false"
+              [scheme]="votation.is_finished? binaryColorScheme: provColorScheme"
             >
             </ngx-charts-advanced-pie-chart>
           </mat-expansion-panel>
@@ -129,7 +139,19 @@
             <app-votation-stats
               [cantonId]="selectedCantonId"
               [votationId]="votation.id"
+              [communeId]="selectedCommuneId"
             ></app-votation-stats>
+          </mat-expansion-panel>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title> Vergleich </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <app-related-stats
+              [cantonId]="selectedCantonId"
+              [communeId]="selectedCommuneId"
+              [votationId]="votation.id"
+            ></app-related-stats>
           </mat-expansion-panel>
         </mat-accordion>
       </div>

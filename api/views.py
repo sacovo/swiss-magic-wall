@@ -70,3 +70,29 @@ def votation_stats(request: HttpRequest,
     votation = Votation.objects.get(id=votation_id)
 
     return JsonResponse(votation.get_count_stats(canton_id), safe=False)
+
+
+@cache_page(30)
+def votation_stats_commune(request: HttpRequest,
+                           votation_id: int,
+                           commune_id=None) -> JsonResponse:
+    votation = Votation.objects.get(id=votation_id)
+
+    return JsonResponse(votation.get_count_stats_commune(commune_id), safe=False)
+
+
+def swiss_stats(request: HttpRequest, votation_id: int) -> JsonResponse:
+    votation: Votation = Votation.objects.get(id=votation_id)
+
+    return JsonResponse(votation.related_stats(), safe=False)
+
+
+def canton_stats(request: HttpRequest, votation_id: int, canton_id: int) -> JsonResponse:
+    votation: Votation = Votation.objects.get(id=votation_id)
+    return JsonResponse(votation.related_stats_canton(canton_id), safe=False)
+
+
+def commune_stats(request: HttpRequest, votation_id: int,
+                  commune_id: int) -> JsonResponse:
+    votation: Votation = Votation.objects.get(id=votation_id)
+    return JsonResponse(votation.related_stats_commune(commune_id), safe=False)

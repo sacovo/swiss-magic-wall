@@ -1,0 +1,18 @@
+<div *ngFor="let data of result">
+  <h4>{{data[0].name}} - {{data[0].percent | number:"2.2-2"}}%</h4>
+  <ngx-charts-bar-horizontal-stacked
+    *ngIf="colorScheme"
+    [view]="[580, 40]"
+    [results]="data"
+    [gradient]="false"
+    [xAxis]="false"
+    [yAxis]="false"
+    [legend]="false"
+    [showXAxisLabel]="false"
+    [showYAxisLabel]="false"
+    xAxisLabel="Stimmen"
+    [animations]="false"
+    [scheme]="colorScheme"
+  >
+  </ngx-charts-bar-horizontal-stacked>
+</div>

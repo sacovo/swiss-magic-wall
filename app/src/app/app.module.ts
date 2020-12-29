@@ -26,7 +26,8 @@ import { AboutComponent } from './about/about.component'
 import { VotationTableComponent } from './votation-table/votation-table.component'
 import { registerLocaleData } from '@angular/common'
 import localeDECH from '@angular/common/locales/de-CH'
-import { VotationStatsComponent } from './votation-stats/votation-stats.component'
+import { VotationStatsComponent } from './votation-stats/votation-stats.component';
+import { RelatedStatsComponent } from './related-stats/related-stats.component'
 registerLocaleData(localeDECH)
 
 @NgModule({
@@ -40,6 +41,7 @@ registerLocaleData(localeDECH)
     AboutComponent,
     VotationTableComponent,
     VotationStatsComponent,
+    RelatedStatsComponent,
   ],
   imports: [
     BrowserModule,
