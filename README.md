@@ -2,6 +2,16 @@
 
 Webapp to view voting results and projections for swiss referenda.
 
+## Usage
+
+Select a date and then a votation to view the map. Inside the map you can click on cantons and communes to get more detailed information. To go up a level you can click on the coat of arms on the top right.
+
+You can toggle the cantons on and off to see all the communes at once, to do that you click on the coat of arms of Switzerland.
+
+On the bottom right you have a card with more details about the selected canton or commune, click the titles to expand or hide.
+
+There is also a table view, where you can sort and filter the cantons and communes, the link is on the bottom of the info-card.
+
 
 ## Setup
 
