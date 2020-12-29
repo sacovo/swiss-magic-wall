@@ -214,6 +214,7 @@ export class MapComponent implements OnInit {
           .translate(-(x0 + x1) / 2, -(y0 + y1) / 2)
       )
     this.cantonId = obj.properties.id
+    this.communeId = undefined
     this.selectedCanton = obj
     this.cantonSelect.emit(obj)
     this.g.selectAll(`.kanton`).attr('data-active', 'false')
@@ -276,8 +277,14 @@ export class MapComponent implements OnInit {
     this.applyResults(data, 'commune')
   }
 
-  cantonImage(): string | undefined {
-    return `/assets/cantons/${this.cantonId}.svg`
+  coatOfArmsImage(): string | undefined {
+    if (this.communeId) {
+      return `/assets/wappen/communes/${this.communeId}.svg`
+    }
+    if (this.cantonId) {
+      return `/assets/wappen/cantons/${this.cantonId}.svg`
+    }
+    return `/assets/wappen/switzerland.svg`
   }
 
   wappenClicked() {

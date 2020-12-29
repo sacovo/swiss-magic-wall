@@ -1,0 +1,3 @@
+[submodule "app/src/assets/wappen"]
+	path = app/src/assets/wappen
+	url = https://github.com/sacovo/ch-wappen.git

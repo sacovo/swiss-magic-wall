@@ -14,6 +14,7 @@ variables:
   DOCKER_TLS_CERTDIR: "/certs"
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.pip-cache"
   PYTHONUSERBASE: "$CI_PROJECT_DIR/.pip"
+  GIT_SUBMODULE_STRATEGY: normal
 
 # This folder is cached between builds
 # http://docs.gitlab.com/ee/ci/yaml/README.html#cache
