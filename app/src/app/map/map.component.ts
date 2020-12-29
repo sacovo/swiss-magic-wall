@@ -107,6 +107,11 @@ export class MapComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.drawMap()
+    this.cantonId = 0
+    this.selectedCanton = undefined
+    this.communeId = undefined
+    this.cantonSelect.emit(null)
+    this.communeSelect.emit(null)
   }
 
   drawMap() {
@@ -192,7 +197,6 @@ export class MapComponent implements OnInit {
   zoomed(event: any) {
     const { transform } = event
     this.g.attr('transform', transform)
-    //this.g.attr('stroke-width', 1 / transform.k)
   }
 
   selectCanton(obj: any) {
