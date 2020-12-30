@@ -56,9 +56,9 @@ export class MapComponent implements OnInit {
   private colorScale: ScaleLinear<string, number, never>
   private g?: any
 
-  private cantonId?: number = 0
+  cantonId?: number = 0
   private selectedCanton?: any
-  private communeId?: number
+  communeId?: number
 
   @Output() mapUpdated = new EventEmitter()
   @Output() cantonSelect = new EventEmitter()
@@ -189,6 +189,7 @@ export class MapComponent implements OnInit {
             .invert([this.width / 2, this.height / 2])
         )
       this.g.selectAll(`.kanton`).attr('data-active', 'false')
+      this.g.selectAll(`.commune`).attr('data-active', 'false')
       this.cantonId = 0
       this.cantonSelect.emit(null)
     }
@@ -222,6 +223,7 @@ export class MapComponent implements OnInit {
     this.selectedCanton = obj
     this.cantonSelect.emit(obj)
     this.g.selectAll(`.kanton`).attr('data-active', 'false')
+    this.g.selectAll(`.commune`).attr('data-active', 'false')
     this.g.select(`#kanton_${obj.properties.id}`).attr('data-active', 'true')
   }
 
@@ -244,6 +246,9 @@ export class MapComponent implements OnInit {
           .translate(-(x0 + x1) / 2, -(y0 + y1) / 2)
       )
     this.communeId = obj.properties.vogenr
+
+    this.g.selectAll(`.commune`).attr('data-active', 'false')
+    this.g.select(`#commune_${obj.properties.vogenr}`).attr('data-active', 'true')
 
     this.communeSelect.emit(obj)
   }

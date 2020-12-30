@@ -13,6 +13,10 @@
     stroke-width: 2px;
   }
 
+  #map.noCantons.cantonSelected .kanton[data-active='false'] {
+    fill: rgba(0, 0, 0, 0.6);
+  }
+
   svg .switzerland {
     fill: #000000;
   }
@@ -28,6 +32,22 @@
 
   .kanton[data-active='true'] {
     fill: none !important;
+  }
+
+  #map.cantonSelected {
+    .kanton[data-active='false'],
+    .see {
+      filter: brightness(50%);
+    }
+  }
+
+  #map.communeSelected {
+    .commune[data-active='false'] {
+      filter: brightness(65%);
+    }
+    .commune[data-active='true'] {
+      fill-opacity: 1;
+    }
   }
 
   .commune {
