@@ -226,7 +226,9 @@ export class VotationDetailComponent implements OnInit, OnDestroy {
   }
 
   communeEvent(event: any): void {
-    this.selectCommune(+event.properties.vogenr, event.properties.vogename)
+    if (event) {
+      this.selectCommune(+event.properties.vogenr, event.properties.vogename)
+    }
   }
 
   redrawMap(event?: any): void {

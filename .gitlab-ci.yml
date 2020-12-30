@@ -86,7 +86,7 @@ build-ng:
   script:
     - cd app/
     - npm install
-    - npm run build app --prod
+    - npm run build app -- --prod
   artifacts:
     paths:
       - app/dist/
