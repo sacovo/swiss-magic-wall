@@ -76,7 +76,12 @@
       (communeSelect)="communeEvent($event)"
       (mapUpdated)="redrawMap($event)"
     ></app-map>
-    <button (click)="sideDrawer.toggle()" mat-mini-fab id="closeSidebar">
+    <button
+      (click)="sideDrawer.toggle()"
+      mat-mini-fab
+      id="closeSidebar"
+      color="basic"
+    >
       <mat-icon>menu</mat-icon>
     </button>
     <mat-expansion-panel
@@ -96,8 +101,8 @@
             <mat-expansion-panel-header>
               <mat-panel-title> Resultat </mat-panel-title>
               <mat-panel-description
-                >Letzte Aktualisierung:
-                {{ votation.timestamp | date: 'medium' }}</mat-panel-description
+                >Letzte Aktualisierung: {{ votation.timestamp | date: 'medium'
+                }}</mat-panel-description
               >
             </mat-expansion-panel-header>
             <ngx-charts-advanced-pie-chart
