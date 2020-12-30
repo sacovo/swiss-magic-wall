@@ -175,8 +175,8 @@ export class MapComponent implements OnInit {
 
   reset() {
     if (this.communeId) {
-      this.communeId = undefined
       this.selectCanton(this.selectedCanton)
+      this.communeId = undefined
     } else {
       this.svg
         .transition()
@@ -188,8 +188,9 @@ export class MapComponent implements OnInit {
             .zoomTransform(this.svg.node())
             .invert([this.width / 2, this.height / 2])
         )
-      this.g.selectAll(`.kanton`).attr('data-active', 'false')
-      this.g.selectAll(`.commune`).attr('data-active', 'false')
+      if (this.cantonId) {
+        this.g.select(`#kanton_${this.cantonId}`).attr('data-active', '')
+      }
       this.cantonId = 0
       this.cantonSelect.emit(null)
     }
@@ -218,12 +219,19 @@ export class MapComponent implements OnInit {
           )
           .translate(-(x0 + x1) / 2, -(y0 + y1) / 2)
       )
+
+    if (this.cantonId) {
+      this.g.select(`#kanton_${this.cantonId}`).attr('data-active', '')
+    }
     this.cantonId = obj.properties.id
+
+    if (this.communeId) {
+      this.g.select(`#commune_${this.communeId}`).attr('data-active', '')
+    }
     this.communeId = undefined
     this.selectedCanton = obj
     this.cantonSelect.emit(obj)
-    this.g.selectAll(`.kanton`).attr('data-active', 'false')
-    this.g.selectAll(`.commune`).attr('data-active', 'false')
+
     this.g.select(`#kanton_${obj.properties.id}`).attr('data-active', 'true')
   }
 
@@ -245,10 +253,13 @@ export class MapComponent implements OnInit {
           )
           .translate(-(x0 + x1) / 2, -(y0 + y1) / 2)
       )
+    this.g.select(`#commune_${this.communeId}`).attr('data-active', '')
+
     this.communeId = obj.properties.vogenr
 
-    this.g.selectAll(`.commune`).attr('data-active', 'false')
-    this.g.select(`#commune_${obj.properties.vogenr}`).attr('data-active', 'true')
+    this.g
+      .select(`#commune_${obj.properties.vogenr}`)
+      .attr('data-active', 'true')
 
     this.communeSelect.emit(obj)
   }

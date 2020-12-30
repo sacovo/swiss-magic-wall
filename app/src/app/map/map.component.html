@@ -1,5 +1,9 @@
 <div
   id="map"
-  [ngClass]="{'noCantons': hideCantons, 'cantonSelected': cantonId, 'communeSelected': communeId}"
+  [ngClass]="{
+    noCantons: hideCantons,
+    cantonSelected: cantonId,
+    communeSelected: communeId
+  }"
 ></div>
 <img [src]="coatOfArmsImage()" (click)="wappenClicked()" id="wappen" />

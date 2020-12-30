@@ -13,7 +13,7 @@
     stroke-width: 2px;
   }
 
-  #map.noCantons.cantonSelected .kanton[data-active='false'] {
+  #map.noCantons.cantonSelected .kanton:not([data-active='true']) {
     fill: rgba(0, 0, 0, 0.6);
   }
 
@@ -35,14 +35,14 @@
   }
 
   #map.cantonSelected {
-    .kanton[data-active='false'],
+    .kanton:not([data-active='true']),
     .see {
       filter: brightness(50%);
     }
   }
 
   #map.communeSelected {
-    .commune[data-active='false'] {
+    .commune:not([data-active='true']) {
       filter: brightness(65%);
     }
     .commune[data-active='true'] {

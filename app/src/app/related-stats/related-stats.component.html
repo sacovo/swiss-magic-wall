@@ -1,5 +1,5 @@
 <div *ngFor="let data of result">
-  <h4>{{data[0].name}} - {{data[0].percent | number:"2.2-2"}}%</h4>
+  <h4>{{ data[0].name }} - {{ data[0].percent | number: '2.2-2' }}%</h4>
   <ngx-charts-bar-horizontal-stacked
     *ngIf="colorScheme"
     [view]="[580, 40]"

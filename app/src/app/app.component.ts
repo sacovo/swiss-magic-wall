@@ -6,8 +6,7 @@ import { Component } from '@angular/core'
   styleUrls: ['./app.component.less'],
 })
 export class AppComponent {
-
-  fullScreen: boolean = false;
+  fullScreen: boolean = false
 
   public constructor() {}
 
@@ -18,7 +17,7 @@ export class AppComponent {
 
     if (this.fullScreen) {
       document.exitFullscreen()
-      this.fullScreen = false;
+      this.fullScreen = false
     } else if (elem.requestFullscreen) {
       elem.requestFullscreen()
       this.fullScreen = true

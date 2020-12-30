@@ -82,7 +82,7 @@
     <mat-expansion-panel
       [expanded]="!hideInfoPanel"
       class="moreStats openBar"
-      [ngClass]="{'moreStats': true, 'openBar': sideDrawer.opened}"
+      [ngClass]="{ moreStats: true, openBar: sideDrawer.opened }"
       *ngIf="votation"
     >
       <mat-expansion-panel-header id="votationTitle">
@@ -96,8 +96,8 @@
             <mat-expansion-panel-header>
               <mat-panel-title> Resultat </mat-panel-title>
               <mat-panel-description
-                >Letzte Aktualisierung: {{ votation.timestamp | date: 'medium'
-                }}</mat-panel-description
+                >Letzte Aktualisierung:
+                {{ votation.timestamp | date: 'medium' }}</mat-panel-description
               >
             </mat-expansion-panel-header>
             <ngx-charts-advanced-pie-chart
@@ -107,7 +107,7 @@
               [results]="pieResults"
               [gradient]="false"
               [animations]="false"
-              [scheme]="votation.is_finished? binaryColorScheme: colorScheme"
+              [scheme]="votation.is_finished ? binaryColorScheme : colorScheme"
             >
             </ngx-charts-advanced-pie-chart>
             <ngx-charts-advanced-pie-chart
@@ -117,7 +117,7 @@
               [results]="pieResultsCanton"
               [gradient]="false"
               [animations]="false"
-              [scheme]="votation.is_finished? binaryColorScheme: colorScheme"
+              [scheme]="votation.is_finished ? binaryColorScheme : colorScheme"
             >
             </ngx-charts-advanced-pie-chart>
             <ngx-charts-advanced-pie-chart
@@ -127,7 +127,9 @@
               [results]="communeResults"
               [gradient]="false"
               [animations]="false"
-              [scheme]="votation.is_finished? binaryColorScheme: provColorScheme"
+              [scheme]="
+                votation.is_finished ? binaryColorScheme : provColorScheme
+              "
             >
             </ngx-charts-advanced-pie-chart>
           </mat-expansion-panel>
