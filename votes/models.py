@@ -118,7 +118,7 @@ class Votation(models.Model):
                 n=Sum('latestresult__no_absolute'),
                 l=F('titles__language_code'),
                 title=F('titles__title'),
-            ).filter(l="de").values('title', 'y', 'n'))
+            ).order_by('-id').filter(l="de").values('title', 'y', 'n'))
 
     def related_stats_canton(self, canton_id: int):
 
@@ -129,7 +129,7 @@ class Votation(models.Model):
                 l=F('titles__language_code'),
                 k=F('latestresult__gemeinde__kanton_id'),
                 title=F('titles__title'),
-            ).filter(l="de", k=canton_id).values('title', 'y', 'n'))
+            ).order_by('-id').filter(l="de", k=canton_id).values('title', 'y', 'n'))
 
     def related_stats_commune(self, commune_id: int):
         return list(
@@ -139,7 +139,7 @@ class Votation(models.Model):
                 l=F('titles__language_code'),
                 c=F('latestresult__gemeinde_id'),
                 title=F('titles__title'),
-            ).filter(l="de", c=commune_id).values('title', 'y', 'n'))
+            ).order_by('-id').filter(l="de", c=commune_id).values('title', 'y', 'n'))
 
     def result_cantons(self) -> dict:
         """
