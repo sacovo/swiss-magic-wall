@@ -166,7 +166,11 @@ export class MapComponent implements OnInit {
         d3.pointer(event, this.svg.node())
       }
     )
-    this.mapUpdated.emit()
+    this.appendFeatures(
+      topojson.feature(this.topoJson, this.topoJson.objects.K4kant_19970101_gf),
+      'kanton_overlay',
+      this.mapUpdated.emit()
+    )
   }
 
   createMap(): void {
@@ -190,6 +194,9 @@ export class MapComponent implements OnInit {
         )
       if (this.cantonId) {
         this.g.select(`#kanton_${this.cantonId}`).attr('data-active', '')
+        this.g
+          .select(`#kanton_overlay_${this.cantonId}`)
+          .attr('data-active', '')
       }
       this.cantonId = 0
       this.cantonSelect.emit(null)
@@ -222,6 +229,7 @@ export class MapComponent implements OnInit {
 
     if (this.cantonId) {
       this.g.select(`#kanton_${this.cantonId}`).attr('data-active', '')
+      this.g.select(`#kanton_overlay_${this.cantonId}`).attr('data-active', '')
     }
     this.cantonId = obj.properties.id
 
@@ -232,7 +240,8 @@ export class MapComponent implements OnInit {
     this.selectedCanton = obj
     this.cantonSelect.emit(obj)
 
-    this.g.select(`#kanton_${obj.properties.id}`).attr('data-active', 'true')
+    this.g.select(`#kanton_${this.cantonId}`).attr('data-active', true)
+    this.g.select(`#kanton_overlay_${this.cantonId}`).attr('data-active', true)
   }
 
   selectCommune(obj: any) {
@@ -257,9 +266,7 @@ export class MapComponent implements OnInit {
 
     this.communeId = obj.properties.vogenr
 
-    this.g
-      .select(`#commune_${obj.properties.vogenr}`)
-      .attr('data-active', 'true')
+    this.g.select(`#commune_${obj.properties.vogenr}`).attr('data-active', true)
 
     this.communeSelect.emit(obj)
   }
