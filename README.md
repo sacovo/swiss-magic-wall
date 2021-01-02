@@ -1,4 +1,4 @@
-# Overview
+# Swiss Election Map (SEMap)
 
 Webapp to view voting results and projections for swiss referenda.
 
