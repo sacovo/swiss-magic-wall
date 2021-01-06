@@ -69,8 +69,6 @@ docker-build:
   # Official docker image.
   image: docker
   stage: build
-  variables:
-    GIT_SUBMODULE_STRATEGY: normal
   services:
     - docker:dind
   before_script:
@@ -84,6 +82,8 @@ docker-build:
 
 build-ng:
   image: node
+  variables:
+    GIT_SUBMODULE_STRATEGY: normal
   script:
     - cd app/
     - npm install
