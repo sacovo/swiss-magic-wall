@@ -72,7 +72,7 @@ export class VotationDetailComponent implements OnInit, OnDestroy {
         this.map.updateCantons(votation.cantons)
         this.map.updateCommunes(votation.communes)
         this.titleService.setTitle(
-          getTitle(this.votation, 'de') + ' - Magic Wall'
+          getTitle(this.votation, 'de') + ' - Swiss Election Map'
         )
       })
       this.interval = window.setInterval(() => {

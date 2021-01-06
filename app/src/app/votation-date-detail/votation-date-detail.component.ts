@@ -39,7 +39,8 @@ export class VotationDateDetailComponent
           this.date = date
 
           this.title.setTitle(
-            formatDate(date.start_date, 'YYYY-MM-dd', 'en-US')
+            formatDate(date.start_date, 'longDate', 'de-CH') +
+              ' - Swiss Election Map'
           )
 
           if (this.interval) {

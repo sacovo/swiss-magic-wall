@@ -90,7 +90,6 @@ export class MapComponent implements OnInit {
         return `${cssClass}_${d.properties.id}`
       })
       .attr('class', cssClass)
-      .attr('fill', '#fff')
       .on('click', clicked)
       .attr('d', this.path)
 
@@ -153,6 +152,20 @@ export class MapComponent implements OnInit {
         this.selectCommune(obj)
       }
     )
+    this.g
+      .append('path')
+      .datum(
+        topojson.mesh(
+          this.topoJson,
+          this.topoJson.objects.K4voge_20201018_gf,
+          (a, b) => a !== b
+        )
+      )
+      .attr('fill', 'none')
+      .attr('stroke', 'black')
+      .attr('stroke-width', "0.5px")
+      .attr("stroke-linejoin", "round")
+      .attr('d', this.path)
     this.appendFeatures(
       topojson.feature(this.topoJson, this.topoJson.objects.K4seen_yyymmdd11),
       'see'
@@ -171,6 +184,20 @@ export class MapComponent implements OnInit {
       'kanton_overlay',
       this.mapUpdated.emit()
     )
+    this.g
+      .append('path')
+      .datum(
+        topojson.mesh(
+          this.topoJson,
+          this.topoJson.objects.K4kant_19970101_gf,
+          (a, b) => a !== b
+        )
+      )
+      .attr('fill', 'none')
+      .attr('stroke', 'black')
+      .attr('stroke-width', "1px")
+      .attr("stroke-linejoin", "round")
+      .attr('d', this.path)
   }
 
   createMap(): void {

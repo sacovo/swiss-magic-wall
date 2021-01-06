@@ -6,13 +6,14 @@
 :host::ng-deep {
   .see {
     fill: lightblue;
+    stroke: #000000;
+    stroke-width: 0.3px;
   }
 
   #map.noCantons .kanton {
     fill-opacity: 0;
     stroke-width: 2px;
   }
-
 
   svg .switzerland {
     fill: #000000;
@@ -22,22 +23,17 @@
     fill-opacity: 0.4;
   }
 
-  .kanton {
-    stroke: #000000;
-    stroke-width: 1px;
-  }
-
   .kanton[data-active='true'] {
     fill-opacity: 0;
     pointer-events: none;
   }
 
   #map.cantonSelected {
-  .kanton_overlay:not([data-active='true']) {
-    opacity: 0.6;
-  }
+    .kanton_overlay:not([data-active='true']) {
+      opacity: 0.6;
+    }
     .see {
-    fill-opacity: 0.4;
+      fill-opacity: 0.4;
     }
   }
 
@@ -54,15 +50,16 @@
     }
   }
 
-  .commune {
-    stroke: #000000;
-    stroke-width: 0.5px;
+  .commune,
+  .kanton,
+  .kanton_overlay {
+    stroke: none;
+    shape-rendering: optimizeSpeed;
   }
 
   .kanton_overlay {
     pointer-events: none;
     fill: #000000;
-    stroke: none;
     opacity: 0;
     shape-rendering: optimizeSpeed;
   }
