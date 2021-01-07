@@ -144,7 +144,6 @@ export class MapComponent implements OnInit {
       topojson.feature(this.topoJson, this.topoJson.objects.K4suis_18480101_gf),
       'switzerland'
     )
-
     this.appendFeatures(
       topojson.feature(this.topoJson, this.topoJson.objects.K4voge_20201018_gf),
       'commune',
@@ -163,8 +162,8 @@ export class MapComponent implements OnInit {
       )
       .attr('fill', 'none')
       .attr('stroke', 'black')
-      .attr('stroke-width', "0.5px")
-      .attr("stroke-linejoin", "round")
+      .attr('stroke-width', '0.5px')
+      .attr('stroke-linejoin', 'round')
       .attr('d', this.path)
     this.appendFeatures(
       topojson.feature(this.topoJson, this.topoJson.objects.K4seen_yyymmdd11),
@@ -195,8 +194,8 @@ export class MapComponent implements OnInit {
       )
       .attr('fill', 'none')
       .attr('stroke', 'black')
-      .attr('stroke-width', "1px")
-      .attr("stroke-linejoin", "round")
+      .attr('stroke-width', '1px')
+      .attr('stroke-linejoin', 'round')
       .attr('d', this.path)
   }
 
