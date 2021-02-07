@@ -2,7 +2,7 @@ from typing import List
 from django.db.models.aggregates import Count
 from django.db.models.expressions import ExpressionWrapper
 from django.db.models.fields import CharField, FloatField
-from django.db.models.query import QuerySet, ValuesQuerySet
+from django.db.models.query import QuerySet
 import numpy as np
 from django.db import models
 from django.db.models import Sum, F
@@ -183,7 +183,7 @@ class Votation(models.Model):
 
         return total
 
-    def result_communes(self, canton_id=0) -> ValuesQuerySet:
+    def result_communes(self, canton_id=0) -> QuerySet:
         if canton_id == 0:
             queryset = self.latestresult_set.order_by()
         else:
@@ -356,7 +356,7 @@ def annotate_cantons(queryset: QuerySet) -> QuerySet:
     )
 
 
-def annotate_communes(queryset: QuerySet) -> ValuesQuerySet:
+def annotate_communes(queryset: QuerySet) -> QuerySet:
     return queryset.annotate(geo_id=F("gemeinde_id"),
                              name=F("gemeinde__name")).values("yes_percent", "geo_id",
                                                               "name", "yes_absolute",

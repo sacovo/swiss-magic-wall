@@ -88,6 +88,7 @@ export class MapComponent implements OnInit {
         return `${cssClass}_${d.properties.id}`
       })
       .attr('class', cssClass)
+      .attr('fill', '#ffffff')
       .on('click', clicked)
       .attr('d', this.path)
 
@@ -181,7 +182,6 @@ export class MapComponent implements OnInit {
       'kanton_overlay',
       this.mapUpdated.emit()
     )
-    this.g
       .append('path')
       .datum(
         topojson.mesh(

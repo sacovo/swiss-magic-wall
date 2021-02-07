@@ -28,7 +28,7 @@
         {{ selectedCantonName }}
         <mat-icon *ngIf="cantonCounted">verified</mat-icon>
       </h2>
-      <div class="numbers">
+      <div *ngIf="cantonCounted" class="numbers">
         <span>{{ yesCountedPercentCanton() | number: '2.2-2' }}%</span>
         <span>{{ yesPredictedPercentCanton() | number: '2.2-2' }}%</span>
       </div>
@@ -101,8 +101,8 @@
             <mat-expansion-panel-header>
               <mat-panel-title> Resultat </mat-panel-title>
               <mat-panel-description
-                >Letzte Aktualisierung: {{ votation.timestamp | date: 'medium'
-                }}</mat-panel-description
+                >Letzte Aktualisierung:
+                {{ votation.timestamp | date: 'medium' }}</mat-panel-description
               >
             </mat-expansion-panel-header>
             <ngx-charts-advanced-pie-chart

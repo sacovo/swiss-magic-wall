@@ -18,7 +18,7 @@ export class CommuneEntry {
       (source.yes_total / (source.no_total + source.yes_total)) * 100
     this.final = source.is_final
     this.name = source.name
-    topoService.names_ready.then(() => {
+    topoService.names_ready?.then(() => {
       this.canton = topoService.getCantonName(source.canton)
     })
   }
