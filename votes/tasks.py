@@ -43,7 +43,7 @@ def init_votation(votation_data: dict, votation_date: VotationDate) -> Votation:
             "date": votation_date,
             "is_finished": votation_data["vorlageBeendet"],
             "needs_staende": votation_data["doppeltesMehr"],
-            "is_accepted": votation_data["vorlageAngenommen"],
+            "is_accepted": votation_data["vorlageAngenommen"] or False,
         },
     )
 

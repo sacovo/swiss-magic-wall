@@ -1,6 +1,4 @@
-from django.shortcuts import render
 from django.http.request import HttpRequest
-from django.core.serializers.json import DjangoJSONEncoder
 from django.http.response import JsonResponse
 
 from django.views.decorators.cache import cache_page
@@ -12,10 +10,7 @@ from api import serializers
 
 @cache_page(60 * 15)
 def votation_date_list(request: HttpRequest) -> JsonResponse:
-    """
-    A list of all votation dates,
-    [{'id': 1, 'date': 2020-01-01}]
-    """
+    """Return a list of all votation dates."""
     serializer = serializers.VotationDateSerializer(VotationDate.objects.all(),
                                                     many=True,
                                                     sparse=True)
@@ -25,10 +20,11 @@ def votation_date_list(request: HttpRequest) -> JsonResponse:
 @cache_page(60)
 def votation_date_detail(request: HttpRequest, votation_date_id: int):
     """
-    Info about the selected date and list of votations
+    Info about the selected date and list of votations.
 
     {'id': 1, 'date': 2020-01-01, 'votations': [
-        {'id': 5000, 'titles': [{'language_code': 'de', 'title': '...'}], 'finished': ..},
+        {'id': 5000, 'titles': [{'language_code': 'de', 'title': '...'}],
+        'finished': ..},
     ]}
 
     """
@@ -42,7 +38,9 @@ def votation_date_detail(request: HttpRequest, votation_date_id: int):
 @cache_page(30)
 def votation_detail(request: HttpRequest, votation_id: int):
     """
-    Dict for CH with:
+    Return dict for CH with.
+
+    dict includes:
         - Titles - [{language: 'de', 'title': ...}, ...]
 
         - Yes counted, yes_counted
@@ -67,6 +65,7 @@ def votation_detail(request: HttpRequest, votation_id: int):
 def votation_stats(request: HttpRequest,
                    votation_id: int,
                    canton_id=None) -> JsonResponse:
+    """Return stats about one votation"""
     votation = Votation.objects.get(id=votation_id)
 
     return JsonResponse(votation.get_count_stats(canton_id), safe=False)
@@ -76,23 +75,27 @@ def votation_stats(request: HttpRequest,
 def votation_stats_commune(request: HttpRequest,
                            votation_id: int,
                            commune_id=None) -> JsonResponse:
+    """Return stats about one votation for a commune."""
     votation = Votation.objects.get(id=votation_id)
 
     return JsonResponse(votation.get_count_stats_commune(commune_id), safe=False)
 
 
 def swiss_stats(request: HttpRequest, votation_id: int) -> JsonResponse:
+    """Return stats about switzerland for a votation."""
     votation: Votation = Votation.objects.get(id=votation_id)
 
     return JsonResponse(votation.related_stats(), safe=False)
 
 
 def canton_stats(request: HttpRequest, votation_id: int, canton_id: int) -> JsonResponse:
+    """Return stats about one canton."""
     votation: Votation = Votation.objects.get(id=votation_id)
     return JsonResponse(votation.related_stats_canton(canton_id), safe=False)
 
 
 def commune_stats(request: HttpRequest, votation_id: int,
                   commune_id: int) -> JsonResponse:
+    """Return stats about one commune."""
     votation: Votation = Votation.objects.get(id=votation_id)
     return JsonResponse(votation.related_stats_commune(commune_id), safe=False)

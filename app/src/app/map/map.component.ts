@@ -39,9 +39,7 @@ function getProjection(width: number, topoJson: any) {
 })
 export class MapComponent implements OnInit {
   private svg: any
-
   private path: any
-
   private zoom = d3
     .zoom()
     .scaleExtent([0.8, 12])

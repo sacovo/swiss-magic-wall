@@ -9,7 +9,7 @@ import { FeatureCollection } from 'geojson'
 })
 export class TopoService {
   data: Promise<Topology> | undefined = undefined
-  names_ready!: Promise<void>
+  names_ready?: Promise<void>
 
   canton_names: any = {}
 

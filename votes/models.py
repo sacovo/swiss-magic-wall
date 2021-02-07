@@ -1,7 +1,8 @@
+from typing import List
 from django.db.models.aggregates import Count
 from django.db.models.expressions import ExpressionWrapper
 from django.db.models.fields import CharField, FloatField
-from django.db.models.query import QuerySet
+from django.db.models.query import QuerySet, ValuesQuerySet
 import numpy as np
 from django.db import models
 from django.db.models import Sum, F
@@ -32,9 +33,12 @@ class VotationDate(models.Model):
     start_date = models.DateTimeField(verbose_name=_("start date"))
 
     json_url = models.URLField(max_length=500, verbose_name=_("json url"))
+
     is_finished = models.BooleanField(default=False, verbose_name=_("is finished"))
     is_demo = models.BooleanField(default=False, verbose_name=_("is demo"))
-    latest_hash = models.CharField(max_length=500, verbose_name=_("latest hash"), blank=True)
+    latest_hash = models.CharField(max_length=500,
+                                   verbose_name=_("latest hash"),
+                                   blank=True)
 
     def __str__(self):
         return self.start_date.strftime("%Y-%m-%d")
@@ -179,7 +183,7 @@ class Votation(models.Model):
 
         return total
 
-    def result_communes(self, canton_id=0) -> dict:
+    def result_communes(self, canton_id=0) -> ValuesQuerySet:
         if canton_id == 0:
             queryset = self.latestresult_set.order_by()
         else:
@@ -188,7 +192,7 @@ class Votation(models.Model):
 
         return annotate_communes(queryset)
 
-    def get_count_stats(self, canton_id=None):
+    def get_count_stats(self, canton_id=None) -> List[dict]:
         query = self.result_set.order_by('timestamp__t').values('timestamp')
 
         if canton_id:
@@ -214,7 +218,7 @@ class Votation(models.Model):
                         'name', 'value'))
         }]
 
-    def get_count_stats_commune(self, commune_id):
+    def get_count_stats_commune(self, commune_id) -> List[dict]:
         query = self.result_set.filter(
             gemeinde_id=commune_id).order_by('timestamp__t').values('timestamp')
 
@@ -296,8 +300,8 @@ class Votation(models.Model):
             return np.array(self.latestresult_set.all().values_list("is_final",
                                                                     flat=True))
         return np.array(
-            self.latestresult_set.filter(gemeinde__in=gemeinden).values_list("is_final",
-                                                                             flat=True))
+            self.latestresult_et.filter(gemeinde__in=gemeinden).values_list("is_final",
+                                                                            flat=True))
 
     class Meta:
         verbose_name = _("votation")
@@ -321,7 +325,10 @@ class VotationTitle(models.Model):
 
     language_code = models.CharField(max_length=2, verbose_name=_("language code"))
     title = models.CharField(max_length=280, verbose_name=_("title"))
-    votation = models.ForeignKey(Votation, models.CASCADE, verbose_name=_("votation"), related_name='titles')
+    votation = models.ForeignKey(Votation,
+                                 models.CASCADE,
+                                 verbose_name=_("votation"),
+                                 related_name='titles')
 
     class Meta:
         constraints = [
@@ -349,7 +356,7 @@ def annotate_cantons(queryset: QuerySet) -> QuerySet:
     )
 
 
-def annotate_communes(queryset: QuerySet) -> QuerySet:
+def annotate_communes(queryset: QuerySet) -> ValuesQuerySet:
     return queryset.annotate(geo_id=F("gemeinde_id"),
                              name=F("gemeinde__name")).values("yes_percent", "geo_id",
                                                               "name", "yes_absolute",

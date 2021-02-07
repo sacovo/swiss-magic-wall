@@ -166,6 +166,13 @@ CELERY_BROKER_URL = "redis://redis:6379"
 CELERY_RESULT_BACKEND = "django-db"
 CELERY_CACHE_BACKEND = "django-cache"
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': 'cache:11211',
+    }
+}
+
 JAZZMIN_SETTINGS = {
     "site_title": _("Magic Wall Admin"),
     "site_header": _("Magic Wall"),
