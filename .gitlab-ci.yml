@@ -1,7 +1,5 @@
 image: python:latest
 
-include:
-  - template: Code-Quality.gitlab-ci.yml
 
 stages:
   - check
