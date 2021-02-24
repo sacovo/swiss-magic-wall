@@ -1,9 +1,9 @@
-from django.utils import timezone
-from rest_framework import serializers
-from django.db.models import Sum, F, Max
+from time import time
 
-from geo.models import Gemeinde, Kanton
-from predict.models import LatestResult, Timestamp
+from django.db.models import Max, Sum
+from rest_framework import serializers
+
+from predict.models import LatestResult
 from votes.models import Votation, VotationDate, VotationTitle
 
 
@@ -57,22 +57,20 @@ class VotationSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         query_final = instance.latestresult_set.filter(is_final=True)
+        instance.counted_communes = query_final.count()
         counted_results = query_final.aggregate(yes_counted=Sum('yes_absolute'),
                                                 no_counted=Sum('no_absolute'))
-
-        instance.counted_communes = query_final.count()
 
         instance.yes_counted = counted_results['yes_counted'] or 0
         instance.no_counted = counted_results['no_counted'] or 0
 
         query_open = instance.latestresult_set.filter(is_final=False)
+        instance.predicted_communes = query_open.count()
         predicted_results = query_open.aggregate(yes_predicted=Sum('yes_absolute'),
                                                  no_predicted=Sum('no_absolute'))
 
         instance.yes_predicted = predicted_results['yes_predicted'] or 0
         instance.no_predicted = predicted_results['no_predicted'] or 0
-
-        instance.predicted_communes = query_open.count()
 
         return super().to_representation(instance)
 
@@ -82,7 +80,6 @@ class VotationSerializer(serializers.ModelSerializer):
             'id',
             'titles',
             'is_finished',
-            'needs_staende',
             'is_accepted',
             'yes_counted',
             'no_counted',
@@ -107,8 +104,7 @@ class VotationDateSerializer(serializers.ModelSerializer):
         if self.sparse:
             instance.votations = []
         else:
-            instance.votations = instance.votation_set.prefetch_related(
-                'latestresult_set')
+            instance.votations = instance.votation_set.order_by('pk')
         return super().to_representation(instance)
 
     class Meta:
@@ -129,7 +125,7 @@ class ExpandedVotationSerializer(VotationSerializer):
     def to_representation(self, instance):
         instance.kanton_results = instance.result_cantons().values()
         instance.prefetched = instance.latestresult_set.prefetch_related('gemeinde')
-        instance.timestamp = instance.latestresult_set.aggregate(t=Max('timestamp'))['t']
+        instance.timestamp = instance.prefetched.aggregate(t=Max('timestamp'))['t']
 
         return super().to_representation(instance)
 
