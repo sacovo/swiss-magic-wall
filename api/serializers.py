@@ -56,23 +56,23 @@ class VotationSerializer(serializers.ModelSerializer):
     counted_communes = serializers.IntegerField()
 
     def to_representation(self, instance):
-        counted_results = instance.latestresult_set.filter(is_final=True).aggregate(
-            yes_counted=Sum('yes_absolute'), no_counted=Sum('no_absolute'))
+        query_final = instance.latestresult_set.filter(is_final=True)
+        counted_results = query_final.aggregate(yes_counted=Sum('yes_absolute'),
+                                                no_counted=Sum('no_absolute'))
 
-        instance.counted_communes = instance.latestresult_set.filter(
-            is_final=True).count()
+        instance.counted_communes = query_final.count()
 
         instance.yes_counted = counted_results['yes_counted'] or 0
         instance.no_counted = counted_results['no_counted'] or 0
 
-        predicted_results = instance.latestresult_set.filter(is_final=False).aggregate(
-            yes_predicted=Sum('yes_absolute'), no_predicted=Sum('no_absolute'))
+        query_open = instance.latestresult_set.filter(is_final=False)
+        predicted_results = query_open.aggregate(yes_predicted=Sum('yes_absolute'),
+                                                 no_predicted=Sum('no_absolute'))
 
         instance.yes_predicted = predicted_results['yes_predicted'] or 0
         instance.no_predicted = predicted_results['no_predicted'] or 0
 
-        instance.predicted_communes = instance.latestresult_set.filter(
-            is_final=False).count()
+        instance.predicted_communes = query_open.count()
 
         return super().to_representation(instance)
 
@@ -107,7 +107,8 @@ class VotationDateSerializer(serializers.ModelSerializer):
         if self.sparse:
             instance.votations = []
         else:
-            instance.votations = instance.votation_set
+            instance.votations = instance.votation_set.prefetch_related(
+                'latestresult_set')
         return super().to_representation(instance)
 
     class Meta:
