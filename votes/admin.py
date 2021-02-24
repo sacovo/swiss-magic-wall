@@ -1,8 +1,8 @@
-from predict.models import LatestResult, Result
 from django.contrib import admin, messages
-from django.utils.translation import gettext as _
 from django.shortcuts import redirect, reverse
+from django.utils.translation import gettext as _
 
+from predict.models import LatestResult, Result
 # Register your models here.
 from votes import models, tasks
 

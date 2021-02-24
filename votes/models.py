@@ -1,17 +1,18 @@
 from typing import List
+
+from django.db import models
+from django.db.models import F, Sum
 from django.db.models.aggregates import Count
 from django.db.models.expressions import ExpressionWrapper
 from django.db.models.fields import CharField, FloatField
+from django.db.models.functions import Cast, Coalesce
 from django.db.models.query import QuerySet
+from django.utils.translation import get_language
+from django.utils.translation import gettext_lazy as _
+
 import numpy as np
-from django.db import models
-from django.db.models import Sum, F
-from django.db.models.functions import Coalesce, Cast
-from django.utils.translation import get_language, gettext_lazy as _
-
-from taggit.managers import TaggableManager
-
 from predict.models import LatestResult
+from taggit.managers import TaggableManager
 
 # Create your models here.
 

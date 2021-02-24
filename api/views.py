@@ -1,9 +1,9 @@
 from django.http.request import HttpRequest
 from django.http.response import JsonResponse
-
 from django.views.decorators.cache import cache_page
-from votes.models import Votation, VotationDate
+
 from api import serializers
+from votes.models import Votation, VotationDate
 
 # Create your views here.
 

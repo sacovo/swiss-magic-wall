@@ -2,11 +2,11 @@
 This module defines the models to store results to elections or referenda
 """
 
-from django.utils import timezone
-import numpy as np
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+import numpy as np
 # Create your models here.
 from geo.models import Gemeinde
 from predict import utils

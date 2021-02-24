@@ -2,14 +2,14 @@
 shared tasks for fetching votation results
 """
 import hashlib
-from typing import List, Iterable, Tuple
+from typing import Iterable, List, Tuple
 
-from celery import shared_task
 import requests
+from celery import shared_task
 
 from geo.models import Gemeinde, Kanton
-from votes.models import Votation, VotationTitle, VotationDate
-from predict.models import Result, input_json_result, Timestamp, LatestResult
+from predict.models import LatestResult, Result, Timestamp, input_json_result
+from votes.models import Votation, VotationDate, VotationTitle
 
 
 def fetch_json_from(url) -> Tuple[dict, str]:

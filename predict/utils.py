@@ -2,6 +2,7 @@
 Util functions for calculating projections
 """
 import tempfile
+
 from django.core.files import File
 
 import numpy as np

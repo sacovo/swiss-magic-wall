@@ -5,21 +5,17 @@ import json
 import random
 
 from celery import shared_task
-from django.utils import timezone
 from django.conf import settings
 from django.db import transaction
+from django.utils import timezone
 
 from geo.models import Gemeinde
-from votes.models import Votation, VotationDate
-
-from predict.models import input_json_result, VotingModel, Result, LatestResult, Timestamp
+from predict.models import (LatestResult, Result, Timestamp, VotingModel,
+                            input_json_result)
 from predict.utils import prediction
-from votes.tasks import (
-    fetch_json_from,
-    iterate_kantone,
-    iterate_gemeinden,
-    iterate_votations,
-)
+from votes.models import Votation, VotationDate
+from votes.tasks import (fetch_json_from, iterate_gemeinden, iterate_kantone,
+                         iterate_votations)
 
 
 def apply_update(votation_data, timestamp_pk) -> bool:

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+
 from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -172,6 +173,9 @@ CACHES = {
         'LOCATION': 'cache:11211',
     }
 }
+
+if DEBUG:
+    CACHES = {'default': {'BACKEND': 'django.core.cache.backends.dummy.DummyCache',}}
 
 JAZZMIN_SETTINGS = {
     "site_title": _("Magic Wall Admin"),

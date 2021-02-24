@@ -1,10 +1,11 @@
 from unittest.case import skip
-from django.test import TestCase
-import numpy as np
 
-from votes.models import VotationDate, Votation
+from django.test import TestCase
+
+import numpy as np
 from geo.models import Gemeinde
 from predict.models import VotingModel
+from votes.models import Votation, VotationDate
 
 # Create your tests here.
 

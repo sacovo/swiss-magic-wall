@@ -2,10 +2,11 @@ from unittest import skip
 
 from django.test import TestCase
 from django.utils.timezone import now
-from votes.models import VotationDate, Votation
-from votes import tasks
-from geo.models import Kanton, Gemeinde
+
+from geo.models import Gemeinde, Kanton
 from predict.models import LatestResult, Result
+from votes import tasks
+from votes.models import Votation, VotationDate
 
 # Create your tests here.
 
