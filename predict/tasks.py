@@ -108,8 +108,8 @@ def update_votation(data: dict) -> Votation:
     votation: Votation = Votation.objects.get(id=data["vorlagenId"])
 
     if not votation.date.is_demo:
-        votation.is_finished = data["vorlageBeendet"]
-    votation.is_accepted = data["vorlageAngenommen"]
+        votation.is_finished = data["vorlageBeendet"] or False
+    votation.is_accepted = data["vorlageAngenommen"] or False
     votation.save()
 
     return votation
