@@ -28,7 +28,7 @@
         {{ selectedCantonName }}
         <mat-icon *ngIf="cantonCounted">verified</mat-icon>
       </h2>
-      <div *ngIf="cantonCounted" class="numbers">
+      <div class="numbers">
         <span>{{ yesCountedPercentCanton() | number: '2.2-2' }}%</span>
         <span>{{ yesPredictedPercentCanton() | number: '2.2-2' }}%</span>
       </div>
