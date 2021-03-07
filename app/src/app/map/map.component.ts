@@ -82,8 +82,8 @@ export class MapComponent implements OnInit {
       .append('path')
       .attr('cursor', clicked ? 'pointer' : 'default')
       .attr('id', function (d: any) {
-        if (d.properties.vogenr) {
-          return `${cssClass}_${d.properties.vogenr}`
+        if (d.properties.vogeId) {
+          return `${cssClass}_${d.properties.vogeId}`
         }
         return `${cssClass}_${d.properties.id}`
       })
@@ -144,7 +144,7 @@ export class MapComponent implements OnInit {
       'switzerland'
     )
     this.appendFeatures(
-      topojson.feature(this.topoJson, this.topoJson.objects.K4voge_20201018_gf),
+      topojson.feature(this.topoJson, this.topoJson.objects.K4voge_20210101_gf),
       'commune',
       (event: any, obj: any) => {
         this.selectCommune(obj)
@@ -155,7 +155,7 @@ export class MapComponent implements OnInit {
       .datum(
         topojson.mesh(
           this.topoJson,
-          this.topoJson.objects.K4voge_20201018_gf,
+          this.topoJson.objects.K4voge_20210101_gf,
           (a, b) => a !== b
         )
       )
@@ -288,9 +288,9 @@ export class MapComponent implements OnInit {
       )
     this.g.select(`#commune_${this.communeId}`).attr('data-active', '')
 
-    this.communeId = obj.properties.vogenr
+    this.communeId = obj.properties.vogeId
 
-    this.g.select(`#commune_${obj.properties.vogenr}`).attr('data-active', true)
+    this.g.select(`#commune_${obj.properties.vogeId}`).attr('data-active', true)
 
     this.communeSelect.emit(obj)
   }
