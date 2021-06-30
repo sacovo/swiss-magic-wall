@@ -3,9 +3,29 @@ kind: pipeline
 type: docker
 name: default
 
+volumes:
+- name: cache
+  host:
+    path: /cache/magic-wall
+
 steps:
+- name: restore-cache
+  image: drillster/drone-volume-cache
+  settings:
+    restore: true
+    mount:
+      - ./.pip
+      - ./.pip-cache
+      - ./node_modules
+  volumes:
+  - name: cache
+    path: /cache
+
 - name: docker-build-django
   image: plugins/docker
+  environment:
+    PIP_CACHE_DIR: ".pip-cache"
+    PYTHONUSERBASE: ".pip"
   settings:
     registry: r.sacovo.ch
     repo: r.sacovo.ch/sacovo/magic-wall-backend
@@ -15,16 +35,9 @@ steps:
       from_secret: portus_username
     password:
       from_secret: portus_token
-
-- name: restore-npm-cache
-  image: drillster/drone-volume-cache
-  settings:
-    restore: true
-    mount:
-      - ./node_modules
-  volumes:
-  - name: cache
-    path: /cache
+    cache_from: r.sacovo.ch/sacovo/magic-wall-backend
+  depends_on:
+  - restore-cache
 
 - name: build-angular
   image: node
@@ -33,7 +46,7 @@ steps:
   - npm install
   - npm run build app -- --prod
   depends_on:
-  - restore-npm-cache
+  - restore-cache
 
 - name: rebuild-cache
   image: drillster/drone-volume-cache
@@ -46,7 +59,7 @@ steps:
     path: /cache
   depends_on:
   - build-angular
-
+  - docker-build-django
 
 - name: docker-build-app
   image: plugins/docker
@@ -65,12 +78,8 @@ steps:
   depends_on:
   - build-angular
 
-volumes:
-- name: cache
-  host:
-    path: /cache/magic-wall
 ---
 kind: signature
-hmac: 5cfb80d9074b64560e651b90779f5addee95bafda42b7259b8c01d990e7545bc
+hmac: 2ded63ecfd11fd3a3cd2104567491ea1712e5722c8fa3b3fe222a47e72237a84
 
 ...
