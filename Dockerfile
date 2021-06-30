@@ -8,6 +8,9 @@ WORKDIR /usr/src/app
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
+ARG PIP_CACHE_DIR=.pip-cache
+ENV PIP_CACHE_DIR=$PIP_CACHE_DIR
+
 RUN apt-get update && \
   apt-get install -y \
     netcat gettext

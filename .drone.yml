@@ -14,7 +14,6 @@ steps:
   settings:
     restore: true
     mount:
-      - ./.pip
       - ./.pip-cache
       - ./app/node_modules
   volumes:
@@ -25,7 +24,6 @@ steps:
   image: plugins/docker
   environment:
     PIP_CACHE_DIR: ".pip-cache"
-    PYTHONUSERBASE: ".pip"
   settings:
     registry: r.sacovo.ch
     repo: r.sacovo.ch/sacovo/magic-wall-backend
@@ -36,6 +34,8 @@ steps:
     password:
       from_secret: portus_token
     cache_from: r.sacovo.ch/sacovo/magic-wall-backend
+    build_args_from_env:
+    - PIP_CACHE_DIR
   depends_on:
   - restore-cache
 
@@ -82,6 +82,6 @@ steps:
 
 ---
 kind: signature
-hmac: a9ab4386d70eb8a1e10abb8858a364927d013ee1e7fd522252a4dd8502a0a7ac
+hmac: f09d1b57e2f8f9c6c5be112570abaf65da7323bcf6e7abff8780422ab75dee9f
 
 ...
