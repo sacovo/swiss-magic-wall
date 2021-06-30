@@ -16,12 +16,33 @@ steps:
     password:
       from_secret: portus_token
 
+- name: restore-npm-cache
+  image: drillster/drone-volume-cache
+  settings:
+    restore: true
+    mount:
+      - ./node_modules
+  volumes:
+  - name: cache
+    path: /cache
+
 - name: build-angular
   image: node
   commands:
   - cd app/
   - npm install
   - npm run build app -- --prod
+
+- name: rebuild-cache
+  image: drillster/drone-volume-cache
+  settings:
+    rebuild: true
+    mount:
+      - ./node_modules
+  volumes:
+  - name: cache
+    path: /cache
+
 
 - name: docker-build-app
   image: plugins/docker
@@ -35,10 +56,17 @@ steps:
     password:
       from_secret: portus_token
     context: app/
+    dockerfile: app/Dockerfile
+
   depends_on:
   - build-angular
+
+volumes:
+- name: cache
+  host:
+    path: /cache/magic-wall
 ---
 kind: signature
-hmac: 4726548f27afeb0671984051e77794e0d3380fc17f62d0d6ca52df3011465df4
+hmac: 5cfb80d9074b64560e651b90779f5addee95bafda42b7259b8c01d990e7545bc
 
 ...
