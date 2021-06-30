@@ -8,22 +8,8 @@ volumes:
   host:
     path: /cache/magic-wall
 
-steps:
-- name: restore-cache
-  image: drillster/drone-volume-cache
-  settings:
-    restore: true
-    mount:
-      - ./.pip-cache
-      - ./app/node_modules
-  volumes:
-  - name: cache
-    path: /cache
-
 - name: docker-build-django
   image: plugins/docker
-  environment:
-    PIP_CACHE_DIR: ".pip-cache"
   settings:
     registry: r.sacovo.ch
     repo: r.sacovo.ch/sacovo/magic-wall-backend
@@ -34,10 +20,17 @@ steps:
     password:
       from_secret: portus_token
     cache_from: r.sacovo.ch/sacovo/magic-wall-backend
-    build_args_from_env:
-    - PIP_CACHE_DIR
-  depends_on:
-  - restore-cache
+
+steps:
+- name: restore-cache
+  image: drillster/drone-volume-cache
+  settings:
+    restore: true
+    mount:
+      - ./app/node_modules
+  volumes:
+  - name: cache
+    path: /cache
 
 - name: build-angular
   image: node
@@ -54,14 +47,11 @@ steps:
     rebuild: true
     mount:
       - ./app/node_modules
-      - ./.pip
-      - ./.pip-cache
   volumes:
   - name: cache
     path: /cache
   depends_on:
   - build-angular
-  - docker-build-django
 
 - name: docker-build-app
   image: plugins/docker
@@ -76,12 +66,11 @@ steps:
       from_secret: portus_token
     context: app/
     dockerfile: app/Dockerfile
-
   depends_on:
   - build-angular
 
 ---
 kind: signature
-hmac: f09d1b57e2f8f9c6c5be112570abaf65da7323bcf6e7abff8780422ab75dee9f
+hmac: 3cd54b00f52da8af5fe9edc2b3b5852e2d216de4c2681bc683feab9f49924dbc
 
 ...

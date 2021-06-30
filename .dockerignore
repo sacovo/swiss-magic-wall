@@ -24,4 +24,3 @@ static/
 app/
 stats
 Dockerfile
-.pip-cache/
