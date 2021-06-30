@@ -32,6 +32,8 @@ steps:
   - cd app/
   - npm install
   - npm run build app -- --prod
+  depends_on:
+  - restore-npm-cache
 
 - name: rebuild-cache
   image: drillster/drone-volume-cache
@@ -42,6 +44,8 @@ steps:
   volumes:
   - name: cache
     path: /cache
+  depends_on:
+  - build-angular
 
 
 - name: docker-build-app
