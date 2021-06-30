@@ -37,3 +37,8 @@ steps:
   context: app/
   depends_on:
   - build-angular
+---
+kind: signature
+hmac: 6b0df3250a31dabdf98c740d12acdd9317e4de392062afeb35d87d3ae270d41d
+
+...
