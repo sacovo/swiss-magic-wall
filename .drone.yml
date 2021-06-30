@@ -1,0 +1,39 @@
+---
+kind: pipeline
+type: docker
+name: default
+
+steps:
+- name: docker-build-django
+  image: plugins/docker
+  settings:
+    registry: r.sacovo.ch
+    repo: r.sacovo.ch/sacovo/magic-wall-backend
+    tags: ${DRONE_COMMIT_SHA}
+    auto_tag: true
+    username:
+      from_secret: portus_username
+    password:
+      from_secret: portus_token
+
+- name: build-angular
+  image: node
+  commands:
+  - cd app/
+  - npm install
+  - npm run build app -- --prod
+
+- name: docker-build-app
+  image: plugins/docker
+  settings:
+    registry: r.sacovo.ch
+    repo: r.sacovo.ch/sacovo/magic-wall-frontend
+    tags: ${DRONE_COMMIT_SHA}
+    auto_tag: true
+    username:
+      from_secret: portus_username
+    password:
+      from_secret: portus_token
+  context: app/
+  depends_on:
+  - build-angular
