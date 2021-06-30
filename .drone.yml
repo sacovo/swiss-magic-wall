@@ -8,6 +8,9 @@ volumes:
   host:
     path: /cache/magic-wall
 
+
+steps:
+
 - name: docker-build-django
   image: plugins/docker
   settings:
@@ -21,7 +24,6 @@ volumes:
       from_secret: portus_token
     cache_from: r.sacovo.ch/sacovo/magic-wall-backend
 
-steps:
 - name: restore-cache
   image: drillster/drone-volume-cache
   settings:
