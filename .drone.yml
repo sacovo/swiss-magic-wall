@@ -12,7 +12,7 @@ volumes:
 steps:
 
 - name: docker-build-django
-  image: plugins/docker
+  image: plugins/kaniko
   settings:
     registry: r.sacovo.ch
     repo: r.sacovo.ch/sacovo/magic-wall-backend
@@ -56,7 +56,7 @@ steps:
   - build-angular
 
 - name: docker-build-app
-  image: plugins/docker
+  image: plugins/kaniko
   settings:
     registry: r.sacovo.ch
     repo: r.sacovo.ch/sacovo/magic-wall-frontend
@@ -73,6 +73,6 @@ steps:
 
 ---
 kind: signature
-hmac: a767a3443e89797cdb63ce2458a21cac2067eabe71a9b655316595671f85e57a
+hmac: e31428ebdc51a978cb0d3aeefb857dbe35b2aa622f26e21f85eaa7d85077b977
 
 ...
