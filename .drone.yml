@@ -12,11 +12,12 @@ volumes:
 steps:
 
 - name: docker-build-django
-  image: plugins/kaniko
+  image: banzaicloud/drone-kaniko
   settings:
     registry: r.sacovo.ch
     repo: r.sacovo.ch/sacovo/magic-wall-backend
     tags: ${DRONE_COMMIT_SHA}
+    cache: true
     auto_tag: true
     username:
       from_secret: portus_username
@@ -56,7 +57,7 @@ steps:
   - build-angular
 
 - name: docker-build-app
-  image: plugins/kaniko
+  image: banzaicloud/drone-kaniko
   settings:
     registry: r.sacovo.ch
     repo: r.sacovo.ch/sacovo/magic-wall-frontend
@@ -73,6 +74,6 @@ steps:
 
 ---
 kind: signature
-hmac: e31428ebdc51a978cb0d3aeefb857dbe35b2aa622f26e21f85eaa7d85077b977
+hmac: 340c4576affd0ba229fbff171acbd58f1c883444c00975fc887366ec0a1a5ee7
 
 ...
