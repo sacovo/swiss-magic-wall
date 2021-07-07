@@ -16,9 +16,10 @@ steps:
   settings:
     registry: r.sacovo.ch
     repo: r.sacovo.ch/sacovo/magic-wall-backend
-    tags: master
+    tags: latest
     cache: true
     auto_tag: true
+    cache-repo: r.sacovo.ch/sacovo/magic-wall-backend
     username:
       from_secret: portus_username
     password:
@@ -61,7 +62,7 @@ steps:
   settings:
     registry: r.sacovo.ch
     repo: r.sacovo.ch/sacovo/magic-wall-frontend
-    tags: master
+    tags: latest
     auto_tag: true
     username:
       from_secret: portus_username
@@ -74,6 +75,6 @@ steps:
 
 ---
 kind: signature
-hmac: a5f8755ed7e8a758ff3ed7a640f7af76343a464cda49f0a1d84237e1473ab780
+hmac: 503591fa7793ae0c1a01a7b21d305507a87e06ceb91d705bb34aa81ab6c035f3
 
 ...
