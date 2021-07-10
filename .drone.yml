@@ -60,7 +60,7 @@ steps:
   image: plugins/kaniko
   settings:
     registry: r.sacovo.ch
-    repo: r.sacovo.ch/sacovo/magic-wall-frontend-test
+    repo: r.sacovo.ch/sacovo/magic-wall-frontend
     auto_tag: true
     username:
       from_secret: portus_username
@@ -73,6 +73,6 @@ steps:
 
 ---
 kind: signature
-hmac: d0b97f112b212bff7ae2f000a37cf2cce3a903a88e45ddf577af1da972775e23
+hmac: fb0625cee0fa48f22f2730158c6b2571ea29ecbde982b6a6b6cf6b0ba9ddb817
 
 ...
