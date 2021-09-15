@@ -144,7 +144,7 @@ export class MapComponent implements OnInit {
       'switzerland'
     )
     this.appendFeatures(
-      topojson.feature(this.topoJson, this.topoJson.objects.K4voge_20210101_gf),
+      topojson.feature(this.topoJson, this.topoJson.objects.K4voge_20210701_gf),
       'commune',
       (event: any, obj: any) => {
         this.selectCommune(obj)
@@ -155,7 +155,7 @@ export class MapComponent implements OnInit {
       .datum(
         topojson.mesh(
           this.topoJson,
-          this.topoJson.objects.K4voge_20210101_gf,
+          this.topoJson.objects.K4voge_20210701_gf,
           (a, b) => a !== b
         )
       )
