@@ -325,7 +325,7 @@ class VotationTitle(models.Model):
         """
 
     language_code = models.CharField(max_length=2, verbose_name=_("language code"))
-    title = models.CharField(max_length=280, verbose_name=_("title"))
+    title = models.CharField(max_length=500, verbose_name=_("title"))
     votation = models.ForeignKey(Votation,
                                  models.CASCADE,
                                  verbose_name=_("votation"),
