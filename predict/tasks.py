@@ -48,6 +48,11 @@ def update_results(data: dict, timestamp: Timestamp) -> bool:
     return all_finished
 
 
+@shared_task()
+def run_calculation(vote_pk: int, timestamp_pk: int):
+    calculate_projection(vote_pk, timestamp_pk)
+
+
 def calculate_projection(votation_pk: int, timestamp_pk: Timestamp):
     """
     Uses the results we already have and calculates the new results

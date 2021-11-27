@@ -32,6 +32,8 @@ ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
     "jazzmin",
+    'dal',
+    'dal_select2',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -249,3 +251,5 @@ JAZZMIN_UI_TWEAKS = {
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_URLS_REGEX = r'^/api/.*$'
+
+INPUT_TOKEN = os.environ.get("INPUT_TOKEN", 'changeme')

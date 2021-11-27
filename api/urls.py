@@ -1,4 +1,5 @@
 from django.urls import path
+from django.conf import settings
 
 from api import views
 
@@ -25,4 +26,15 @@ urlpatterns = [
     path("votation/<int:votation_id>/rel/commune/<int:commune_id>/",
          views.commune_stats,
          name="related_results_commune"),
+    path(f"input/{settings.INPUT_TOKEN}/", views.enter_result, name="enter_result"),
+    path(
+        'commune-autocomplete/',
+        views.CommuneAutocomplete.as_view(),
+        name='commune-autocomplete',
+    ),
+    path(
+        'vote-autocomplete/',
+        views.VoteAutocomplete.as_view(),
+        name='vote-autocomplete',
+    ),
 ]

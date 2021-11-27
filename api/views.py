@@ -1,8 +1,16 @@
+from datetime import datetime
+from geo.models import Gemeinde
+from dal import autocomplete
+from predict.tasks import run_calculation
+
 from django.http.request import HttpRequest
 from django.http.response import JsonResponse
+from django.shortcuts import render
 from django.views.decorators.cache import cache_page
 
 from api import serializers
+from api.forms import ResultEntryForm
+from predict.models import Timestamp, input_json_result
 from votes.models import Votation, VotationDate
 
 # Create your views here.
@@ -99,3 +107,53 @@ def commune_stats(request: HttpRequest, votation_id: int,
     """Return stats about one commune."""
     votation: Votation = Votation.objects.get(id=votation_id)
     return JsonResponse(votation.related_stats_commune(commune_id), safe=False)
+
+
+class CommuneAutocomplete(autocomplete.Select2QuerySetView):
+
+    def get_queryset(self):
+        if self.q and len(self.q) > 2:
+            qs = Gemeinde.objects.filter(name__icontains=self.q)
+            return qs
+        return Gemeinde.objects.none()
+
+
+class VoteAutocomplete(autocomplete.Select2QuerySetView):
+
+    def get_queryset(self):
+        if self.q and len(self.q) > 2:
+            qs = Votation.objects.filter(is_finished=False,
+                                         titles__title__icontains=self.q).distinct()
+            return qs
+        return Votation.objects.none()
+
+
+def enter_result(request):
+    form = ResultEntryForm()
+
+    if request.method == 'POST':
+        form = ResultEntryForm(request.POST)
+
+        if form.is_valid():
+            data = form.cleaned_data
+            city = data['city']
+            vote = data['vote']
+
+            total = data['total']
+            yes_total = data['yes_absolute']
+            no_total = data['no_absolute']
+            t = Timestamp.objects.create(t=datetime.now())
+
+            input_json_result(
+                city, vote, {
+                    'gebietAusgezaehlt': True,
+                    'jaStimmenInProzent': yes_total / total * 100,
+                    'stimmbeteiligungInProzent': (yes_total+no_total) / total * 100,
+                    'jaStimmenAbsolut': yes_total,
+                    'neinStimmenAbsolut': no_total,
+                    'anzahlStimmberechtigte': total,
+                }, t)
+
+            run_calculation.delay(vote.pk, t.pk)
+
+    return render(request, 'api/input_form.html', {'form': form})

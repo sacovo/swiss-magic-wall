@@ -60,3 +60,4 @@ vine==5.0.0
 virtualenv==20.2.1
 wcwidth==0.2.5
 wrapt==1.12.1
+django-autocomplete-light==3.9.0rc5
