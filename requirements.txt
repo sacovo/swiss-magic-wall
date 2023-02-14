@@ -13,7 +13,7 @@ click-repl==0.1.6
 distlib==0.3.1
 Django==3.1.4
 django-celery-beat==2.1.0
-django-celery-results==2.0.0
+django-celery-results==2.4.0
 django-cors-headers==3.6.0
 django-jazzmin==2.4.1
 django-stubs==1.7.0
