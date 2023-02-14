@@ -34,7 +34,7 @@ mypy-extensions==0.4.3
 nodeenv==1.5.0
 numpy==1.19.4
 pandas==1.1.4
-Pillow==8.0.1
+Pillow==9.3.0
 pre-commit==2.9.2
 prompt-toolkit==3.0.8
 psycopg2==2.8.6
