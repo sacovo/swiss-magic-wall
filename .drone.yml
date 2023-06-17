@@ -1,0 +1,78 @@
+---
+kind: pipeline
+type: docker
+name: default
+
+volumes:
+- name: cache
+  host:
+    path: /cache/magic-wall
+
+
+steps:
+
+- name: docker-build-django
+  image: plugins/kaniko
+  settings:
+    registry: r.sacovo.ch
+    repo: r.sacovo.ch/sacovo/magic-wall-backend
+    cache: true
+    auto_tag: true
+    cache-repo: r.sacovo.ch/sacovo/magic-wall-backend
+    username:
+      from_secret: portus_username
+    password:
+      from_secret: portus_token
+    cache_from: r.sacovo.ch/sacovo/magic-wall-backend
+
+- name: restore-cache
+  image: drillster/drone-volume-cache
+  settings:
+    restore: true
+    mount:
+      - ./app/node_modules
+  volumes:
+  - name: cache
+    path: /cache
+
+- name: build-angular
+  image: node
+  commands:
+  - cd app/
+  - npm install
+  - npm run build app -- --prod
+  depends_on:
+  - restore-cache
+
+- name: rebuild-cache
+  image: drillster/drone-volume-cache
+  settings:
+    rebuild: true
+    mount:
+      - ./app/node_modules
+  volumes:
+  - name: cache
+    path: /cache
+  depends_on:
+  - build-angular
+
+- name: docker-build-app
+  image: plugins/kaniko
+  settings:
+    registry: r.sacovo.ch
+    repo: r.sacovo.ch/sacovo/magic-wall-frontend
+    auto_tag: true
+    username:
+      from_secret: portus_username
+    password:
+      from_secret: portus_token
+    context: app/
+    dockerfile: app/Dockerfile
+  depends_on:
+  - build-angular
+
+---
+kind: signature
+hmac: fb0625cee0fa48f22f2730158c6b2571ea29ecbde982b6a6b6cf6b0ba9ddb817
+
+...
