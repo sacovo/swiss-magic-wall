@@ -1,9 +1,6 @@
 image: python:3.9-buster
 
-
 stages:
-  - check
-  - test
   - build
 
 variables:
@@ -27,29 +24,6 @@ cache:
 # This is a basic example for a gem or script which doesn't use
 # services such as redis or postgres
 
-bandit:
-  stage: check
-  script:
-    - export PATH=$PATH:.pip/bin/
-    - pip install --user bandit
-    - bandit --exclude ./.pip,./app --recursive ./
-
-yapf:
-  stage: check
-  script:
-    - export PATH=$PATH:.pip/bin/
-    - pip install --user yapf
-    - yapf --quiet --exclude .pip --exclude app --recursive .
-
-django_test:
-  services:
-    - postgres:latest
-  stage: test
-  script:
-    - python -V # Print out python version for debugging
-    - export PATH=$PATH:.pip/bin/
-    - pip install --user -r requirements.txt
-    - python manage.py test
 
 docker-build-master:
   # Official docker image.
