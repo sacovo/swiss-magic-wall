@@ -14,7 +14,7 @@ from votes.models import Votation, VotationDate, VotationTitle
 
 def fetch_json_from(url) -> Tuple[dict, str]:
     """Retrieves the json from the given url and returns the json as dict"""
-    response = requests.get(url)
+    response = requests.get(url, timeout=60 * 10)
     response_hash = hashlib.sha256(response.content).hexdigest()
 
     return (response.json()["schweiz"], response_hash)
@@ -66,22 +66,25 @@ def init_kanton(kanton_data: dict) -> Kanton:
     return kanton
 
 
-def init_kantone(kanton_iterator: Iterable[dict], votation: Votation,
-                 timestamp: Timestamp):
+def init_kantone(
+    kanton_iterator: Iterable[dict], votation: Votation, timestamp: Timestamp
+):
     """Iterates over the kantone that and creates them and their gemeinden"""
     results = []
 
     for kanton_data in kanton_iterator:
         kanton: Kanton = init_kanton(kanton_data)
 
-        results += init_gemeinden(iterate_gemeinden(kanton_data), kanton, votation,
-                                  timestamp)
+        results += init_gemeinden(
+            iterate_gemeinden(kanton_data), kanton, votation, timestamp
+        )
 
     Result.objects.bulk_create(results)
 
 
-def init_gemeinde(gemeinde_data: dict, kanton: Kanton, votation: Votation,
-                  timestamp: Timestamp) -> Result:
+def init_gemeinde(
+    gemeinde_data: dict, kanton: Kanton, votation: Votation, timestamp: Timestamp
+) -> Result:
     """Create a single gemeinde if not already present"""
 
     gemeinde, _ = Gemeinde.objects.get_or_create(
@@ -100,8 +103,12 @@ def init_gemeinde(gemeinde_data: dict, kanton: Kanton, votation: Votation,
     return input_json_result(gemeinde, votation, gemeinde_data["resultat"], timestamp)
 
 
-def init_gemeinden(gemeinde_iterator: Iterable[dict], kanton: Kanton, votation: Votation,
-                   timestamp: Timestamp) -> Iterable[Result]:
+def init_gemeinden(
+    gemeinde_iterator: Iterable[dict],
+    kanton: Kanton,
+    votation: Votation,
+    timestamp: Timestamp,
+) -> Iterable[Result]:
     """For every gemeinde in the iterator call the gemeinde init"""
     results = []
 

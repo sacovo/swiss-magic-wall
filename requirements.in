@@ -4,6 +4,7 @@ django-celery-beat
 django-celery-results
 django-cors-headers
 django-jazzmin
+django-autocomplete-light
 django-taggit
 django-timezone-field
 djangorestframework
