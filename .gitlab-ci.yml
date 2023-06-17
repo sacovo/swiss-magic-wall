@@ -57,6 +57,7 @@ docker-build:
 
 build-ng:
   image: node:lts
+  stage: build
   variables:
     GIT_SUBMODULE_STRATEGY: normal
   script:
